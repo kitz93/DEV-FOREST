@@ -1,0 +1,4 @@
+dev 폴더 = react
+forest 폴더 = spring
+
+공용 DB 주소 = 192.168.20.203
