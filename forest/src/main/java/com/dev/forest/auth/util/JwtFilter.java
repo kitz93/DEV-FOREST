@@ -1,4 +1,4 @@
-package com.dev.forest.auth.model.util;
+package com.dev.forest.auth.util;
 
 import java.io.IOException;
 
