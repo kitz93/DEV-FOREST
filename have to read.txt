@@ -1,4 +1,21 @@
 dev 폴더 = react
 forest 폴더 = spring
 
-공용 DB 주소 = 192.168.20.203
+공용 DB 
+주소 = 192.168.20.203
+username = DEV
+password = DEV
+
+spring 프로젝트 생성 
+name = forest
+Type = Gradle-Groovy
+Java  Version = 21
+Group = com.dev
+Artifact = forest
+Package = com.dev.forest
+
+
+Dependencies
+
+JDBC API / Lombok / MyBatis Framework / Oracle Driver / Spring Security / Spring Web
+ * 혹시 추가할 라이브러리가 생기면 말해서 같이 추가 
