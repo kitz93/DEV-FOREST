@@ -14,10 +14,7 @@ Group = com.dev
 Artifact = forest
 Package = com.dev.forest
 
-
 Dependencies
 
 JDBC API / Lombok / MyBatis Framework / Oracle Driver / Spring Security / Spring Web
  * 혹시 추가할 라이브러리가 생기면 말해서 같이 추가 
-
-test용 추가 메세지
