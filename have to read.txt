@@ -14,7 +14,6 @@ Group = com.dev
 Artifact = forest
 Package = com.dev.forest
 
-
 Dependencies
 
 JDBC API / Lombok / MyBatis Framework / Oracle Driver / Spring Security / Spring Web
