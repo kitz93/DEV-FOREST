@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.secom.member.model.mapper.MemberMapper">
+
+	<sql id="boardSaveColumn"> 
+	INSERT 
+	  INTO 
+	  	   TB_BOARD 
+	VALUES 
+		   (
+		   SEQ_BNO.NEXTVAL, 
+		   #{boardWriter},
+		   1,
+		   #{boardTitle}, 
+		   #{boardContent}
+</sql>
+
+<insert id="saveBasic">
+	<include refid="boardSaveColumn"/>
+	)
+</insert>
+
+<insert id="saveNotice">
+	<include refid="boardSaveColumn"/>,
+	2
+	)
+</insert>
+
+<insert id="saveInfo">
+	<include refid="boardSaveColumn"/>,
+	3,
+	'N'
+	)
+</insert>
+
+<sql id="boardColumn"> 
+	SELECT 
+		   BOARD_NO boardNo, 
+		   BOARD_TITLE boardTitle,
+		   BOARD_CONTNET boardContent, 
+		   M.NICKNAME   
+</sql>
+
+<select id="findByBasicAll" resultType="com.dev.forest.board.model.dto.BoardDTO">
+<include refid="boardColumn"/>
+			,COUNT,
+			I.IMAGE_NO imageNo,
+			I.ORIGIN_NAME originName,
+			I.CHANGE_NAME changeName
+	  FROM 
+	  	    TB_BOARD 
+	  JOIN 
+	  		TB_MEMBER ON(BOARD_WRITER = USER_NO) 
+	  JOIN
+	  		TB_IMAGE ON(BOARD_NO = REF_BNO)
+	 ORDER 
+		BY
+			BOARD_NO DESC
+</select>
+
+<select id="findByNoticeAll" parameterType="long" resultType="com.dev.forest.board.model.dto.BoardDTO">
+<include refid="boardColumn"/>,
+			I.IMAGE_NO imageNo,
+			I.ORIGIN_NAME originName,
+			I.CHANGE_NAME changeName 
+	  FROM 
+	  		TB_BOARD 
+	  JOIN 
+	  		TB_MEMBER ON(BOARD_WRITER = USER_NO) 
+	 WHERE 
+	 		BOARD_NO = #{boardNo}
+</select>
+
+<select id="findByNoticeId" parameterType="long" resultType="com.dev.forest.board.model.dto.BoardDTO">
+<include refid="boardColumn"/>,
+			I.IMAGE_NO imageNo,
+			I.ORIGIN_NAME originName,
+			I.CHANGE_NAME changeName 
+	  FROM 
+	  		TB_BOARD 
+	  JOIN 
+	  		TB_MEMBER ON(BOARD_WRITER = USER_NO) 
+	 WHERE 
+	 		BOARD_NO = #{boardNo}
+</select>
+
+<select id="findByInfoAll" parameterType="long" resultType="com.dev.forest.board.model.dto.BoardDTO">
+<include refid="boardColumn"/>,
+			I.IMAGE_NO imageNo,
+			I.ORIGIN_NAME originName,
+			I.CHANGE_NAME changeName 
+	  FROM 
+	  		TB_BOARD 
+	  JOIN 
+	  		TB_MEMBER ON(BOARD_WRITER = USER_NO) 
+	 WHERE 
+	 		BOARD_NO = #{boardNo}
+</select>
+
+<select id="findByInfoId" parameterType="long" resultType="com.dev.forest.board.model.dto.BoardDTO">
+<include refid="boardColumn"/>,
+			I.IMAGE_NO imageNo,
+			I.ORIGIN_NAME originName,
+			I.CHANGE_NAME changeName 
+	  FROM 
+	  		TB_BOARD 
+	  JOIN 
+	  		TB_MEMBER ON(BOARD_WRITER = USER_NO) 
+	 WHERE 
+	 		BOARD_NO = #{boardNo}
+</select>
+
+
+<update id="update" parameterType="com.dev.forest.board.model.dto.BoardDTO">
+	 UPDATE 
+	 		 TB_BOARD 
+	 	SET 
+	 		 BOARD_TITLE = #{boardTitle}, 
+	 		 BOARD_CONTENT = #{boardContent}, 
+	 		 BOARD_FILE_URL = #{boardFileUrl} 
+	  WHERE 
+	  		 BOARD_NO = #{boardNo} 
+</update>
+
+</mapper>
