@@ -2,23 +2,30 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kh.secom.member.model.mapper.MemberMapper">
+<mapper namespace="com.dev.forest.board.model.mapper.BoardMapper">
 
 	<sql id="boardSaveColumn"> 
 	INSERT 
 	  INTO 
 	  	   TB_BOARD 
+	  	   (
+			BOARD_NO,
+			USER_NO,
+			BOARD_TITLE,
+			BOARD_CONTENT,
+			BOARD_TYPE
+		   )
 	VALUES 
 		   (
 		   SEQ_BNO.NEXTVAL, 
 		   #{boardWriter},
-		   1,
 		   #{boardTitle}, 
 		   #{boardContent}
 </sql>
 
 <insert id="saveBasic">
-	<include refid="boardSaveColumn"/>
+	<include refid="boardSaveColumn"/>,
+	1 
 	)
 </insert>
 
@@ -30,8 +37,7 @@
 
 <insert id="saveInfo">
 	<include refid="boardSaveColumn"/>,
-	3,
-	'N'
+	3
 	)
 </insert>
 
@@ -39,11 +45,12 @@
 	SELECT 
 		   BOARD_NO boardNo, 
 		   BOARD_TITLE boardTitle,
-		   BOARD_CONTNET boardContent, 
+		   BOARD_CONTNET boardContent,
+		   BOARD_TYPE boardType, 
 		   M.NICKNAME   
 </sql>
 
-<select id="findByBasicAll" resultType="com.dev.forest.board.model.dto.BoardDTO">
+<select id="findByAll" resultType="BoardDTO">
 <include refid="boardColumn"/>
 			,COUNT,
 			I.IMAGE_NO imageNo,
@@ -52,19 +59,43 @@
 	  FROM 
 	  	    TB_BOARD 
 	  JOIN 
-	  		TB_MEMBER ON(BOARD_WRITER = USER_NO) 
+	  		TB_MEMBER M ON(BOARD_WRITER = USER_NO) 
 	  JOIN
-	  		TB_IMAGE ON(BOARD_NO = REF_BNO)
+	  		TB_IMAGE I ON(BOARD_NO = REF_BNO)
 	 ORDER 
 		BY
 			BOARD_NO DESC
 </select>
 
-<select id="findByNoticeAll" parameterType="long" resultType="com.dev.forest.board.model.dto.BoardDTO">
+<select id="findByAllWithoutImg" resultType="BoardDTO">
+<include refid="boardColumn"/>
+			,COUNT
+	  FROM 
+	  	    TB_BOARD 
+	  JOIN 
+	  		TB_MEMBER M ON(BOARD_WRITER = USER_NO) 
+	 ORDER 
+		BY
+			BOARD_NO DESC
+</select>
+
+<select id="findById" parameterType="long" resultType="BoardDTO">
 <include refid="boardColumn"/>,
 			I.IMAGE_NO imageNo,
 			I.ORIGIN_NAME originName,
 			I.CHANGE_NAME changeName 
+	  FROM 
+	  		TB_BOARD 
+	  JOIN 
+	  		TB_MEMBER M ON(BOARD_WRITER = USER_NO) 
+	  JOIN
+	  		TB_IMAGE I ON(BOARD_NO = REF_BNO)
+	 WHERE 
+	 		BOARD_NO = #{boardNo}
+</select>
+
+<select id="findByIdWithoutImg" parameterType="long" resultType="BoardDTO">
+<include refid="boardColumn"/> 
 	  FROM 
 	  		TB_BOARD 
 	  JOIN 
@@ -73,55 +104,27 @@
 	 		BOARD_NO = #{boardNo}
 </select>
 
-<select id="findByNoticeId" parameterType="long" resultType="com.dev.forest.board.model.dto.BoardDTO">
-<include refid="boardColumn"/>,
-			I.IMAGE_NO imageNo,
-			I.ORIGIN_NAME originName,
-			I.CHANGE_NAME changeName 
-	  FROM 
-	  		TB_BOARD 
-	  JOIN 
-	  		TB_MEMBER ON(BOARD_WRITER = USER_NO) 
-	 WHERE 
-	 		BOARD_NO = #{boardNo}
-</select>
-
-<select id="findByInfoAll" parameterType="long" resultType="com.dev.forest.board.model.dto.BoardDTO">
-<include refid="boardColumn"/>,
-			I.IMAGE_NO imageNo,
-			I.ORIGIN_NAME originName,
-			I.CHANGE_NAME changeName 
-	  FROM 
-	  		TB_BOARD 
-	  JOIN 
-	  		TB_MEMBER ON(BOARD_WRITER = USER_NO) 
-	 WHERE 
-	 		BOARD_NO = #{boardNo}
-</select>
-
-<select id="findByInfoId" parameterType="long" resultType="com.dev.forest.board.model.dto.BoardDTO">
-<include refid="boardColumn"/>,
-			I.IMAGE_NO imageNo,
-			I.ORIGIN_NAME originName,
-			I.CHANGE_NAME changeName 
-	  FROM 
-	  		TB_BOARD 
-	  JOIN 
-	  		TB_MEMBER ON(BOARD_WRITER = USER_NO) 
-	 WHERE 
-	 		BOARD_NO = #{boardNo}
-</select>
-
-
-<update id="update" parameterType="com.dev.forest.board.model.dto.BoardDTO">
+<update id="update" parameterType="BoardDTO">
 	 UPDATE 
 	 		 TB_BOARD 
 	 	SET 
 	 		 BOARD_TITLE = #{boardTitle}, 
-	 		 BOARD_CONTENT = #{boardContent}, 
-	 		 BOARD_FILE_URL = #{boardFileUrl} 
+	 		 BOARD_CONTENT = #{boardContent}
 	  WHERE 
-	  		 BOARD_NO = #{boardNo} 
+	  		 STATUS = 'Y'
+	    AND
+	  		 BOARD_NO = #{boardNo}
+</update>
+
+<update id="delete" parameterType="BoardDTO">
+	UPDATE
+		   TB_BOARD
+	   SET
+	   	   STATUS = 'N'
+	 WHERE
+		   STATUS = 'Y'
+	   AND
+	  	   BOARD_NO = #{boardNo}
 </update>
 
 </mapper>
