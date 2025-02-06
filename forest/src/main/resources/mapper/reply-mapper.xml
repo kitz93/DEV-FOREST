@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.forest.reply.model.mapper.ReplyMapper">
+
+	<insert id="saveReply">
+		INSERT
+		  INTO
+		  	   TB_REPLY
+		VALUES
+			   (
+				SEQ_BRNO.NEXTVAL,
+				#{refBno},
+				#{replyWriter},
+				#{replyContent},
+				SYSDATE
+			   )
+	</insert>
+	
+	<select id="findByBoardId" parameterType="long" resultType="ReplyDTO">
+		SELECT
+			   REPLY_NO replyNo,
+			   REF_BNO refBno,
+			   M.NICKNAME replyWriter,
+			   REPLY_CONTENT replyContent,
+			   CREATE_DATE createDate
+	 	  FROM
+	 	  	   TB_REPLY
+	 	  JOIN
+	 	  	   TB_MEMBER M ON (REPLY_WRITER = USER_NO)
+	 	 WHERE
+	 	 	   REF_BNO = {refBno}
+	 	 ORDER
+	 	 	BY
+	 	 	   CREATE_DATE DESC
+	</select>
+
+</mapper>

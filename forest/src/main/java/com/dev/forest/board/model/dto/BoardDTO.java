@@ -1,6 +1,5 @@
 package com.dev.forest.board.model.dto;
 
-import com.dev.forest.image.model.dto.ImageDTO;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -29,8 +28,6 @@ public class BoardDTO {
 	private String status;
 	private int boardType;
 	private String approveStatus;
-	
-	private ImageDTO image;
-	
+	private String boardFileUrl;
 
 }

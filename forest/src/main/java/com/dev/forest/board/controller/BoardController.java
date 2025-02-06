@@ -41,9 +41,10 @@ public class BoardController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<BoardDTO>> findAll(@RequestParam(name = "page", defaultValue = "0") int page ){
+	public ResponseEntity<List<BoardDTO>> findAll(@RequestParam(name = "page", defaultValue = "1") int page,
+												  @RequestParam(name = "boardType") int boardType ){
 		
-		return ResponseEntity.ok(service.findAll(page));
+		return ResponseEntity.ok(service.findAll(boardType, page));
 	}
 	
 	@GetMapping("/{id}")
