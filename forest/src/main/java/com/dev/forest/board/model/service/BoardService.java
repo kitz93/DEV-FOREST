@@ -8,7 +8,7 @@ import com.dev.forest.board.model.dto.BoardDTO;
 
 public interface BoardService {
 
-	void save(BoardDTO board, MultipartFile file);
+	void save(BoardDTO board, int boardType, MultipartFile file);
 
 	List<BoardDTO> findAll(int page);
 

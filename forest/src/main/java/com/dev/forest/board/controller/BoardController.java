@@ -32,9 +32,10 @@ public class BoardController {
 	
 	@PostMapping
 	public ResponseEntity<?> save(@ModelAttribute @Valid BoardDTO board,
+								  @RequestParam(name = "boardType") int boardType,
 								  @RequestParam(name = "file", required = false) MultipartFile file ) {
 		
-		service.save(board, file);
+		service.save(board,boardType, file);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body("게시글 등록 성공");
 	}
