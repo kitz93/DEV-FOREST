@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,7 +62,7 @@ public class BoardController {
 		return ResponseEntity.ok(updated);
 	}
 	
-	@PutMapping("/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable(name = "id") Long boardNo) {
 		service.delete(boardNo);
 		return ResponseEntity.ok("삭제가 완료되었습니다.");

@@ -6,6 +6,8 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dev.forest.auth.model.service.AuthenticationService;
+import com.dev.forest.auth.model.vo.CustomUserDetails;
 import com.dev.forest.board.model.service.FileService;
 import com.dev.forest.common.model.dto.PageInfo;
 import com.dev.forest.common.template.Pagination;
@@ -22,10 +24,13 @@ public class ReservationServiceImpl implements ReservationService {
 	
 	private final ReservationMapper reservationMapper;
 	private final FileService fileService;
+	private final AuthenticationService authService;
 	
 	@Override
 	public void reservate(ReservationDTO reservation, MultipartFile file) {
 		// 검증된 인원인지 확인
+		CustomUserDetails user = authService.getAuthenticatedUser();
+		authService.validWriter(reservation.getReservationUser(), user.getUsername());
 		
 		// 파일 확인
 		if (file != null && !file.isEmpty()) {
@@ -83,6 +88,8 @@ public class ReservationServiceImpl implements ReservationService {
 		ReservationDTO exsitingReservation = getBoardOrThrow(reservationNo);
 		
 		// 검증된 인원인지 확인
+		CustomUserDetails user = authService.getAuthenticatedUser();
+		authService.validWriter(exsitingReservation.getReservationUser(), user.getUsername());
 		
 		reservationMapper.delete(reservationNo);
 	}
