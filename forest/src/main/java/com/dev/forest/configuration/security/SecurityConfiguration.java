@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -48,7 +49,7 @@ public class SecurityConfiguration {
 		return httpSecurity.formLogin(AbstractHttpConfigurer::disable).httpBasic(AbstractHttpConfigurer::disable)
 				.csrf(AbstractHttpConfigurer::disable).cors(Customizer.withDefaults())
 				.authorizeHttpRequests(requests -> {
-					requests.requestMatchers("/quizs").permitAll();
+					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login").permitAll();
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");
 				})
 				.sessionManagement(
