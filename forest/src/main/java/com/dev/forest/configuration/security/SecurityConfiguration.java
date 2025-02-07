@@ -48,7 +48,8 @@ public class SecurityConfiguration {
 		return httpSecurity.formLogin(AbstractHttpConfigurer::disable).httpBasic(AbstractHttpConfigurer::disable)
 				.csrf(AbstractHttpConfigurer::disable).cors(Customizer.withDefaults())
 				.authorizeHttpRequests(requests -> {
-					requests.requestMatchers("/quizs").permitAll();
+					requests.requestMatchers("/quizs", "/quizs/**").permitAll();
+					requests.requestMatchers("/wrongs", "/wrongs/**").permitAll();
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");
 				})
 				.sessionManagement(

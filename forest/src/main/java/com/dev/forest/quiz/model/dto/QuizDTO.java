@@ -1,5 +1,7 @@
 package com.dev.forest.quiz.model.dto;
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,5 +26,6 @@ public class QuizDTO {
 	private String answer;
 	@NotBlank
 	private String explanation;
+	private String quizOption;
 
 }
