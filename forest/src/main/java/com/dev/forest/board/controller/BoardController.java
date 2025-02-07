@@ -66,5 +66,13 @@ public class BoardController {
 		service.delete(boardNo);
 		return ResponseEntity.ok("삭제가 완료되었습니다.");
 	}
+	
+	@GetMapping("/search")
+	public ResponseEntity<List<BoardDTO>> search(@RequestParam(name = "boardType") int boardType, 
+												 @RequestParam(name = "condition") String condition, 
+												 @RequestParam(name = "keyword") String keyword, 
+												 @RequestParam(name = "page", defaultValue = "1") int page){
+		return ResponseEntity.ok(service.search(boardType, condition, keyword,page));
+	}
 
 }

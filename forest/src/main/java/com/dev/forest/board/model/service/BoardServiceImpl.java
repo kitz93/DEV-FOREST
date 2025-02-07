@@ -57,14 +57,18 @@ public class BoardServiceImpl implements BoardService {
 	private PageInfo getPageInfo(int totalCount, int page) {
 		return Pagination.getPageInfo(totalCount, page, 10);
 	}
+	
+	private RowBounds paging(PageInfo pi) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		return rowBounds;
+	}
 
 	@Override
 	public List<BoardDTO> findAll(int boardType, int page) {
 		int totalCount = getTotalCount();
 		PageInfo pi = getPageInfo(totalCount, page);
-
-		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
-		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		RowBounds rowBounds = paging(pi);
 		return boardMapper.findAll(rowBounds);
 	}
 
@@ -109,6 +113,25 @@ public class BoardServiceImpl implements BoardService {
 		// 검증된 인원인지 확인
 
 		boardMapper.delete(exsitingBoard); // 게시판 삭제(상태 N으로 변환)
+	}
+	
+	private void validateKeyword(String keyword) {
+		if(keyword == null || keyword.trim().isEmpty()) {
+			throw new InvalidParameterException("검색어를 입력해주세요.");
+		}
+	}
+
+	@Override
+	public List<BoardDTO> search(int boardType, String condition, String keyword, int page) {
+		validateKeyword(keyword);
+		
+		int totalCount = boardMapper.searchCount(keyword, condition, boardType);
+		
+		PageInfo pageInfo = getPageInfo(totalCount, page);
+		
+		List<BoardDTO> list = boardMapper.search(keyword, condition, boardType, paging(pageInfo));
+		
+		return list;
 	}
 
 }

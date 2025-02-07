@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.forest.reservation.model.mapper.ReservationMapper">
+	
+	<insert id="reservate">
+		INSERT
+		  INTO
+		  	   TB_RESERVATION
+		VALUES
+			   (
+				RESERVATION_NO.NEXTVAL,
+				#{reservationUser},
+				#{reservationName},
+				#{reservationContent},
+				#{reservationCount},
+				#{reservationPlace},
+				#{placeAddress},
+				'N',
+				'Y',
+				#{startTime},
+				#{endTime},
+				#{fileUrl}
+			   )
+	</insert>
+	
+	<sql id="reservationColumn">
+		SELECT
+			   RESERVATION_NO reservationNo,
+			   RESERVATION_NAME reservationName,
+			   RESERVATION_CONTENT reservationContent,
+			   RESERVATION_COUNT reservationCount,
+			   RESERVATION_PLACE reservationPlace,
+			   FILE_URL fileUrl,
+			   STATUS status
+	</sql>
+
+	<select id="findAll">
+		<include refid="reservationColumn" />
+		  FROM
+		  	   TB_RESERVATION
+		  JOIN
+		       TB_MEMBER M ON (RESERVATION_USER = USER_NO)
+		 WHERE
+		 	   STATUS = 'Y'
+		 ORDER
+		    BY
+		       RESERVATION_NO DESC
+	</select>
+	
+	<select id="findById">
+		<include refid="reservationColumn" />,
+				M.NICKNAME reservationUser,
+				START_TIME startTime,
+				END_TIME endTime,
+				PALCE_ADDRESS placeAddress,
+				RESERVATION_STATUS reservationStatus
+		  FROM
+		  	   TB_RESERVATION
+		  JOIN
+		  	   TB_MEMBER M ON(RESERVATION_USER = USER_NO)
+		 WHERE
+		 	   RESERVATION_NO = #{reservationNo}
+	</select>
+	
+	<select id="selectTotalCount">
+		SELECT
+			   COUNT(*)
+		  FROM
+		  	   TB_RESERVATION
+		 WHERE
+		 	   STATUS = 'Y'
+	</select>
+	
+	<sql id="searchColumn">
+		FROM
+		  	   TB_RESERVATION
+		 WHERE
+		 	   STATUS = 'Y'
+		   <if test="condition == 'title'">
+		   AND
+		   	   RESERVATION_NAME
+		   </if>
+		   <if test="condition == 'place'">
+		   AND
+		   	   RESERVATION_PLACE
+		   </if>
+		   LIKE '%' || #{keyword} || '%'
+	</sql>
+	
+	<select id="searchCount">
+		SELECT
+			   COUNT(*)
+		  <include refid="searchColumn" />
+	</select>
+	
+	<select id="search">
+		<include refid="reservationColumn" />
+		<include refid="searchColumn" />
+	</select>
+	
+	<delete id="delete">
+		UPDATE
+			   TB_RESERVATION
+		   SET
+		   	   STATUS = 'N'
+		 WHERE
+		 	   RESERVATION_NO = #{reservationNo}
+	</delete>
+
+</mapper>

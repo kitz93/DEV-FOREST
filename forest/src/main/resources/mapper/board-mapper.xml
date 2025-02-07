@@ -4,7 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dev.forest.board.model.mapper.BoardMapper">
 
-	<sql id="boardSaveColumn"> 
+<sql id="boardSaveColumn"> 
 	INSERT 
 	  INTO 
 	  	   TB_BOARD 
@@ -97,5 +97,41 @@
 	   AND
 	  	   BOARD_NO = #{boardNo}
 </update>
+
+<sql id="searchColumn">
+	FROM
+	  	   TB_BOARD
+	  JOIN
+	  	   TB_MEMBER M ON(BOARD_WRITER = USER_NO)
+	 WHERE
+	 	   STATUS = 'Y'
+	 <if test="condition = 'writer'">
+	 	AND
+	 	    M.NICKNAME
+	 </if>
+	 <if test="condition = 'title'">
+	 	AND
+	 		BOARD_TITLE
+	 </if>
+	 <if test="condition = 'content'">
+	 	AND
+	 		BOARD_CONTENT
+	 </if>
+	 LIKE '%' || #{keyword} || '%'
+</sql>
+
+<select id="searchCount">
+	SELECT
+		   COUNT(*)
+	  <include refid="searchColumn" />
+</select>
+
+<select id="search">
+	<include refid="boardColumn"/>
+	<include refid="searchColumn"/>
+	ORDER
+	   BY
+	   	  BOARD_NO DESC
+</select>
 
 </mapper>

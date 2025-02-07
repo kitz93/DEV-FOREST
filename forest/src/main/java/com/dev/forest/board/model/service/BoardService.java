@@ -18,4 +18,6 @@ public interface BoardService {
 
 	void delete(Long boardNo);
 
+	List<BoardDTO> search(int boardType, String condition, String keyword, int page);
+
 }

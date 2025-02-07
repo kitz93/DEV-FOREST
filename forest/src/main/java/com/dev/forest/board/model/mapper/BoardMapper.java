@@ -24,11 +24,13 @@ public interface BoardMapper {
 
 	BoardDTO findById(Long boardNo);
 
-	BoardDTO findByIdWithoutImg(Long boardNo);
-
 	void update(BoardDTO exsitingBoard);
 
 	void delete(BoardDTO exsitingBoard);
+
+	int searchCount(String keyword, String condition, int boardType);
+
+	List<BoardDTO> search(String keyword, String condition, int boardType, RowBounds paging);
 	
 	
 
