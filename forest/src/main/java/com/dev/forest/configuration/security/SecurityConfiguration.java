@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -50,6 +51,7 @@ public class SecurityConfiguration {
 				.authorizeHttpRequests(requests -> {
 					requests.requestMatchers("/quizs", "/quizs/**").permitAll();
 					requests.requestMatchers("/wrongs", "/wrongs/**").permitAll();
+					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login").permitAll();
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");
 				})
 				.sessionManagement(
