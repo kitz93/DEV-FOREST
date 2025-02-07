@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.forest.member.model.mapper.MemberMapper">
+
+	<insert id="saveSignUp" parameterType="MemberDTO">
+		INSERT 
+		  INTO 
+		       TB_SIGN_UP 
+		VALUES 
+		       (
+				SEQ_USER_NO.NEXTVAL, 
+				#{signUp}
+			   )
+	</insert>
+	
+	<insert id="saveMember" parameterType="MemberDTO">
+		INSERT 
+		  INTO 
+		       TB_MEMBER 
+		       (
+				USER_NO, 
+				USER_ID, 
+				USER_PWD, 
+				NICKNAME
+			   ) 
+	     VALUES 
+			   (
+				SEQ_USER_NO.CURRVAL, 
+				#{userId}, 
+				#{userPwd}, 
+				#{nickname}
+			   ) 
+	</insert>
+	
+	<insert id="saveMemberSns" parameterType="MemberDTO">
+		INSERT 
+		  INTO 
+		       TB_MEMBER 
+		       (
+				USER_NO, 
+				NICKNAME
+			   ) 
+	     VALUES 
+			   (
+				SEQ_USER_NO.CURRVAL, 
+				#{nickname}
+			   ) 
+	</insert>
+	
+	<select id="findByUserId" parameterType="String">
+		SELECT 
+		       USER_NO userNo,
+		       USER_ID userId,
+		       USER_PWD userPwd,
+		       NICKNAME nickname,
+		       ROLE role,
+		       ENROLL_DATE enrollDate,
+		       UPDATE_DATE updateDate,
+		       STATUS status
+		  FROM 
+		       TB_MEMBER
+		 WHERE 
+		       USER_ID = #{userId}
+	</select>
+	
+	<select id="findByNickname" parameterType="String">
+		SELECT 
+		       USER_NO userNo,
+		       USER_ID userId,
+		       USER_PWD userPwd,
+		       NICKNAME nickname,
+		       ROLE role,
+		       ENROLL_DATE enrollDate,
+		       UPDATE_DATE updateDate,
+		       STATUS status
+		  FROM 
+		       TB_MEMBER
+		 WHERE 
+		       NICKNAME = #{nickname}
+	</select>
+
+	<select id="findByNicknameSns" parameterType="String">
+		SELECT 
+		       USER_NO userNo,
+		       NICKNAME nickname,
+		       ROLE role,
+		       ENROLL_DATE enrollDate,
+		       UPDATE_DATE updateDate,
+		       STATUS status
+		  FROM 
+		       TB_MEMBER_SNS
+		 WHERE 
+		       NICKNAME = #{nickname}
+	</select>
+	
+</mapper>
+
