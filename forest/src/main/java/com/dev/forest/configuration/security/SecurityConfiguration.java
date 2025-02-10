@@ -50,6 +50,8 @@ public class SecurityConfiguration {
 				.csrf(AbstractHttpConfigurer::disable).cors(Customizer.withDefaults())
 				.authorizeHttpRequests(requests -> {
 					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login").permitAll();
+					requests.requestMatchers(HttpMethod.PUT, "/members").authenticated();
+					requests.requestMatchers(HttpMethod.DELETE, "/members").authenticated();
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");
 				})
 				.sessionManagement(
