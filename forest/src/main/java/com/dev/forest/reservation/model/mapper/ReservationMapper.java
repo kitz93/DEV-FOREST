@@ -24,4 +24,6 @@ public interface ReservationMapper {
 
 	List<ReservationDTO> search(String keyword, String condition, RowBounds rowBounds);
 
+	void attend(ReservationDTO reservation);
+
 }

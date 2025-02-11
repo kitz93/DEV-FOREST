@@ -15,7 +15,7 @@ public class StudyingDTO {
 
 	private Long studyingNo;
 	private Long refRno;
-	private String reservationUser;
+	private String studyingUser;
 	private String createDate;
 	private String status;
 }

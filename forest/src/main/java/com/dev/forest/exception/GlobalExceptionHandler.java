@@ -14,6 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 	
+	@ExceptionHandler(UserNotFoundException.class)
+	public ResponseEntity<?> handleUserNotFound(UserNotFoundException e){
+		return ResponseEntity.badRequest().body(e.getMessage());
+	}
+	
 	@ExceptionHandler(BoardNotFoundException.class)
 	public ResponseEntity<?> handleBoardNotFound(BoardNotFoundException e){
 		return ResponseEntity.badRequest().body(e.getMessage());

@@ -16,8 +16,10 @@ import com.dev.forest.exception.BoardNotFoundException;
 import com.dev.forest.exception.InvalidParameterException;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
 
@@ -27,6 +29,8 @@ public class BoardServiceImpl implements BoardService {
 	
 	@Override
 	public void save(BoardDTO board, int boardType, MultipartFile file) {
+		
+		log.info("게시글정보 : {} \n 파일정보 : {} ",board, file, boardType);
 
 		// 검증된 인원인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
@@ -53,8 +57,8 @@ public class BoardServiceImpl implements BoardService {
 
 	}
 
-	private int getTotalCount() {
-		int totalCount = boardMapper.selectTotalCount();
+	private int getTotalCount(int boardType) {
+		int totalCount = boardMapper.selectTotalCount(boardType);
 		if (totalCount == 0) {
 			throw new BoardNotFoundException("게시글이 존재하지 않습니다.");
 		}
@@ -73,10 +77,10 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public List<BoardDTO> findAll(int boardType, int page) {
-		int totalCount = getTotalCount();
+		int totalCount = getTotalCount(boardType);
 		PageInfo pi = getPageInfo(totalCount, page);
 		RowBounds rowBounds = paging(pi);
-		return boardMapper.findAll(rowBounds);
+		return boardMapper.findAll(rowBounds, boardType);
 	}
 
 	private BoardDTO getBoardOrThrow(Long boardNo) {

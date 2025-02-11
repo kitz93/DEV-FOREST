@@ -10,11 +10,12 @@
 	  	   TB_BOARD 
 	  	   (
 			BOARD_NO,
-			USER_NO,
+			BOARD_WRITER,
 			BOARD_TITLE,
 			BOARD_CONTENT,
 			BOARD_FILE_URL,
-			BOARD_TYPE
+			BOARD_TYPE,
+			APPROVE_STATUS
 		   )
 	VALUES 
 		   (
@@ -27,19 +28,22 @@
 
 <insert id="saveBasic">
 	<include refid="boardSaveColumn"/>
-	1 
+	1,
+	'Y' 
 	)
 </insert>
 
 <insert id="saveNotice">
 	<include refid="boardSaveColumn"/>
-	2
+	2,
+	'Y'
 	)
 </insert>
 
 <insert id="saveInfo">
 	<include refid="boardSaveColumn"/>
-	3
+	3,
+	'N'
 	)
 </insert>
 
@@ -47,19 +51,23 @@
 	SELECT 
 		   BOARD_NO boardNo, 
 		   BOARD_TITLE boardTitle,
-		   BOARD_CONTNET boardContent,
+		   BOARD_CONTENT boardContent,
 		   BOARD_TYPE boardType, 
 		   M.NICKNAME,
 		   BOARD_FILE_URL
 </sql>
 
-<select id="findByAll" resultType="BoardDTO">
+<select id="findAll" resultType="BoardDTO">
 <include refid="boardColumn"/>
 			,COUNT
 	  FROM 
 	  	    TB_BOARD 
 	  JOIN 
-	  		TB_MEMBER M ON(BOARD_WRITER = USER_NO) 
+	  		TB_MEMBER M ON(BOARD_WRITER = USER_NO)
+	 WHERE
+	 	   TB_BOARD.STATUS = 'Y'
+	   AND
+	   	   BOARD_TYPE = #{boardType}
 	 ORDER 
 		BY
 			BOARD_NO DESC
@@ -72,6 +80,8 @@
 	  JOIN 
 	  		TB_MEMBER M ON(BOARD_WRITER = USER_NO) 
 	 WHERE 
+	 		STATUS = 'Y'
+	   AND
 	 		BOARD_NO = #{boardNo}
 </select>
 
@@ -120,13 +130,13 @@
 	 LIKE '%' || #{keyword} || '%'
 </sql>
 
-<select id="searchCount">
+<select id="searchCount" resultType="_int">
 	SELECT
 		   COUNT(*)
 	  <include refid="searchColumn" />
 </select>
 
-<select id="search">
+<select id="search" resultType="BoardDTO">
 	<include refid="boardColumn"/>
 	<include refid="searchColumn"/>
 	ORDER

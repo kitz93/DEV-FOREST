@@ -17,10 +17,10 @@ public interface BoardMapper {
 
 	void saveInfo(BoardDTO board);
 
-	@Select("SELECT COUNT(*) FROM TB_BOARD WHERE STATUS = 'Y'")
-	int selectTotalCount();
+	@Select("SELECT COUNT(*) FROM TB_BOARD WHERE STATUS = 'Y' AND BOARD_TYPE = #{boardType}")
+	int selectTotalCount(int boardType);
 
-	List<BoardDTO> findAll(RowBounds rowBounds);
+	List<BoardDTO> findAll(RowBounds rowBounds, int boardType);
 
 	BoardDTO findById(Long boardNo);
 

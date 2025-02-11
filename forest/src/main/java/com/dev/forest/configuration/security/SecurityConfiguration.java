@@ -51,10 +51,10 @@ public class SecurityConfiguration {
 				.authorizeHttpRequests(requests -> {
 					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login").permitAll();
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");
-					requests.requestMatchers(HttpMethod.POST, "/boards", "/reservations").authenticated();
-					requests.requestMatchers(HttpMethod.GET, "/boards/**", "/reservations/**").permitAll();
+					requests.requestMatchers(HttpMethod.POST, "/boards", "/reservations", "/replys","/studyings").authenticated();
+					requests.requestMatchers(HttpMethod.GET, "/boards/**", "/reservations/**", "/replys", "/studyings").permitAll();
 					requests.requestMatchers(HttpMethod.PUT, "/boards/**", "/reservations/**").authenticated();
-					requests.requestMatchers(HttpMethod.DELETE, "/boards/**", "/reservations/**").authenticated();
+					requests.requestMatchers(HttpMethod.DELETE, "/boards/**", "/reservations/**", "/studyings").authenticated();
 				})
 				.sessionManagement(
 						sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

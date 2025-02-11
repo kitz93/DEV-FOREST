@@ -15,6 +15,8 @@ import com.dev.forest.exception.BoardNotFoundException;
 import com.dev.forest.exception.InvalidParameterException;
 import com.dev.forest.reservation.model.dto.ReservationDTO;
 import com.dev.forest.reservation.model.mapper.ReservationMapper;
+import com.dev.forest.studying.model.dto.StudyingDTO;
+import com.dev.forest.studying.model.mapper.StudyingMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +27,7 @@ public class ReservationServiceImpl implements ReservationService {
 	private final ReservationMapper reservationMapper;
 	private final FileService fileService;
 	private final AuthenticationService authService;
+	private final StudyingMapper studyingMapper;
 	
 	@Override
 	public void reservate(ReservationDTO reservation, MultipartFile file) {
@@ -40,6 +43,19 @@ public class ReservationServiceImpl implements ReservationService {
 		
 		// 모임 등록
 		reservationMapper.reservate(reservation);
+		
+		Long reservationNo = reservation.getReservationNo();  // 등록 후 생성된 ID (자동 증가된 키)
+
+		if (reservationNo == null) {
+			throw new BoardNotFoundException("모임 등록 후 ID를 가져올 수 없습니다.");
+		}
+
+		StudyingDTO studying = StudyingDTO.builder()
+		        						  .refRno(reservationNo) // 모임 번호
+		        						  .studyingUser(reservation.getReservationUser()) // 등록자 (참석자)
+		        						  .build();
+
+		studyingMapper.attend(studying);
 	}
 	
 	private int getTotalCount() {

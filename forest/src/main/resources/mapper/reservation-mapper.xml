@@ -5,12 +5,18 @@
 <mapper namespace="com.dev.forest.reservation.model.mapper.ReservationMapper">
 	
 	<insert id="reservate">
+	<selectKey keyProperty="reservationNo" resultType="Long" order="BEFORE">
+        SELECT 
+        	   RESERVATION_NO.NEXTVAL 
+          FROM 
+          	   DUAL
+    </selectKey>
 		INSERT
 		  INTO
 		  	   TB_RESERVATION
 		VALUES
 			   (
-				RESERVATION_NO.NEXTVAL,
+				#{reservationNo},
 				#{reservationUser},
 				#{reservationName},
 				#{reservationContent},
@@ -36,7 +42,7 @@
 			   STATUS status
 	</sql>
 
-	<select id="findAll">
+	<select id="findAll" resultType="ReservationDTO">
 		<include refid="reservationColumn" />
 		  FROM
 		  	   TB_RESERVATION
@@ -49,7 +55,7 @@
 		       RESERVATION_NO DESC
 	</select>
 	
-	<select id="findById">
+	<select id="findById" parameterType="Long" resultType="ReservationDTO">
 		<include refid="reservationColumn" />,
 				M.NICKNAME reservationUser,
 				START_TIME startTime,
@@ -64,7 +70,7 @@
 		 	   RESERVATION_NO = #{reservationNo}
 	</select>
 	
-	<select id="selectTotalCount">
+	<select id="selectTotalCount" resultType="_int">
 		SELECT
 			   COUNT(*)
 		  FROM
@@ -89,24 +95,24 @@
 		   LIKE '%' || #{keyword} || '%'
 	</sql>
 	
-	<select id="searchCount">
+	<select id="searchCount" resultType="_int">
 		SELECT
 			   COUNT(*)
 		  <include refid="searchColumn" />
 	</select>
 	
-	<select id="search">
+	<select id="search" resultType="ReservationDTO">
 		<include refid="reservationColumn" />
 		<include refid="searchColumn" />
 	</select>
 	
-	<delete id="delete">
+	<update id="delete" parameterType="ReservationDTO">
 		UPDATE
 			   TB_RESERVATION
 		   SET
 		   	   STATUS = 'N'
 		 WHERE
 		 	   RESERVATION_NO = #{reservationNo}
-	</delete>
+	</update>
 
 </mapper>

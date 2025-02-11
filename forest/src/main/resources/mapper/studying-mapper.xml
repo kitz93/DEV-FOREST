@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.forest.studying.model.mapper.StudyingMapper">
+
+	<insert id="attend">
+		INSERT
+		  INTO
+		  	   TB_STUDYING
+		VALUES
+			   (
+				SEQ_SNO.NEXTVAL,
+				#{refRno},
+				#{studyingUser},
+				SYSDATE
+			   )
+	
+	</insert>
+	
+	<select id="findByRervation" parameterType="Long" resultType="StudyingDTO">
+		SELECT
+			   STUDYING_NO studyingNo,
+			   REF_RNO refRno,
+			   M.NICKNAME studyingUser,
+			   CREATE_DATE createDate
+		  FROM
+		  	   TB_STUDYING
+		  JOIN
+		  	   TB_MEMBER M ON(STUDYING_USER = USER_NO)
+		 WHERE
+		 	   STATUS = 'Y'
+		   AND
+		   	   REF_RNO = #{refRno}
+		 ORDER
+		    BY
+		       CREATE_DATE DESC
+	
+	</select>
+	
+	<update id="cancle" parameterType="StudyingDTO">
+		UPDATE
+			   TB_STUDYING
+		   SET
+		   	   STATUS = 'N'
+		 WHERE
+		 	   STATUS = 'Y'
+	
+	</update>
+
+
+</mapper>
