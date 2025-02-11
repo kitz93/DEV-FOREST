@@ -1,6 +1,7 @@
 package com.dev.forest.board.model.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -28,10 +29,8 @@ public interface BoardMapper {
 
 	void delete(BoardDTO exsitingBoard);
 
-	int searchCount(String keyword, String condition, int boardType);
+	int searchCount(Map<String, Object> params);
 
-	List<BoardDTO> search(String keyword, String condition, int boardType, RowBounds paging);
-	
-	
+	List<BoardDTO> search(Map<String, Object>params);
 
 }

@@ -65,18 +65,20 @@ public class BoardController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<BoardDTO> delete(@PathVariable(name = "id") Long boardNo) {
-		log.info("게시판 번호 : {}", boardNo);
-		BoardDTO deleted = service.delete(boardNo);
-		return ResponseEntity.ok(deleted);
+	public ResponseEntity<?> delete(@PathVariable(name = "id") Long boardNo) {
+//		log.info("게시판 번호 : {}", boardNo);
+		service.delete(boardNo);
+		return ResponseEntity.ok("삭제가 성공적으로 완료되었습니다.");
 	}
 	
 	@GetMapping("/search")
-	public ResponseEntity<List<BoardDTO>> search(@RequestParam(name = "boardType") int boardType, 
-												 @RequestParam(name = "condition") String condition, 
-												 @RequestParam(name = "keyword") String keyword, 
-												 @RequestParam(name = "page", defaultValue = "1") int page){
-		return ResponseEntity.ok(service.search(boardType, condition, keyword,page));
+	public ResponseEntity<List<BoardDTO>> search(@RequestParam(name = "page", defaultValue = "1") int page
+												 ,@RequestParam(name = "boardType") int boardType
+												 ,@RequestParam(name = "condition") String condition
+												 ,@RequestParam(name = "keyword") String keyword
+			){
+		log.info("헤헤헤헤헤{}, {},{}", boardType, condition, keyword);
+		return ResponseEntity.ok(service.search(boardType, condition, keyword, page));
 	}
 
 }

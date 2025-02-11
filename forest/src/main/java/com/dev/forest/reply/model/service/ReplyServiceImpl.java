@@ -9,11 +9,14 @@ import com.dev.forest.auth.model.vo.CustomUserDetails;
 import com.dev.forest.board.model.service.BoardService;
 import com.dev.forest.reply.model.dto.ReplyDTO;
 import com.dev.forest.reply.model.mapper.ReplyMapper;
+import com.mysql.cj.log.Log;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReplyServiceImpl implements ReplyService {
 
 	private final ReplyMapper replyMapper;
@@ -28,6 +31,8 @@ public class ReplyServiceImpl implements ReplyService {
 		// 검증된 유저인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
 		authService.validWriter(reply.getReplyWriter(), user.getUsername());
+		
+		reply.setReplyWriter(String.valueOf(user.getUserNo()));
 
 		// 댓글 작성
 		replyMapper.saveReply(reply);

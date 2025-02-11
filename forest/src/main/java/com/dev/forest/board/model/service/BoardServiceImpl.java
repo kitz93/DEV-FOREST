@@ -1,6 +1,8 @@
 package com.dev.forest.board.model.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,8 @@ import com.dev.forest.common.model.dto.PageInfo;
 import com.dev.forest.common.template.Pagination;
 import com.dev.forest.exception.BoardNotFoundException;
 import com.dev.forest.exception.InvalidParameterException;
+import com.dev.forest.member.model.dto.MemberDTO;
+import com.dev.forest.member.model.mapper.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +30,7 @@ public class BoardServiceImpl implements BoardService {
 	private final BoardMapper boardMapper;
 	private final FileService fileService;
 	private final AuthenticationService authService;
+	private final MemberMapper memberMapper;
 	
 	@Override
 	public void save(BoardDTO board, int boardType, MultipartFile file) {
@@ -120,17 +125,16 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public BoardDTO delete(Long boardNo) {
+	public void delete(Long boardNo) {
 		BoardDTO exsitingBoard = getBoardOrThrow(boardNo); // 특정 게시판 출력
-		
-		log.info("정보 : {}" , exsitingBoard.getBoardWriter());
 		
 		// 검증된 인원인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		authService.validWriter(exsitingBoard.getBoardWriter(), user.getUsername());
+		
+		MemberDTO userNickname = memberMapper.findByUserId(user.getUsername());
+		authService.validWriter(exsitingBoard.getBoardWriter(), userNickname.getNickname());
 
 		boardMapper.delete(exsitingBoard); // 게시판 삭제(상태 N으로 변환)
-		return exsitingBoard;
 	}
 	
 	private void validateKeyword(String keyword) {
@@ -143,11 +147,17 @@ public class BoardServiceImpl implements BoardService {
 	public List<BoardDTO> search(int boardType, String condition, String keyword, int page) {
 		validateKeyword(keyword);
 		
-		int totalCount = boardMapper.searchCount(keyword, condition, boardType);
+		 Map<String, Object> params = new HashMap();
+		 params.put("keyword", keyword);
+		 params.put("condition", condition);
+		 params.put("boardType", boardType);
 		
+		int totalCount = boardMapper.searchCount(params);
 		PageInfo pageInfo = getPageInfo(totalCount, page);
 		
-		List<BoardDTO> list = boardMapper.search(keyword, condition, boardType, paging(pageInfo));
+		params.put("pageInfo", pageInfo);
+		
+		List<BoardDTO> list = boardMapper.search(params);
 		
 		return list;
 	}

@@ -53,8 +53,7 @@
 		   M.NICKNAME boardWriter, 
 		   BOARD_TITLE boardTitle,
 		   BOARD_CONTENT boardContent,
-		   BOARD_TYPE boardType, 
-		   M.NICKNAME,
+		   BOARD_TYPE boardType,
 		   BOARD_FILE_URL
 </sql>
 
@@ -111,33 +110,35 @@
 
 <sql id="searchColumn">
 	FROM
-	  	   TB_BOARD
+	  	   TB_BOARD B
 	  JOIN
 	  	   TB_MEMBER M ON(BOARD_WRITER = USER_NO)
 	 WHERE
-	 	   STATUS = 'Y'
-	 <if test="condition = 'writer'">
+	 	   B.STATUS = 'Y'
+	   AND
+	   	   BOARD_TYPE = #{boardType}
+	 <if test="condition == 'writer'">
 	 	AND
 	 	    M.NICKNAME
 	 </if>
-	 <if test="condition = 'title'">
+	 <if test="condition == 'title'">
 	 	AND
 	 		BOARD_TITLE
 	 </if>
-	 <if test="condition = 'content'">
+	 <if test="condition == 'content'">
 	 	AND
 	 		BOARD_CONTENT
 	 </if>
 	 LIKE '%' || #{keyword} || '%'
 </sql>
 
-<select id="searchCount" resultType="_int">
+<select id="searchCount" parameterType="map" resultType="_int">
 	SELECT
 		   COUNT(*)
 	  <include refid="searchColumn" />
 </select>
 
-<select id="search" resultType="BoardDTO">
+<select id="search" parameterType="map" resultType="BoardDTO">
 	<include refid="boardColumn"/>
 	<include refid="searchColumn"/>
 	ORDER

@@ -18,7 +18,7 @@
 			   )
 	</insert>
 	
-	<select id="findByBoardId" parameterType="long" resultType="ReplyDTO">
+	<select id="findByBoardNo" parameterType="long" resultType="ReplyDTO">
 		SELECT
 			   REPLY_NO replyNo,
 			   REF_BNO refBno,
@@ -28,9 +28,9 @@
 	 	  FROM
 	 	  	   TB_REPLY
 	 	  JOIN
-	 	  	   TB_MEMBER M ON (REPLY_WRITER = USER_NO)
+	 	  	   TB_MEMBER M ON(REPLY_WRITER = USER_NO)
 	 	 WHERE
-	 	 	   REF_BNO = {refBno}
+	 	 	   REF_BNO = #{boardNo}
 	 	 ORDER
 	 	 	BY
 	 	 	   CREATE_DATE DESC

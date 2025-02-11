@@ -30,7 +30,7 @@ public class ReplyController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("댓글 작성을 성공했습니다.");
 	}
 	
-	@GetMapping
+	@GetMapping("/{boardNo}")
 	public ResponseEntity<List<ReplyDTO>> findByBoardNo(@PathVariable(name = "boardNo") Long boardNo){
 		List<ReplyDTO> replys = replyService.findByBoardNo(boardNo);
 		return ResponseEntity.ok(replys);
