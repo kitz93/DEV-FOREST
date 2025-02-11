@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.dev.forest.ranking.model.mapper.RankingMapper">
+    
+	
+	<select id="getRanking">
+		SELECT 
+				userNo, 
+				correctCount,
+				nickName
+		  FROM 
+		  		(
+				    SELECT 
+					       userNo, 
+					       correctCount,
+					       nickName 
+					  FROM 
+					       (
+							SELECT 
+							       USER_NO userNo, 
+							       SUM(CORRECT_COUNT) correctCount,
+							       NICKNAME nickName 
+							  FROM 
+							       TB_RANKING 
+							  JOIN
+							  		TB_MEMBER USING(USER_NO)     
+							 GROUP 
+							    BY 
+							       USER_NO,
+							       NICKNAME
+						   ) 
+					 ORDER 
+					    BY 
+						   correctCount DESC
+				)
+		  WHERE 
+				 ROWNUM &lt; 11
+		 ORDER
+		    BY
+		        userNo 
+
+	
+	</select>
+	
+	
+	
+	
+  
+  
+  </mapper>

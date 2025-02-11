@@ -3,8 +3,8 @@ spring:
     name: forest
   datasource:
     url: jdbc:oracle:thin:@192.168.20.203:1521:xe
-    username: DEV
-    password: DEV
+    username: FOREST
+    password: FOREST
     driver-class-name: oracle.jdbc.driver.OracleDriver
   mvc:
     static-path-pattern: /uploads/**

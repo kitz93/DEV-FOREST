@@ -52,6 +52,7 @@ public class SecurityConfiguration {
 					requests.requestMatchers("/quizs", "/quizs/**").permitAll();
 					requests.requestMatchers("/wrongs", "/wrongs/**").permitAll();
 					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login").permitAll();
+					requests.requestMatchers("/rankings", "/rankings/**").permitAll();
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");
 				})
 				.sessionManagement(
