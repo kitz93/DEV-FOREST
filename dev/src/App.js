@@ -1,11 +1,13 @@
 import "./App.css";
-import Header from "./testComponent/Header";
+import Footer from "./Footer/Footer";
+import Header from "./Header/Header";
 
 function App() {
   return (
     <div className="App">
       <Header />
-      <div className="bg"></div>
+      <h1>메인임</h1>
+      <Footer />
     </div>
   );
 }

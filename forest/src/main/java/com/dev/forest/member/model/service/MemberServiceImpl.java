@@ -4,7 +4,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.dev.forest.auth.model.vo.CustomUserDetails;
 import com.dev.forest.exception.DupplicatedUserException;
@@ -26,7 +25,6 @@ public class MemberServiceImpl implements MemberService {
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
-	@Transactional
 	public void saveMember(MemberDTO member) {
 		if (member != null && member.getSignUp().equals("사이트")) {
 			if ("".equals(member.getUserId()) || "".equals(member.getUserPwd()) || "".equals(member.getNickname())) {
@@ -37,13 +35,11 @@ public class MemberServiceImpl implements MemberService {
 				throw new DupplicatedUserException("중복된 아이디입니다.");
 			}
 			MemberDTO searchedByNickname = memberMapper.findByNickname(member.getNickname());
-			MemberDTO searchedByNicknameSns = memberMapper.findByNicknameSns(member.getNickname());
-			if (searchedByNickname != null || searchedByNicknameSns != null) {
+			if (searchedByNickname != null) {
 				throw new DupplicatedUserException("중복된 닉네임입니다.");
 			}
 			MemberDTO requestMember = MemberDTO.builder().signUp(member.getSignUp()).userId(member.getUserId())
 					.userPwd(passwordEncoder.encode(member.getUserPwd())).nickname(member.getNickname()).build();
-			memberMapper.saveSignUp(requestMember);
 			memberMapper.saveMember(requestMember);
 		}
 		if (member != null && member.getSignUp().equals("소셜")) {
@@ -51,20 +47,18 @@ public class MemberServiceImpl implements MemberService {
 				throw new InvalidParameterException("유효하지 않은 값입니다.");
 			}
 			MemberDTO searchedByNickname = memberMapper.findByNickname(member.getNickname());
-			MemberDTO searchedByNicknameSns = memberMapper.findByNicknameSns(member.getNickname());
-			if (searchedByNickname != null || searchedByNicknameSns != null) {
+			if (searchedByNickname != null) {
 				throw new DupplicatedUserException("중복된 닉네임입니다.");
 			}
-			memberMapper.saveSignUp(member);
-			memberMapper.saveMemberSns(member);
+			memberMapper.saveMember(member);
 		}
 	}
 
 	@Override
 	public void update(ChangePwdDTO changePwd) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CustomUserDetails user = (CustomUserDetails)auth.getPrincipal();
-		if(!passwordEncoder.matches(changePwd.getCurrPwd(), user.getPassword())) {
+		CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
+		if (!passwordEncoder.matches(changePwd.getCurrPwd(), user.getPassword())) {
 			throw new MissmatchPasswordException("비밀번호가 일치하지 않습니다.");
 		}
 		String newPwd = passwordEncoder.encode(changePwd.getNewPwd());
@@ -75,8 +69,8 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public void delete(String password) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CustomUserDetails user = (CustomUserDetails)auth.getPrincipal();
-		if(!passwordEncoder.matches(password, user.getPassword())) {
+		CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
+		if (!passwordEncoder.matches(password, user.getPassword())) {
 			throw new MissmatchPasswordException("비밀번호가 일치하지 않습니다.");
 		}
 		memberMapper.delete(user.getUserNo());
