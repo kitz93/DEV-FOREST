@@ -16,7 +16,7 @@ public interface BoardService {
 
 	BoardDTO update(BoardDTO board, MultipartFile file);
 
-	void delete(Long boardNo);
+	BoardDTO delete(Long boardNo);
 
 	List<BoardDTO> search(int boardType, String condition, String keyword, int page);
 

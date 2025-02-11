@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserDetailsService {
 										  .username(user.getUserId())
 										  .password(user.getUserPwd())
 										  .authorities(Collections.singletonList(new SimpleGrantedAuthority(user.getRole())))
+										  .status(user.getStatus())
 										  .build();
 	}
 

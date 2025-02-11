@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginMember {
+public class LoginMemberDTO {
 	
 	private String username;
 	private Map<String, String> tokens;

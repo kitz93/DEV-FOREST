@@ -95,5 +95,23 @@
 		       NICKNAME = #{nickname}
 	</select>
 	
+	<update id="update" parameterType="ChangePwdDTO">
+		UPDATE 
+		       TB_MEMBER 
+		   SET 
+		       USER_PWD = #{newPwd} 
+		 WHERE 
+		       USER_NO = #{userNo}
+	</update>
+	
+	<update id="delete" parameterType="long">
+		UPDATE 
+		       TB_MEMBER 
+		   SET 
+		       STATUS = 'N' 
+		 WHERE 
+		       USER_NO = #{userNo}
+	</update>
+	
 </mapper>
 

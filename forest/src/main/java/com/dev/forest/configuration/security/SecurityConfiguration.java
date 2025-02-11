@@ -50,11 +50,12 @@ public class SecurityConfiguration {
 				.csrf(AbstractHttpConfigurer::disable).cors(Customizer.withDefaults())
 				.authorizeHttpRequests(requests -> {
 					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login").permitAll();
+					requests.requestMatchers(HttpMethod.PUT, "/members").authenticated();
+					requests.requestMatchers(HttpMethod.DELETE, "/members","/boards/**", "/reservations/**", "/studyings").authenticated();
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");
 					requests.requestMatchers(HttpMethod.POST, "/boards", "/reservations", "/replys","/studyings").authenticated();
 					requests.requestMatchers(HttpMethod.GET, "/boards/**", "/reservations/**", "/replys", "/studyings").permitAll();
 					requests.requestMatchers(HttpMethod.PUT, "/boards/**", "/reservations/**").authenticated();
-					requests.requestMatchers(HttpMethod.DELETE, "/boards/**", "/reservations/**", "/studyings").authenticated();
 				})
 				.sessionManagement(
 						sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

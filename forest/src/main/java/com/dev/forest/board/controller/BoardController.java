@@ -56,16 +56,19 @@ public class BoardController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<BoardDTO> update(@PathVariable(name = "id") Long boardNo,@ModelAttribute @Valid BoardDTO board, @RequestParam(name = "file") MultipartFile file){
+	public ResponseEntity<BoardDTO> update(@PathVariable(name = "id") Long boardNo,
+										   @ModelAttribute @Valid BoardDTO board, 
+										   @RequestParam(name = "file", required = false) MultipartFile file){
 		board.setBoardNo(boardNo);
 		BoardDTO updated = service.update(board, file);
 		return ResponseEntity.ok(updated);
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@PathVariable(name = "id") Long boardNo) {
-		service.delete(boardNo);
-		return ResponseEntity.ok("삭제가 완료되었습니다.");
+	public ResponseEntity<BoardDTO> delete(@PathVariable(name = "id") Long boardNo) {
+		log.info("게시판 번호 : {}", boardNo);
+		BoardDTO deleted = service.delete(boardNo);
+		return ResponseEntity.ok(deleted);
 	}
 	
 	@GetMapping("/search")

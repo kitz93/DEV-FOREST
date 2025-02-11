@@ -30,7 +30,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public void save(BoardDTO board, int boardType, MultipartFile file) {
 		
-		log.info("게시글정보 : {} \n 파일정보 : {} ",board, file, boardType);
+//		log.info("게시글정보 : {} \n 파일정보 : {} ",board, file, boardType);
 
 		// 검증된 인원인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
@@ -84,13 +84,13 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	private BoardDTO getBoardOrThrow(Long boardNo) {
-		BoardDTO board = boardMapper.findById(boardNo); // 이미지가 있는 게시판 상세보기
+		BoardDTO board = boardMapper.findById(boardNo); // 게시판 상세보기
 		
 		if (board == null) {
 			throw new InvalidParameterException("올바른 게시판 번호가 아닙니다."); // 오류처리
 		}
 		
-		return board; // 이미지있는 게시판 반환
+		return board; // 게시판 반환
 	}
 
 	@Override
@@ -120,14 +120,17 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public void delete(Long boardNo) {
+	public BoardDTO delete(Long boardNo) {
 		BoardDTO exsitingBoard = getBoardOrThrow(boardNo); // 특정 게시판 출력
-
+		
+		log.info("정보 : {}" , exsitingBoard.getBoardWriter());
+		
 		// 검증된 인원인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
 		authService.validWriter(exsitingBoard.getBoardWriter(), user.getUsername());
 
 		boardMapper.delete(exsitingBoard); // 게시판 삭제(상태 N으로 변환)
+		return exsitingBoard;
 	}
 	
 	private void validateKeyword(String keyword) {
