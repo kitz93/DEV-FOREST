@@ -1,6 +1,8 @@
 package com.dev.forest.reservation.model.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
@@ -13,24 +15,32 @@ import com.dev.forest.common.model.dto.PageInfo;
 import com.dev.forest.common.template.Pagination;
 import com.dev.forest.exception.BoardNotFoundException;
 import com.dev.forest.exception.InvalidParameterException;
+import com.dev.forest.member.model.dto.MemberDTO;
+import com.dev.forest.member.model.mapper.MemberMapper;
 import com.dev.forest.reservation.model.dto.ReservationDTO;
 import com.dev.forest.reservation.model.mapper.ReservationMapper;
 import com.dev.forest.studying.model.dto.StudyingDTO;
 import com.dev.forest.studying.model.mapper.StudyingMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationServiceImpl implements ReservationService {
 	
 	private final ReservationMapper reservationMapper;
 	private final FileService fileService;
 	private final AuthenticationService authService;
 	private final StudyingMapper studyingMapper;
+	private final MemberMapper memberMapper;
 	
 	@Override
 	public void reservate(ReservationDTO reservation, MultipartFile file) {
+		
+		log.info("게시글정보 : {} \n 파일정보 : {} ",reservation, file);
+		
 		// 검증된 인원인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
 		authService.validWriter(reservation.getReservationUser(), user.getUsername());
@@ -39,12 +49,18 @@ public class ReservationServiceImpl implements ReservationService {
 		if (file != null && !file.isEmpty()) {
 			String filePath = fileService.store(file);
 			reservation.setFileUrl(filePath);
+		} else {
+			reservation.setFileUrl(null);
 		}
+		
+		reservation.setReservationUser(String.valueOf(user.getUserNo()));
 		
 		// 모임 등록
 		reservationMapper.reservate(reservation);
 		
 		Long reservationNo = reservation.getReservationNo();  // 등록 후 생성된 ID (자동 증가된 키)
+		
+		log.info("번호번호 : {}", reservationNo);
 
 		if (reservationNo == null) {
 			throw new BoardNotFoundException("모임 등록 후 ID를 가져올 수 없습니다.");
@@ -105,9 +121,12 @@ public class ReservationServiceImpl implements ReservationService {
 		
 		// 검증된 인원인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		authService.validWriter(exsitingReservation.getReservationUser(), user.getUsername());
 		
-		reservationMapper.delete(reservationNo);
+		MemberDTO userNickname = memberMapper.findByUserId(user.getUsername());
+		
+		authService.validWriter(exsitingReservation.getReservationUser(),userNickname.getNickname());
+		
+		reservationMapper.delete(exsitingReservation);
 	}
 	
 	private void validateKeyword(String keyword) {
@@ -120,11 +139,17 @@ public class ReservationServiceImpl implements ReservationService {
 	public List<ReservationDTO> search(String keyword, String condition, int page) {
 		validateKeyword(keyword);
 		
-		int totalCount = reservationMapper.searchCount(keyword, condition);
+		Map<String, Object> params = new HashMap();
+		params.put("keyword", keyword);
+		params.put("condition", condition);
+		
+		int totalCount = reservationMapper.searchCount(params);
 		
 		PageInfo pageInfo = getPageInfo(totalCount, page);
 		
-		List<ReservationDTO> list = reservationMapper.search(keyword, condition, paging(pageInfo));
+		params.put("pageInfo", pageInfo);
+		
+		List<ReservationDTO> list = reservationMapper.search(params);
 		
 		return list;
 	}

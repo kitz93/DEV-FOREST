@@ -37,7 +37,7 @@ public class ReservationController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<ReservationDTO>> findAll(@RequestParam(name = "page") int page) {
+	public ResponseEntity<List<ReservationDTO>> findAll(@RequestParam(name = "page", defaultValue = "1") int page) {
 		return ResponseEntity.ok(reservationService.findAll(page));
 	}
 	
@@ -53,9 +53,9 @@ public class ReservationController {
 	}
 	
 	@GetMapping("/search")
-	public ResponseEntity<List<ReservationDTO>> search(@RequestParam(name = "keyword") String keyword, 
-													   @RequestParam(name = "condition") String condition, 
-													   @RequestParam(name = "page", defaultValue = "1")int page ) {
+	public ResponseEntity<List<ReservationDTO>> search(@RequestParam(name = "page", defaultValue = "1")int page,
+													   @RequestParam(name = "condition") String condition,									       
+													   @RequestParam(name = "keyword") String keyword) {
 		
 		return ResponseEntity.ok(reservationService.search(keyword,condition,page));
 		

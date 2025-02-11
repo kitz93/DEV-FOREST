@@ -5,15 +5,27 @@
 <mapper namespace="com.dev.forest.reservation.model.mapper.ReservationMapper">
 	
 	<insert id="reservate">
-	<selectKey keyProperty="reservationNo" resultType="Long" order="BEFORE">
+	<selectKey keyProperty="reservationNo" resultType="long" order="BEFORE">
         SELECT 
-        	   RESERVATION_NO.NEXTVAL 
+        	   SEQ_RNO.NEXTVAL 
           FROM 
           	   DUAL
     </selectKey>
 		INSERT
 		  INTO
 		  	   TB_RESERVATION
+		  	   (
+				RESERVATION_NO,
+				RESERVATION_USER,
+				RESERVATION_NAME,
+				RESERVATION_CONTENT,
+				RESERVATION_COUNT,
+				RESERVATION_PLACE,
+				PLACE_ADDRESS,
+				START_TIME,
+				END_TIME,
+				FILE_URL
+			   )
 		VALUES
 			   (
 				#{reservationNo},
@@ -23,8 +35,6 @@
 				#{reservationCount},
 				#{reservationPlace},
 				#{placeAddress},
-				'N',
-				'Y',
 				#{startTime},
 				#{endTime},
 				#{fileUrl}
@@ -39,17 +49,17 @@
 			   RESERVATION_COUNT reservationCount,
 			   RESERVATION_PLACE reservationPlace,
 			   FILE_URL fileUrl,
-			   STATUS status
+			   R.STATUS status
 	</sql>
 
 	<select id="findAll" resultType="ReservationDTO">
 		<include refid="reservationColumn" />
 		  FROM
-		  	   TB_RESERVATION
+		  	   TB_RESERVATION R
 		  JOIN
 		       TB_MEMBER M ON (RESERVATION_USER = USER_NO)
 		 WHERE
-		 	   STATUS = 'Y'
+		 	   R.STATUS = 'Y'
 		 ORDER
 		    BY
 		       RESERVATION_NO DESC
@@ -60,10 +70,10 @@
 				M.NICKNAME reservationUser,
 				START_TIME startTime,
 				END_TIME endTime,
-				PALCE_ADDRESS placeAddress,
+				PLACE_ADDRESS placeAddress,
 				RESERVATION_STATUS reservationStatus
 		  FROM
-		  	   TB_RESERVATION
+		  	   TB_RESERVATION R
 		  JOIN
 		  	   TB_MEMBER M ON(RESERVATION_USER = USER_NO)
 		 WHERE
@@ -81,29 +91,34 @@
 	
 	<sql id="searchColumn">
 		FROM
-		  	   TB_RESERVATION
-		 WHERE
-		 	   STATUS = 'Y'
-		   <if test="condition == 'title'">
-		   AND
-		   	   RESERVATION_NAME
-		   </if>
-		   <if test="condition == 'place'">
-		   AND
-		   	   RESERVATION_PLACE
-		   </if>
-		   LIKE '%' || #{keyword} || '%'
+		  	  TB_RESERVATION R
+		JOIN
+			  TB_MEMBER M ON(RESERVATION_USER = USER_NO)	
+	   WHERE
+		 	  R.STATUS = 'Y'
+	<if test="condition == 'title'">
+		 AND
+		   	  RESERVATION_NAME
+	</if>
+	<if test="condition == 'place'">
+		 AND
+		   	  RESERVATION_PLACE
+	</if>
+		LIKE '%' || #{keyword} || '%'
 	</sql>
 	
-	<select id="searchCount" resultType="_int">
+	<select id="searchCount" parameterType="map" resultType="_int">
 		SELECT
 			   COUNT(*)
 		  <include refid="searchColumn" />
 	</select>
 	
-	<select id="search" resultType="ReservationDTO">
+	<select id="search" parameterType="map" resultType="ReservationDTO">
 		<include refid="reservationColumn" />
 		<include refid="searchColumn" />
+		ORDER
+		   BY
+		   	  RESERVATION_NO DESC
 	</select>
 	
 	<update id="delete" parameterType="ReservationDTO">
@@ -112,6 +127,8 @@
 		   SET
 		   	   STATUS = 'N'
 		 WHERE
+		 	   STATUS = 'Y'
+		   AND
 		 	   RESERVATION_NO = #{reservationNo}
 	</update>
 

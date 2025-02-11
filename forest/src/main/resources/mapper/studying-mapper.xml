@@ -8,12 +8,16 @@
 		INSERT
 		  INTO
 		  	   TB_STUDYING
+		  	   (
+				STUDYING_NO,
+				REF_RNO,
+				STUDYING_USER
+			   )
 		VALUES
 			   (
 				SEQ_SNO.NEXTVAL,
 				#{refRno},
-				#{studyingUser},
-				SYSDATE
+				#{studyingUser}
 			   )
 	
 	</insert>

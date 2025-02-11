@@ -53,7 +53,7 @@ public class SecurityConfiguration {
 					requests.requestMatchers(HttpMethod.PUT, "/members").authenticated();
 					requests.requestMatchers(HttpMethod.DELETE, "/members","/boards/**", "/reservations/**", "/studyings").authenticated();
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");
-					requests.requestMatchers(HttpMethod.POST, "/boards/**", "/reservations", "/replys","/studyings").authenticated();
+					requests.requestMatchers(HttpMethod.POST, "/boards/**", "/reservations/**", "/replys","/studyings").authenticated();
 					requests.requestMatchers(HttpMethod.GET, "/boards/**", "/reservations/**", "/replys/**", "/studyings/**").permitAll();
 					requests.requestMatchers(HttpMethod.PUT, "/boards/**", "/reservations/**").authenticated();
 				})
