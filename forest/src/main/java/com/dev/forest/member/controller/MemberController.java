@@ -15,8 +15,6 @@ import com.dev.forest.member.model.dto.ChangePwdDTO;
 import com.dev.forest.member.model.dto.LoginMemberDTO;
 import com.dev.forest.member.model.dto.MemberDTO;
 import com.dev.forest.member.model.service.MemberService;
-import com.dev.forest.token.model.dto.RefreshTokenDTO;
-import com.dev.forest.token.model.service.TokenService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -30,6 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(member.getUserId(), member.getUserPwd()));
 		CustomUserDetails user = (CustomUserDetails)authentication.getPrincipal();
+		log.info("user = {}", user);
 		if(user != null && user.getStatus().equals("N")) {
 			throw new DeleteMemberException("탈퇴한 유저 입니다.");
 		}
