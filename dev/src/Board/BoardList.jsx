@@ -30,10 +30,8 @@ import { useNavigate } from "react-router-dom";
 
 const BoardList = () => {
   const [boards, setBoards] = useState([]);
-  const [page, setPage] = useState(0);
-  const [next, setNext] = useState(true);
-
-  //const { auth } = useContext(AuthContext);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const navi = useNavigate();
 
@@ -45,12 +43,21 @@ const BoardList = () => {
         },
       })
       .then((response) => {
-        setBoards([response.data]);
+        console.log(response);
+        setBoards(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
   }, [page]);
+
+  const handlePrevPage = () => {
+    if (page > 1) setPage(page - 1);
+  };
+
+  const handleNextPage = () => {
+    if (page < totalPages) setPage(page + 1);
+  };
 
   return (
     <Container>
@@ -93,9 +100,17 @@ const BoardList = () => {
           <SearchInput type="text" placeholder="검색어 입력" />
           <SearchButton>검색</SearchButton>
         </SearchContainer>
+
         <Paging>
-          <PagingBtn>{"<"}</PagingBtn>
-          <PagingBtn>{">"}</PagingBtn>
+          {/* 이전 페이지로 이동 */}
+          <PagingBtn onClick={handlePrevPage} disabled={page === 1}>
+            {"<"}
+          </PagingBtn>
+
+          {/* 다음 페이지로 이동 */}
+          <PagingBtn onClick={handleNextPage} disabled={page === totalPages}>
+            {">"}
+          </PagingBtn>
         </Paging>
       </PageArea>
     </Container>

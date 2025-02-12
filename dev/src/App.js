@@ -1,4 +1,5 @@
 import "./App.css";
+import BoardDetail from "./Board/BoardDetail";
 import BoardList from "./Board/BoardList";
 import Footer from "./Footer/Footer";
 import Header from "./Header/Header";
@@ -12,6 +13,7 @@ function App() {
 
       <Routes>
         <Route path="/boards" element={<BoardList />} />
+        <Route path="/boards/:id" element={<BoardDetail />} />
       </Routes>
       <Footer />
     </div>
