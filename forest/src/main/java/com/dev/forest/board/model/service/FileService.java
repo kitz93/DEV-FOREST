@@ -20,14 +20,14 @@ public class FileService {
 		this.fileLocation = Paths.get("uploads").toAbsolutePath().normalize();
 	}
 	
-	public String store(MultipartFile file) {
+	public String store(MultipartFile file, String mainFileName) {
 		
 		// 이름 바꾸기
 		String originName = file.getOriginalFilename();
 		String ext = originName.substring(originName.lastIndexOf("."));
 		String currentTime = new SimpleDateFormat("yyyymmddHHmmss").format(new Date());
 		int randomNum = (int)(Math.random() * 90000) + 10000;
-		String changeName = "BoardImg" + currentTime + randomNum + ext;
+		String changeName = mainFileName + currentTime + randomNum + ext;
 		
 		// 파일명 뽑기
 		String fileName = Paths.get(changeName).getFileName().toString();

@@ -47,7 +47,7 @@ public class ReservationServiceImpl implements ReservationService {
 		
 		// 파일 확인
 		if (file != null && !file.isEmpty()) {
-			String filePath = fileService.store(file);
+			String filePath = fileService.store(file, "RservationImg");
 			reservation.setFileUrl(filePath);
 		} else {
 			reservation.setFileUrl(null);

@@ -43,7 +43,7 @@ public class BoardServiceImpl implements BoardService {
 		
 		// 파일확인
 		if (file != null && !file.isEmpty()) {
-			String filePath = fileService.store(file);
+			String filePath = fileService.store(file, "BoardImg");
 			board.setBoardFileUrl(filePath);
 		} else {
 			board.setBoardFileUrl(null);
@@ -116,7 +116,7 @@ public class BoardServiceImpl implements BoardService {
 		exsitingBoard.setBoardContent(board.getBoardContent());
 
 		if (file != null && !file.isEmpty()) {
-			String filePath = fileService.store(file);
+			String filePath = fileService.store(file, "BoardImg");
 			exsitingBoard.setBoardFileUrl(filePath);
 		}
 
@@ -147,7 +147,7 @@ public class BoardServiceImpl implements BoardService {
 	public List<BoardDTO> search(int boardType, String condition, String keyword, int page) {
 		validateKeyword(keyword);
 		
-		 Map<String, Object> params = new HashMap();
+		 Map<String, Object> params = new HashMap<String, Object>();
 		 params.put("keyword", keyword);
 		 params.put("condition", condition);
 		 params.put("boardType", boardType);
