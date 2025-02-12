@@ -139,7 +139,7 @@ public class ReservationServiceImpl implements ReservationService {
 	public List<ReservationDTO> search(String keyword, String condition, int page) {
 		validateKeyword(keyword);
 		
-		Map<String, Object> params = new HashMap();
+		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("keyword", keyword);
 		params.put("condition", condition);
 		

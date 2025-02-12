@@ -32,14 +32,14 @@ public class StudyingController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("모임에 참석되었습니다!"); 
 	}
 	
-	@GetMapping
+	@GetMapping("/{reservationNo}")
 	public ResponseEntity<List<StudyingDTO>> findByReservationNO(@PathVariable(name = "reservationNo") Long reservationNo){
 		
 		List<StudyingDTO> list = studyingService.findByRervationNo(reservationNo);
 		return ResponseEntity.ok(list);
 	}
 	
-	@DeleteMapping
+	@DeleteMapping("/{reservationNo}")
 	public ResponseEntity<?> cancle(@PathVariable(name = "reservationNo") Long reservationNo){
 		studyingService.cancle(reservationNo);
 		return ResponseEntity.ok("모임 참석이 취소되었습니다!");
