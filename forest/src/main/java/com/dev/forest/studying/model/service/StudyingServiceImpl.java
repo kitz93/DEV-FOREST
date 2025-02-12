@@ -6,12 +6,10 @@ import org.springframework.stereotype.Service;
 
 import com.dev.forest.auth.model.service.AuthenticationService;
 import com.dev.forest.auth.model.vo.CustomUserDetails;
-import com.dev.forest.board.model.dto.BoardDTO;
+import com.dev.forest.exception.PullCountStudyingException;
 import com.dev.forest.exception.UserNotFoundException;
-import com.dev.forest.reservation.model.dto.ReservationDTO;
 import com.dev.forest.reservation.model.mapper.ReservationMapper;
 import com.dev.forest.reservation.model.service.ReservationService;
-import com.dev.forest.reservation.model.service.ReservationServiceImpl;
 import com.dev.forest.studying.model.dto.StudyingDTO;
 import com.dev.forest.studying.model.mapper.StudyingMapper;
 
@@ -36,24 +34,38 @@ public class StudyingServiceImpl implements StudyingService {
 		CustomUserDetails user = authService.getAuthenticatedUser();
 		authService.validWriter(studying.getStudyingUser(), user.getUsername());
 		
+		int currentCount = studyingMapper.countByReservationNo(studying.getRefRno());
+		
+		int maxCapacity = reservationMapper.getMaxCount(studying.getRefRno());
+		
+		if (currentCount >= maxCapacity) {
+	        throw new PullCountStudyingException("모임 정원이 초과되었습니다.");
+	    }
+		
+		studying.setStudyingUser(String.valueOf(user.getUserNo()));
+		
 		// 모임 참석
 		studyingMapper.attend(studying);
 		
+		if (currentCount + 1 == maxCapacity) {
+	        reservationMapper.pullReservationStatus(studying.getRefRno());
+	    }
+		
 	}
 
 	@Override
-	public List<StudyingDTO> findByRervationNo(Long reservationNo) {
-		return studyingMapper.findByRervationNo(reservationNo);
+	public List<StudyingDTO> findByRervationNo(Long refBno) {
+		return studyingMapper.findByRervationNo(refBno);
 	}
 
 	@Override
-	public void cancle(Long reservationNo) {
+	public void cancle(Long refBno) {
 		
 		// 모임이 존재하는지 확인
-		reservationService.findById(reservationNo);
+		reservationService.findById(refBno);
 		
 		// 로그인 인원이 리스트안에 있는지 확인
-		List<StudyingDTO> list = findByRervationNo(reservationNo);
+		List<StudyingDTO> list = findByRervationNo(refBno);
 		CustomUserDetails user = authService.getAuthenticatedUser();
 		
 		StudyingDTO studyingUser = null;
@@ -68,7 +80,14 @@ public class StudyingServiceImpl implements StudyingService {
 	    if (studyingUser == null) {
 	        throw new UserNotFoundException("모임에 참석하지 않은 사용자입니다.");
 	    } else {
-	    	studyingMapper.cancle(reservationNo);
+	    	studyingMapper.cancle(refBno);
+	    }
+	    
+	    int currentCount = studyingMapper.countByReservationNo(refBno);
+		int maxCapacity = reservationMapper.getMaxCount(refBno);
+		
+		if (currentCount < maxCapacity) {
+	        reservationMapper.notPullReservationStatus(refBno);
 	    }
 		
 	}

@@ -11,8 +11,10 @@ public interface StudyingMapper {
 
 	void attend(StudyingDTO studying);
 
-	List<StudyingDTO> findByRervationNo(Long reservationNo);
+	List<StudyingDTO> findByRervationNo(Long refBno);
 
-	void cancle(Long reservationNo);
+	void cancle(Long refBno);
+
+	int countByReservationNo(Long refBno);
 
 }

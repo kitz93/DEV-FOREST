@@ -27,4 +27,10 @@ public interface ReservationMapper {
 
 	void attend(ReservationDTO reservation);
 
+	int getMaxCount(Long reservationNo);
+
+	void pullReservationStatus(Long reservationNo);
+
+	void notPullReservationStatus(Long reservationNo);
+
 }

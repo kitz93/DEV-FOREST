@@ -60,7 +60,7 @@ public class ReservationServiceImpl implements ReservationService {
 		
 		Long reservationNo = reservation.getReservationNo();  // 등록 후 생성된 ID (자동 증가된 키)
 		
-		log.info("번호번호 : {}", reservationNo);
+//		log.info("번호번호 : {}", reservationNo);
 
 		if (reservationNo == null) {
 			throw new BoardNotFoundException("모임 등록 후 ID를 가져올 수 없습니다.");

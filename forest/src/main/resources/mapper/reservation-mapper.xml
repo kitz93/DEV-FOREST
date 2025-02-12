@@ -131,5 +131,42 @@
 		   AND
 		 	   RESERVATION_NO = #{reservationNo}
 	</update>
+	
+	<select id="getMaxCount" parameterType="Long" resultType="int">
+		SELECT
+			   RESERVATION_COUNT
+		  FROM
+		  	   TB_RESERVATION
+		 WHERE
+		 	   STATUS = 'Y'
+		   AND
+		   	   RESERVATION_NO = #{reservationNo}
+	</select>
+	
+	<update id="pullReservationStatus" parameterType="Long">
+		UPDATE
+		   	   TB_RESERVATION
+		   SET
+		   	   RESERVATION_STATUS = 'Y'
+		 WHERE
+		 	   STATUS = 'Y'
+		   AND
+		   	   RESERVATION_STATUS = 'N'
+		   AND
+		   	   RESERVATION_NO = #{reservationNo}
+	</update>
+	
+	<update id="notPullReservationStatus" parameterType="Long">
+		UPDATE
+		   	   TB_RESERVATION
+		   SET
+		   	   RESERVATION_STATUS = 'N'
+		 WHERE
+		 	   STATUS = 'Y'
+		   AND
+		   	   RESERVATION_STATUS = 'Y'
+		   AND
+		       RESERVATION_NO = #{reservationNo}
+	</update>
 
 </mapper>
