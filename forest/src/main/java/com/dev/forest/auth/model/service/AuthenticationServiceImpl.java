@@ -30,12 +30,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(member.getUserId(), member.getUserPwd()));
 		CustomUserDetails user = (CustomUserDetails)authentication.getPrincipal();
-		log.info("user = {}", user);
 		if(user != null && user.getStatus().equals("N")) {
 			throw new DeleteMemberException("탈퇴한 유저 입니다.");
 		}
 		Map<String, String> tokens = tokenService.generatorToken(user.getUsername(), user.getUserNo());
-		LoginMemberDTO loginMember = LoginMemberDTO.builder().username(member.getUserId()).tokens(tokens).build();
+		LoginMemberDTO loginMember = LoginMemberDTO.builder().username(user.getUsername()).nickname(user.getNickname()).tokens(tokens).build();
 		return loginMember;
 	}
 

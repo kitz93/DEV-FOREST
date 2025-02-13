@@ -14,6 +14,7 @@ import com.dev.forest.auth.model.service.AuthenticationService;
 import com.dev.forest.member.model.dto.ChangePwdDTO;
 import com.dev.forest.member.model.dto.LoginMemberDTO;
 import com.dev.forest.member.model.dto.MemberDTO;
+import com.dev.forest.member.model.dto.SnsMemberDTO;
 import com.dev.forest.member.model.service.MemberService;
 
 import jakarta.validation.Valid;
@@ -35,9 +36,23 @@ public class MemberController {
 		return ResponseEntity.ok("회원 가입 성공");
 	}
 	
+	@PostMapping("sns")
+	public ResponseEntity<String> saveSnsMember(@Valid @RequestBody SnsMemberDTO member) {
+		log.info("member = {}", member);
+		memberService.saveSnsMember(member);
+		return ResponseEntity.ok("회원 가입 성공");
+	}
+	
 	@PostMapping("login")
 	public ResponseEntity<LoginMemberDTO> login(@RequestBody MemberDTO member) {
 		LoginMemberDTO loginMember = authService.login(member);
+		return ResponseEntity.ok(loginMember);
+	}
+	
+	@PostMapping("snsLogin")
+	public ResponseEntity<SnsMemberDTO> login(@RequestBody SnsMemberDTO member) {
+		log.info("member = {}", member);
+		SnsMemberDTO loginMember = memberService.snsLogin(member);
 		return ResponseEntity.ok(loginMember);
 	}
 	

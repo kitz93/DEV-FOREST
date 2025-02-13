@@ -16,6 +16,7 @@ import lombok.ToString;
 public class LoginMemberDTO {
 	
 	private String username;
+	private String nickname;
 	private Map<String, String> tokens;
 
 }

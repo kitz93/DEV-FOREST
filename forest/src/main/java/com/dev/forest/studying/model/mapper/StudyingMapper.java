@@ -15,4 +15,6 @@ public interface StudyingMapper {
 
 	void cancle(Long reservationNo);
 
+	int countReservationByNo(Long reservationNo);
+
 }

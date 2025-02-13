@@ -45,6 +45,16 @@ public class StudyingServiceImpl implements StudyingService {
 	public List<StudyingDTO> findByRervationNo(Long reservationNo) {
 		return studyingMapper.findByRervationNo(reservationNo);
 	}
+	
+	public int countReservationByNo(Long reservationNo) {
+		
+		int totalCount = studyingMapper.countReservationByNo(reservationNo);
+		return totalCount;
+	}
+	
+	
+	
+	
 
 	@Override
 	public void cancle(Long reservationNo) {
