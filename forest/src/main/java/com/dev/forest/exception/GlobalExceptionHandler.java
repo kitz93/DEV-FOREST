@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,6 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+	
+	@ExceptionHandler(AuthenticationException.class)
+	public ResponseEntity<?> handlerAuthentic(AuthenticationException e) {
+		return ResponseEntity.badRequest().body("아이디 및 비밀번호 오류");
+	}
 
 	@ExceptionHandler(InvalidParameterException.class)
 	public ResponseEntity<?> handleInvalidParameter(InvalidParameterException e) {

@@ -11,6 +11,7 @@ import com.dev.forest.exception.InvalidParameterException;
 import com.dev.forest.exception.MissmatchPasswordException;
 import com.dev.forest.member.model.dto.ChangePwdDTO;
 import com.dev.forest.member.model.dto.MemberDTO;
+import com.dev.forest.member.model.dto.SnsMemberDTO;
 import com.dev.forest.member.model.mapper.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -26,13 +27,13 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public void saveMember(MemberDTO member) {
-		if (member != null && member.getSignUp().equals("사이트")) {
+		if (member != null) {
 			if ("".equals(member.getUserId()) || "".equals(member.getUserPwd()) || "".equals(member.getNickname())) {
 				throw new InvalidParameterException("유효하지 않은 값입니다.");
 			}
 			MemberDTO searchedByUserId = memberMapper.findByUserId(member.getUserId());
 			if (searchedByUserId != null) {
-				throw new DupplicatedUserException("중복된 아이디입니다.");
+				throw new DupplicatedUserException("이미 가입한 아이디입니다.");
 			}
 			MemberDTO searchedByNickname = memberMapper.findByNickname(member.getNickname());
 			if (searchedByNickname != null) {
@@ -42,18 +43,32 @@ public class MemberServiceImpl implements MemberService {
 					.userPwd(passwordEncoder.encode(member.getUserPwd())).nickname(member.getNickname()).build();
 			memberMapper.saveMember(requestMember);
 		}
-		if (member != null && member.getSignUp().equals("소셜")) {
+	}
+
+	@Override
+	public void saveSnsMember(SnsMemberDTO member) {
+		if (member != null) {
 			if ("".equals(member.getNickname())) {
 				throw new InvalidParameterException("유효하지 않은 값입니다.");
 			}
-			MemberDTO searchedByNickname = memberMapper.findByNickname(member.getNickname());
+			SnsMemberDTO searchedBySnsId = memberMapper.snsLogin(member);
+			if(searchedBySnsId != null) {
+				throw new DupplicatedUserException("이미 가입한 아이디입니다.");
+			}
+			SnsMemberDTO searchedByNickname = memberMapper.findByNicknameSns(member.getNickname());
 			if (searchedByNickname != null) {
 				throw new DupplicatedUserException("중복된 닉네임입니다.");
 			}
-			memberMapper.saveMember(member);
+			memberMapper.saveSnsMember(member);
 		}
 	}
-
+	
+	@Override
+	public SnsMemberDTO snsLogin(SnsMemberDTO member) {
+		SnsMemberDTO response = memberMapper.snsLogin(member);
+		return response;
+	}
+	
 	@Override
 	public void update(ChangePwdDTO changePwd) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -75,5 +90,7 @@ public class MemberServiceImpl implements MemberService {
 		}
 		memberMapper.delete(user.getUserNo());
 	}
+
+
 
 }

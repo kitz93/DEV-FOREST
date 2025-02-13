@@ -24,15 +24,14 @@ public class UserServiceImpl implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) {
-		log.info("username = {}", username);
 		MemberDTO user = memberMapper.findByUserId(username);
-		log.info("user = {}", user);
 		if(user == null) {
 			throw new UsernameNotFoundException("존재하지 않는 사용자입니다.");
 		}
 		return CustomUserDetails.builder().userNo(user.getUserNo())
 										  .username(user.getUserId())
 										  .password(user.getUserPwd())
+										  .nickname(user.getNickname())
 										  .authorities(Collections.singletonList(new SimpleGrantedAuthority(user.getRole())))
 										  .status(user.getStatus())
 										  .build();
