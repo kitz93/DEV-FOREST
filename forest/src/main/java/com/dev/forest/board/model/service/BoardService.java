@@ -1,6 +1,6 @@
 package com.dev.forest.board.model.service;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,7 +10,7 @@ public interface BoardService {
 
 	void save(BoardDTO board, int boardType, MultipartFile file);
 
-	List<BoardDTO> findAll(int boardType, int page);
+	Map<String, Object> findAll(int boardType, int page);
 
 	BoardDTO findById(Long boardNo);
 
@@ -18,6 +18,6 @@ public interface BoardService {
 
 	void delete(Long boardNo);
 
-	List<BoardDTO> search(int boardType, String condition, String keyword, int page);
+	Map<String, Object> search(int boardType, String condition, String keyword, int page);
 
 }

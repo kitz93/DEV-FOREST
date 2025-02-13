@@ -1,6 +1,6 @@
-import { FormContainner, TextArea, SubmitButton } from "./ReplyForm.styles";
+import { FormContainer, TextArea, SubmitButton } from "./ReplyForm.styles";
 import { useState, useEffect, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../Component/Context/AuthContext";
 import axios from "axios";
 
 const ReplyForm = ({ boardNo, onSuccess }) => {
@@ -47,7 +47,7 @@ const ReplyForm = ({ boardNo, onSuccess }) => {
   };
 
   return (
-    <FormContainner onSubmit={handleInsertReply}>
+    <FormContainer onSubmit={handleInsertReply}>
       <TextArea
         onChange={(e) => setReply(e.target.value)}
         value={reply}
@@ -55,7 +55,7 @@ const ReplyForm = ({ boardNo, onSuccess }) => {
         rows="4"
       />
       <SubmitButton type="sybmit">작성하기</SubmitButton>
-    </FormContainner>
+    </FormContainer>
   );
 };
 

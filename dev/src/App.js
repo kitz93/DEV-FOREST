@@ -1,21 +1,50 @@
 import "./App.css";
-import BoardDetail from "./Board/BoardDetail";
-import BoardList from "./Board/BoardList";
-import Footer from "./Footer/Footer";
-import Header from "./Header/Header";
+
+import { AuthProvider } from "./Component/Context/AuthContext";
+import styled from "styled-components";
+import Footer from "./Component/Footer/Footer";
+import Header from "./Component/Header/Header";
 import { Route, Routes } from "react-router-dom";
+import BoardList from "./Board/BoardList";
+import BoardDetail from "./Board/BoardDetail";
+import InsertBoard from "./Board/InsertBoard";
+import EditBoard from "./Board/EditBoard";
+
+const TestDiv = styled.div`
+  width: 1000px;
+  background-color: skyblue;
+  margin: auto;
+`;
 
 function App() {
   return (
     <div className="App">
-      <Header />
-      <h1>메인임</h1>
+      <AuthProvider>
+        <Header />
 
-      <Routes>
-        <Route path="/boards" element={<BoardList />} />
-        <Route path="/boards/:id" element={<BoardDetail />} />
-      </Routes>
-      <Footer />
+        <Routes>
+          <Route path="boards" element={<BoardList />} />
+          <Route path="insert" element={<InsertBoard />} />
+          <Route path="boards/:id" element={<BoardDetail />} />
+          <Route path="boards/:id/edit" element={<EditBoard />} />
+        </Routes>
+
+        <TestDiv>
+          <h1>
+            메인임
+            <br />
+            <br />
+            카카오 회원가입 및 로그인 가능
+            <br />
+            <br />
+            기능은 아직
+            <br />
+            <br />
+          </h1>
+        </TestDiv>
+
+        <Footer />
+      </AuthProvider>
     </div>
   );
 }

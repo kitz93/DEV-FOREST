@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -27,6 +28,12 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(BoardNotFoundException.class)
 	public ResponseEntity<?> handleBoardNotFound(BoardNotFoundException e){
 		return ResponseEntity.badRequest().body(e.getMessage());
+	}
+
+	@ExceptionHandler(AuthenticationException.class)
+	public ResponseEntity<?> handlerAuthentic(AuthenticationException e) {
+		return ResponseEntity.badRequest().body("아이디 및 비밀번호 오류");
+
 	}
 
 	@ExceptionHandler(InvalidParameterException.class)

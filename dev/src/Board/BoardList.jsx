@@ -22,41 +22,77 @@ import {
   SearchButton,
   SelectOption,
   SearchInput,
-} from "./BoardList.syles";
+} from "./BoardList.styles";
 import { useState, useEffect, useContext } from "react";
-//import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../Component/Context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const BoardList = () => {
   const [boards, setBoards] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(0);
+  const [boardType, setBoardType] = useState(1);
+  const [condition, setCondition] = useState("");
+  const [keyword, setKeyword] = useState("");
+
+  const { auth } = useContext(AuthContext);
 
   const navi = useNavigate();
 
-  useEffect(() => {
+  const fetchBoards = () => {
     axios
       .get("http://localhost/boards", {
         params: {
           page: page,
+          boardType: boardType,
         },
       })
       .then((response) => {
         console.log(response);
-        setBoards(response.data);
+        setBoards(response.data.boardList);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [page]);
+  };
+
+  const searchBoards = () => {
+    axios
+      .get("http://localhost/boards/search", {
+        params: {
+          page: page,
+          boardType: boardType,
+          condition: condition,
+          keyword: keyword,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setBoards(response.data.boardList);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    fetchBoards();
+  }, [page, boardType]);
 
   const handlePrevPage = () => {
     if (page > 1) setPage(page - 1);
   };
 
-  const handleNextPage = () => {
-    if (page < totalPages) setPage(page + 1);
+  const handleNextPage = () => {};
+
+  const handleBoardTypeChange = (type) => {
+    setBoardType(type);
+    setPage(1);
+  };
+
+  const handleSearch = () => {
+    setPage(1); // 검색 시 1페이지부터 시작
+    searchBoards();
   };
 
   return (
@@ -67,7 +103,9 @@ const BoardList = () => {
           <NaviItem>공지</NaviItem>
           <NaviItem>취업</NaviItem>
         </NaviList>
-        <AddButton>글쓰기</AddButton>
+        {auth.isAuthenticated && (
+          <AddButton onClick={() => navi("/insert")}>글쓰기</AddButton>
+        )}
       </NaviContainer>
 
       <BodyContainer>
@@ -81,7 +119,9 @@ const BoardList = () => {
                 <BodyCount>조회수 {board.count}</BodyCount>
               </BodyLeft>
               <BodyRight>
-                <BodyImg src={board.boardFileUrl} alt="이미지없음" />
+                {board.boardFileUrl && (
+                  <BodyImg src={board.boardFileUrl} alt="첨부이미지" />
+                )}
               </BodyRight>
             </BodyItem>
           ))}
@@ -102,15 +142,8 @@ const BoardList = () => {
         </SearchContainer>
 
         <Paging>
-          {/* 이전 페이지로 이동 */}
-          <PagingBtn onClick={handlePrevPage} disabled={page === 1}>
-            {"<"}
-          </PagingBtn>
-
-          {/* 다음 페이지로 이동 */}
-          <PagingBtn onClick={handleNextPage} disabled={page === totalPages}>
-            {">"}
-          </PagingBtn>
+          <PagingBtn onClick={handlePrevPage}>{"<"}</PagingBtn>
+          <PagingBtn onClick={handleNextPage}>{">"}</PagingBtn>
         </Paging>
       </PageArea>
     </Container>

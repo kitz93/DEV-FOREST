@@ -54,12 +54,12 @@
 		   BOARD_TITLE boardTitle,
 		   BOARD_CONTENT boardContent,
 		   BOARD_TYPE boardType,
-		   BOARD_FILE_URL
+		   BOARD_FILE_URL boardFileUrl
 </sql>
 
 <select id="findAll" resultType="BoardDTO">
 <include refid="boardColumn"/>
-			,COUNT
+			,COUNT count
 	  FROM 
 	  	    TB_BOARD B
 	  JOIN 
