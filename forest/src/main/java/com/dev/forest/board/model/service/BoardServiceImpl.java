@@ -56,7 +56,7 @@ public class BoardServiceImpl implements BoardService {
 			boardMapper.saveBasic(board);
 		} else if (boardType == 2) {
 			boardMapper.saveNotice(board);
-		} else {
+		} else if(boardType == 3) {
 			boardMapper.saveInfo(board);
 		}
 

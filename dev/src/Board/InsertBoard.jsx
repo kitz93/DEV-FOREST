@@ -121,7 +121,7 @@ const InsertBoard = () => {
             onChange={(e) => setBoardType(e.target.value)}
           >
             <option value="1">자유</option>
-            <option value="2">공지</option>
+            {auth.username === "ADMIN" && <option value="2">공지</option>}
             <option value="3">취업</option>
           </select>
         </div>

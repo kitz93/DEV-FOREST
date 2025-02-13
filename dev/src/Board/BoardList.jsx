@@ -30,10 +30,11 @@ import { useNavigate } from "react-router-dom";
 
 const BoardList = () => {
   const [boards, setBoards] = useState([]);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [boardType, setBoardType] = useState(1);
   const [condition, setCondition] = useState("");
   const [keyword, setKeyword] = useState("");
+  const [totalPage, setTotalPage] = useState(0);
 
   const { auth } = useContext(AuthContext);
 
@@ -49,10 +50,12 @@ const BoardList = () => {
       })
       .then((response) => {
         console.log(response);
-        setBoards(response.data.boardList);
+        setBoards(response.data.boardList || []); // 게시글이 없을 경우 빈 배열 설정
+        setTotalPage(response.data.pi?.maxPage || 1); // 페이지가 없으면 기본값 설정
       })
       .catch((error) => {
         console.log(error);
+        setBoards([]); // 에러 발생 시 빈 배열 설정
       });
   };
 
@@ -76,6 +79,7 @@ const BoardList = () => {
   };
 
   useEffect(() => {
+    setBoards([]); // 새로운 게시판 타입을 선택하면 초기화
     fetchBoards();
   }, [page, boardType]);
 
@@ -83,7 +87,9 @@ const BoardList = () => {
     if (page > 1) setPage(page - 1);
   };
 
-  const handleNextPage = () => {};
+  const handleNextPage = () => {
+    if (page < totalPage) setPage(page + 1);
+  };
 
   const handleBoardTypeChange = (type) => {
     setBoardType(type);
@@ -99,9 +105,9 @@ const BoardList = () => {
     <Container>
       <NaviContainer>
         <NaviList>
-          <NaviItem>자유</NaviItem>
-          <NaviItem>공지</NaviItem>
-          <NaviItem>취업</NaviItem>
+          <NaviItem onClick={() => handleBoardTypeChange(1)}>자유</NaviItem>
+          <NaviItem onClick={() => handleBoardTypeChange(2)}>공지</NaviItem>
+          <NaviItem onClick={() => handleBoardTypeChange(3)}>취업</NaviItem>
         </NaviList>
         {auth.isAuthenticated && (
           <AddButton onClick={() => navi("/insert")}>글쓰기</AddButton>
@@ -109,23 +115,29 @@ const BoardList = () => {
       </NaviContainer>
 
       <BodyContainer>
-        <BodyList>
-          {boards.map((board) => (
-            <BodyItem key={board.boardNo}>
-              <BodyLeft onClick={() => navi(`/boards/${board.boardNo}`)}>
-                <BodyAuthor>작성자: {board.boardWriter}</BodyAuthor>
-                <BodyTitle>{board.boardTitle}</BodyTitle>
-                <BodyContent>{board.boardContent}</BodyContent>
-                <BodyCount>조회수 {board.count}</BodyCount>
-              </BodyLeft>
-              <BodyRight>
-                {board.boardFileUrl && (
-                  <BodyImg src={board.boardFileUrl} alt="첨부이미지" />
-                )}
-              </BodyRight>
-            </BodyItem>
-          ))}
-        </BodyList>
+        {boards.length === 0 ? (
+          <p style={{ textAlign: "center", padding: "20px" }}>
+            게시글이 없습니다.
+          </p>
+        ) : (
+          <BodyList>
+            {boards.map((board) => (
+              <BodyItem key={board.boardNo}>
+                <BodyLeft onClick={() => navi(`/boards/${board.boardNo}`)}>
+                  <BodyAuthor>작성자: {board.boardWriter}</BodyAuthor>
+                  <BodyTitle>{board.boardTitle}</BodyTitle>
+                  <BodyContent>{board.boardContent}</BodyContent>
+                  <BodyCount>조회수 {board.count}</BodyCount>
+                </BodyLeft>
+                <BodyRight>
+                  {board.boardFileUrl && (
+                    <BodyImg src={board.boardFileUrl} alt="첨부이미지" />
+                  )}
+                </BodyRight>
+              </BodyItem>
+            ))}
+          </BodyList>
+        )}
       </BodyContainer>
 
       <PageArea>
@@ -142,8 +154,12 @@ const BoardList = () => {
         </SearchContainer>
 
         <Paging>
-          <PagingBtn onClick={handlePrevPage}>{"<"}</PagingBtn>
-          <PagingBtn onClick={handleNextPage}>{">"}</PagingBtn>
+          <PagingBtn onClick={handlePrevPage} disabled={page === 1}>
+            {"<"}
+          </PagingBtn>
+          <PagingBtn onClick={handleNextPage} disabled={page === totalPage}>
+            {">"}
+          </PagingBtn>
         </Paging>
       </PageArea>
     </Container>
