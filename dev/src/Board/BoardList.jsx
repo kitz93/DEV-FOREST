@@ -35,6 +35,7 @@ const BoardList = () => {
   const [condition, setCondition] = useState("");
   const [keyword, setKeyword] = useState("");
   const [totalPage, setTotalPage] = useState(0);
+  const [isSearching, setIsSearching] = useState(false);
 
   const { auth } = useContext(AuthContext);
 
@@ -49,8 +50,7 @@ const BoardList = () => {
         },
       })
       .then((response) => {
-        console.log(response);
-        setBoards(response.data.boardList || []); // 게시글이 없을 경우 빈 배열 설정
+        setBoards([...response.data.boardList] || []); // 게시글이 없을 경우 빈 배열 설정
         setTotalPage(response.data.pi?.maxPage || 1); // 페이지가 없으면 기본값 설정
       })
       .catch((error) => {
@@ -70,8 +70,8 @@ const BoardList = () => {
         },
       })
       .then((response) => {
-        console.log(response);
-        setBoards(response.data.boardList);
+        setBoards([...response.data.boardList] || []); // 게시글이 없을 경우 빈 배열 설정
+        setTotalPage(response.data.pi?.maxPage || 1); // 페이지가 없으면 기본값 설정
       })
       .catch((error) => {
         console.log(error);
@@ -79,9 +79,12 @@ const BoardList = () => {
   };
 
   useEffect(() => {
-    setBoards([]); // 새로운 게시판 타입을 선택하면 초기화
-    fetchBoards();
-  }, [page, boardType]);
+    if (isSearching) {
+      searchBoards();
+    } else {
+      fetchBoards();
+    }
+  }, [page, boardType, isSearching]);
 
   const handlePrevPage = () => {
     if (page > 1) setPage(page - 1);
@@ -93,11 +96,13 @@ const BoardList = () => {
 
   const handleBoardTypeChange = (type) => {
     setBoardType(type);
+    setIsSearching(false);
     setPage(1);
   };
 
-  const handleSearch = () => {
-    setPage(1); // 검색 시 1페이지부터 시작
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setIsSearching(true);
     searchBoards();
   };
 
@@ -115,7 +120,7 @@ const BoardList = () => {
       </NaviContainer>
 
       <BodyContainer>
-        {boards.length === 0 ? (
+        {boards == null || boards.length === 0 ? (
           <p style={{ textAlign: "center", padding: "20px" }}>
             게시글이 없습니다.
           </p>
@@ -143,14 +148,22 @@ const BoardList = () => {
       <PageArea>
         <SearchContainer>
           <SelectContainer>
-            <SelectOption>
-              <option>작성자</option>
-              <option>제목</option>
-              <option>내용</option>
+            <SelectOption
+              value={condition}
+              onChange={(e) => setCondition(e.target.value)}
+            >
+              <option value="writer">작성자</option>
+              <option value="title">제목</option>
+              <option value="content">내용</option>
             </SelectOption>
           </SelectContainer>
-          <SearchInput type="text" placeholder="검색어 입력" />
-          <SearchButton>검색</SearchButton>
+          <SearchInput
+            type="text"
+            placeholder="검색어 입력"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+          />
+          <SearchButton onClick={handleSearch}>검색</SearchButton>
         </SearchContainer>
 
         <Paging>

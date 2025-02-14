@@ -8,6 +8,7 @@ import {
   DeleteButton,
   BackButton,
   Message,
+  EditForm,
 } from "./BoardDetail.styles";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Component/Context/AuthContext";
@@ -99,12 +100,10 @@ const BoardDetail = () => {
       )}
       <Content>{board.boardContent}</Content>
 
-      {auth.username === board.boardWriter && (
-        <div>
-          <EditButton onClick={handleEdit}>수정하기</EditButton>
-          <DeleteButton onClick={handleDelete}>삭제하기</DeleteButton>
-        </div>
-      )}
+      <EditForm>
+        <EditButton onClick={handleEdit}>수정하기</EditButton>
+        <DeleteButton onClick={handleDelete}>삭제하기</DeleteButton>
+      </EditForm>
 
       <BackButton onClick={handleBack}>뒤로가기</BackButton>
 

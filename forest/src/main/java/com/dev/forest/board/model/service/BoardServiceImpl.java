@@ -79,6 +79,13 @@ public class BoardServiceImpl implements BoardService {
 		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
 		return rowBounds;
 	}
+	
+	private void incrementViewCount(Long boardNo) {
+		int result = boardMapper.increaseCount(boardNo);
+		if(result < 1) {
+			throw new BoardNotFoundException("게시글이 존재하지 않습니다.");
+		}
+	}
 
 	@Override
 	public Map<String,Object> findAll(int boardType, int page) {
@@ -106,6 +113,7 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public BoardDTO findById(Long boardNo) {
+		incrementViewCount(boardNo);
 		return getBoardOrThrow(boardNo);
 	}
 
@@ -160,10 +168,9 @@ public class BoardServiceImpl implements BoardService {
 		
 		int totalCount = boardMapper.searchCount(params);
 		PageInfo pageInfo = getPageInfo(totalCount, page);
+		RowBounds rowBounds = paging(pageInfo);
 		
-		params.put("pageInfo", pageInfo);
-		
-		List<BoardDTO> boardList = boardMapper.search(params);
+		List<BoardDTO> boardList = boardMapper.search(rowBounds, params);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("pi", pageInfo);
 		map.put("boardList", boardList);

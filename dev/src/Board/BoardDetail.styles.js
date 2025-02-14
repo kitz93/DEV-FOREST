@@ -61,17 +61,22 @@ export const BackButton = styled.button`
   }
 `;
 
+export const EditForm = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: center; /* 버튼 정렬을 위해 추가 */
+  justify-content: center; /* 가로 중앙 정렬 */
+`;
+
 export const EditButton = styled.button`
   padding: 10px 20px;
   background-color: #fff099;
-  color: #ffffff;
+  color: black;
   border: none;
   border-radius: 20px;
   font-size: 1em;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin: auto;
-  display: block;
   margin-top: 20px;
 
   &:hover {
@@ -82,7 +87,7 @@ export const EditButton = styled.button`
 export const DeleteButton = styled.button`
   padding: 10px 20px;
   background-color: #e74c3c;
-  color: #ffffff;
+  color: black;
   border: none;
   border-radius: 20px;
   font-size: 1em;

@@ -24,6 +24,8 @@ public interface BoardMapper {
 	List<BoardDTO> findAll(RowBounds rowBounds, int boardType);
 
 	BoardDTO findById(Long boardNo);
+	
+	int increaseCount(Long boardNo);
 
 	void update(BoardDTO exsitingBoard);
 
@@ -31,6 +33,6 @@ public interface BoardMapper {
 
 	int searchCount(Map<String, Object> params);
 
-	List<BoardDTO> search(Map<String, Object>params);
+	List<BoardDTO> search(RowBounds rowBounds, Map<String, Object>params);
 
 }

@@ -19,13 +19,13 @@ const EditBoard = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
-
+  const [board, setBoard] = useState(null);
   const [boardTitle, setBoardTitle] = useState("");
   const [boardContent, setBoardContent] = useState("");
   const [boardWriter, setBoardWriter] = useState("");
   const [file, setFile] = useState(null);
   const [existingFileUrl, setExistingFileUrl] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [originFile, setOriginFile] = useState("");
 
   useEffect(() => {
     if (!auth.isAuthenticated) {
@@ -53,7 +53,7 @@ const EditBoard = () => {
     const formData = new FormData();
     formData.append("boardTitle", boardTitle);
     formData.append("boardContent", boardContent);
-    formData.append("boardWriter", boardWriter);
+    formData.append("boardWriter", "aaa@dev.com");
     formData.append("boardFileUrl", existingFileUrl);
 
     if (file) {
@@ -68,20 +68,15 @@ const EditBoard = () => {
         },
       })
       .then((response) => {
-        setLoading(true);
+        setBoardTitle("수정중입니다...");
+        setBoardContent("수정중입니다...");
+        setBoardWriter("수정중입니다...");
+        setOriginFile("수정중입니다.");
         setTimeout(() => {
           navigate(`/boards/${id}`);
-        }, 5000);
+        }, 3000);
       });
   };
-
-  if (loading) {
-    return (
-      <div className="bg">
-        <h1>게시글 수정중...</h1>
-      </div>
-    );
-  }
 
   return (
     <Container>
@@ -106,7 +101,11 @@ const EditBoard = () => {
         <Label>첨부 파일</Label>
         {existingFileUrl && (
           <>
-            <ImagePreview src={existingFileUrl} alt="기존 첨부 파일" />
+            <ImagePreview
+              value={originFile}
+              src={existingFileUrl}
+              alt="기존 첨부 파일"
+            />
             <Label>파일 변경:</Label>
           </>
         )}

@@ -78,7 +78,6 @@ public class BoardController {
 												 ,@RequestParam(name = "condition") String condition
 												 ,@RequestParam(name = "keyword") String keyword
 			){
-		log.info("헤헤헤헤헤{}, {},{}", boardType, condition, keyword);
 		return ResponseEntity.ok(service.search(boardType, condition, keyword, page));
 	}
 
