@@ -26,6 +26,7 @@ public class QuizDTO {
 	private String answer;
 	@NotBlank
 	private String explanation;
-	private String quizOption;
+	
+	private List<QuizOptionDTO> quizOption; 
 
 }

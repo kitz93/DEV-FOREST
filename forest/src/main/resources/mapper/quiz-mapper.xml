@@ -68,6 +68,10 @@
   	 		QUIZ_NO = #{quizNo}
   </select>
   
+  <select id="quizOption" resultType="QuizOptionDTO">
+  	SELECT QUIZ_NO quizNo, QUIZ_OPTION quizOption FROM TB_MCQ_OPTIONS WHERE QUIZ_NO = #{quizNo}
+  </select>
+  
   <select id="selectTotalCount" resultType="int">
 		SELECT
 				COUNT(*)

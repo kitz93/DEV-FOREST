@@ -52,5 +52,10 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?> handlerMissmatchPassword(MissmatchPasswordException e) {
 		return ResponseEntity.badRequest().body(e.getMessage());
 	}
+	
+	@ExceptionHandler(DeleteMemberException.class)
+	public ResponseEntity<?> handlerDeleteMember(DeleteMemberException e) {
+		return ResponseEntity.badRequest().body(e.getMessage());
+	}
 
 }

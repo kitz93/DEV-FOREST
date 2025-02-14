@@ -10,7 +10,5 @@ import com.dev.forest.ranking.model.dto.RankingDTO;
 public interface RankingMapper {
 
 	List<RankingDTO> getRanking();
-	
-
 
 }

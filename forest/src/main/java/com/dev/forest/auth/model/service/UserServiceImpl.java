@@ -13,7 +13,9 @@ import com.dev.forest.member.model.dto.MemberDTO;
 import com.dev.forest.member.model.mapper.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserDetailsService {
@@ -22,7 +24,9 @@ public class UserServiceImpl implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) {
+		log.info("username = {}", username);
 		MemberDTO user = memberMapper.findByUserId(username);
+		log.info("user = {}", user);
 		if(user == null) {
 			throw new UsernameNotFoundException("존재하지 않는 사용자입니다.");
 		}
@@ -30,6 +34,7 @@ public class UserServiceImpl implements UserDetailsService {
 										  .username(user.getUserId())
 										  .password(user.getUserPwd())
 										  .authorities(Collections.singletonList(new SimpleGrantedAuthority(user.getRole())))
+										  .status(user.getStatus())
 										  .build();
 	}
 

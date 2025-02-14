@@ -1,13 +1,21 @@
 import "./App.css";
 import RankingChart from "./Ranking/RankingChart";
-import Header from "./testComponent/Header";
+import Footer from "./Footer/Footer";
+import Header from "./Header/Header";
+import Quiz from "./Quiz/Quiz";
+import { Route, Routes } from "react-router-dom";
+import BackendTheory from "./Theory/BackendTheory.";
 
 function App() {
   return (
     <div className="App">
       <Header />
-      <h1>랭킹 시스템</h1>
-      <RankingChart />
+      <Routes>
+        <Route path="/quizs" element={<Quiz />} />
+        <Route path="/rankings" element={<RankingChart />} />
+        <Route path="/backend" element={<BackendTheory />} />
+      </Routes>
+      <Footer />
     </div>
   );
 }

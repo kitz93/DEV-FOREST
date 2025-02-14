@@ -1,0 +1,24 @@
+.quiz-results {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.quiz-results h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.quiz-results p {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #555;
+}

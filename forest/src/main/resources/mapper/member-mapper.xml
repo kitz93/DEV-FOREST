@@ -3,17 +3,6 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dev.forest.member.model.mapper.MemberMapper">
-
-	<insert id="saveSignUp" parameterType="MemberDTO">
-		INSERT 
-		  INTO 
-		       TB_SIGN_UP 
-		VALUES 
-		       (
-				SEQ_USER_NO.NEXTVAL, 
-				#{signUp}
-			   )
-	</insert>
 	
 	<insert id="saveMember" parameterType="MemberDTO">
 		INSERT 
@@ -21,37 +10,25 @@
 		       TB_MEMBER 
 		       (
 				USER_NO, 
+				SIGN_UP,
 				USER_ID, 
 				USER_PWD, 
 				NICKNAME
 			   ) 
 	     VALUES 
 			   (
-				SEQ_USER_NO.CURRVAL, 
+				SEQ_USER_NO.NEXTVAL, 
+				#{signUp},
 				#{userId}, 
 				#{userPwd}, 
 				#{nickname}
 			   ) 
 	</insert>
 	
-	<insert id="saveMemberSns" parameterType="MemberDTO">
-		INSERT 
-		  INTO 
-		       TB_MEMBER 
-		       (
-				USER_NO, 
-				NICKNAME
-			   ) 
-	     VALUES 
-			   (
-				SEQ_USER_NO.CURRVAL, 
-				#{nickname}
-			   ) 
-	</insert>
-	
-	<select id="findByUserId" parameterType="String">
+	<select id="findByUserId" parameterType="String" resultType="MemberDTO">
 		SELECT 
 		       USER_NO userNo,
+		       SIGN_UP signUp,
 		       USER_ID userId,
 		       USER_PWD userPwd,
 		       NICKNAME nickname,
@@ -80,20 +57,24 @@
 		 WHERE 
 		       NICKNAME = #{nickname}
 	</select>
-
-	<select id="findByNicknameSns" parameterType="String">
-		SELECT 
-		       USER_NO userNo,
-		       NICKNAME nickname,
-		       ROLE role,
-		       ENROLL_DATE enrollDate,
-		       UPDATE_DATE updateDate,
-		       STATUS status
-		  FROM 
-		       TB_MEMBER_SNS
+	
+	<update id="update" parameterType="ChangePwdDTO">
+		UPDATE 
+		       TB_MEMBER 
+		   SET 
+		       USER_PWD = #{newPwd} 
 		 WHERE 
-		       NICKNAME = #{nickname}
-	</select>
+		       USER_NO = #{userNo}
+	</update>
+	
+	<update id="delete" parameterType="long">
+		UPDATE 
+		       TB_MEMBER 
+		   SET 
+		       STATUS = 'N' 
+		 WHERE 
+		       USER_NO = #{userNo}
+	</update>
 	
 </mapper>
 

@@ -39,7 +39,7 @@ public class SecurityConfiguration {
 		corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
 		corsConfiguration.setAllowCredentials(true);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", corsConfiguration);
+		source.registerCorsConfiguration("/**", corsConfiguration); 
 		return source;
 	}
 
@@ -53,6 +53,10 @@ public class SecurityConfiguration {
 					requests.requestMatchers("/wrongs", "/wrongs/**").permitAll();
 					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login").permitAll();
 					requests.requestMatchers("/rankings", "/rankings/**").permitAll();
+					requests.requestMatchers("/theorys", "/theorys/**").permitAll();
+					requests.requestMatchers("/progress", "/progress/**").permitAll();
+					requests.requestMatchers(HttpMethod.PUT, "/members").authenticated();
+					requests.requestMatchers(HttpMethod.DELETE, "/members").authenticated();
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");
 				})
 				.sessionManagement(

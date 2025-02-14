@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.dev.forest.exception.InvalidParameterException;
 import com.dev.forest.quiz.model.dto.QuizDTO;
+import com.dev.forest.quiz.model.dto.QuizOptionDTO;
 import com.dev.forest.quiz.model.mapper.QuizMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -66,8 +67,9 @@ public class QuizServiceImpl implements QuizService {
 	@Override
 	public List<QuizDTO> findByRandomNo() {
 		int totalCount = getTotalCount();
-		List<QuizDTO> quizList = new ArrayList();
+		List<QuizDTO> quizs = new ArrayList();
 		Set<Integer> randomNo = new HashSet();
+		// Map<String, Object> quizs = new HashMap();
 		while(randomNo.size() < 5) {
 			int num = (int)(Math.random() * totalCount) + 1;
 			randomNo.add(num);
@@ -75,10 +77,16 @@ public class QuizServiceImpl implements QuizService {
 		
 		Iterator iter = randomNo.iterator();
 		while(iter.hasNext()) {
-			QuizDTO quiz = quizMapper.findByRandomNo(iter.next());
-			quizList.add(quiz);
+			Object quizNo = iter.next();
+			log.info("quizNo = {}", quizNo);
+			QuizDTO quiz = quizMapper.findByRandomNo(quizNo);
+			List<QuizOptionDTO> quizOptions = quizMapper.quizOption(quizNo);
+			quiz.setQuizOption(quizOptions);
+			// quizs.put("quiz" + quizNo, quiz);
+			// quizs.put("quizOption" + quizNo, quizOptions);
+			quizs.add(quiz);
 		}
-		return quizList;
+		return quizs;
 	}
 	
 	
