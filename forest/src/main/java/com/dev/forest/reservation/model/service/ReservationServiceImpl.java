@@ -99,6 +99,7 @@ public class ReservationServiceImpl implements ReservationService {
 		RowBounds rowBounds = paging(pi);
 		
 		List<ReservationDTO> reservationList = reservationMapper.findAll(rowBounds);
+		
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("reservationList", reservationList);
 		map.put("pi", pi);

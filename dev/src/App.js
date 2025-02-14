@@ -9,6 +9,7 @@ import BoardList from "./Board/BoardList";
 import BoardDetail from "./Board/BoardDetail";
 import InsertBoard from "./Board/InsertBoard";
 import EditBoard from "./Board/EditBoard";
+import ReservationList from "./Reservation/ReservationList";
 
 const TestDiv = styled.div`
   width: 1000px;
@@ -27,6 +28,7 @@ function App() {
           <Route path="insert" element={<InsertBoard />} />
           <Route path="boards/:id" element={<BoardDetail />} />
           <Route path="boards/:id/edit" element={<EditBoard />} />
+          <Route path="reservations" element={<ReservationList />} />
         </Routes>
 
         <TestDiv>

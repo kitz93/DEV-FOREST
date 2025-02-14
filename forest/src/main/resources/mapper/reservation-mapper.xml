@@ -48,18 +48,28 @@
 			   RESERVATION_CONTENT reservationContent,
 			   RESERVATION_COUNT reservationCount,
 			   RESERVATION_PLACE reservationPlace,
+			   PLACE_ADDRESS placeAddress,
 			   FILE_URL fileUrl,
 			   R.STATUS status
 	</sql>
 
 	<select id="findAll" resultType="ReservationDTO">
-		<include refid="reservationColumn" />
+		<include refid="reservationColumn" />,
+				(SELECT
+						COUNT(*)
+				   FROM
+				   	    TB_STUDYING S
+				  WHERE
+				        S.STATUS = 'Y'
+				    AND
+				        REF_RNO = R.RESERVATION_NO
+				 ) AS currentMembers
 		  FROM
 		  	   TB_RESERVATION R
-		  JOIN
+	      JOIN
 		       TB_MEMBER M ON (RESERVATION_USER = USER_NO)
 		 WHERE
-		 	   R.STATUS = 'Y'
+		 	   R.STATUS = 'Y'	
 		 ORDER
 		    BY
 		       RESERVATION_NO DESC
@@ -70,7 +80,6 @@
 				M.NICKNAME reservationUser,
 				START_TIME startTime,
 				END_TIME endTime,
-				PLACE_ADDRESS placeAddress,
 				RESERVATION_STATUS reservationStatus
 		  FROM
 		  	   TB_RESERVATION R

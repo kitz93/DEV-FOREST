@@ -1,23 +1,40 @@
-import {} from "./ReservationDetail.syles";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Component/Context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {
+  Container,
+  PageArea,
+  SearchContainer,
+  SearchButton,
+  SelectContainer,
+  SelectOption,
+  SearchInput,
+  Paging,
+  PagingBtn,
+  ListContainer,
+  ListItem,
+  Thumbnail,
+  Info,
+  Title,
+  Description,
+  Address,
+  MemberCount,
+  CreateButton,
+} from "./ReservationList.syles";
 
 const ReservationList = () => {
-  const [boards, setBoards] = useState([]);
+  const [reservations, setReservations] = useState([]);
   const [page, setPage] = useState(1);
-  const [boardType, setBoardType] = useState(1);
   const [condition, setCondition] = useState("");
   const [keyword, setKeyword] = useState("");
   const [totalPage, setTotalPage] = useState(0);
   const [isSearching, setIsSearching] = useState(false);
 
   const { auth } = useContext(AuthContext);
-
   const navi = useNavigate();
 
-  const fetchBoards = () => {
+  const fetchReservations = () => {
     axios
       .get("http://localhost/reservations", {
         params: {
@@ -25,40 +42,31 @@ const ReservationList = () => {
         },
       })
       .then((response) => {
-        setBoards([...response.data.boardList] || []); // 게시글이 없을 경우 빈 배열 설정
-        setTotalPage(response.data.pi?.maxPage || 1); // 페이지가 없으면 기본값 설정
+        console.log(response.data);
+        setReservations(response.data.reservationList || []);
+        setTotalPage(response.data.pi?.maxPage || 1);
       })
-      .catch((error) => {
-        console.log(error);
-        setBoards([]); // 에러 발생 시 빈 배열 설정
-      });
+      .catch(() => setReservations([]));
   };
 
-  const searchBoards = () => {
+  const searchReservations = () => {
     axios
       .get("http://localhost/reservations/search", {
         params: {
           page: page,
-          boardType: boardType,
           condition: condition,
           keyword: keyword,
         },
       })
       .then((response) => {
-        setBoards([...response.data.boardList] || []); // 게시글이 없을 경우 빈 배열 설정
-        setTotalPage(response.data.pi?.maxPage || 1); // 페이지가 없으면 기본값 설정
+        setReservations(response.data.reservationList || []);
+        setTotalPage(response.data.pi?.maxPage || 1);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch(() => setReservations([]));
   };
 
   useEffect(() => {
-    if (isSearching) {
-      searchBoards();
-    } else {
-      fetchBoards();
-    }
+    isSearching ? searchReservations() : fetchReservations();
   }, [page, isSearching]);
 
   const handlePrevPage = () => {
@@ -69,56 +77,42 @@ const ReservationList = () => {
     if (page < totalPage) setPage(page + 1);
   };
 
-  const handleBoardTypeChange = (type) => {
-    setBoardType(type);
-    setIsSearching(false);
-    setPage(1);
-  };
-
   const handleSearch = (e) => {
     e.preventDefault();
     setIsSearching(true);
-    searchBoards();
+    searchReservations();
   };
 
   return (
     <Container>
-      <NaviContainer>
-        <NaviList>
-          <NaviItem onClick={() => handleBoardTypeChange(1)}>자유</NaviItem>
-          <NaviItem onClick={() => handleBoardTypeChange(2)}>공지</NaviItem>
-          <NaviItem onClick={() => handleBoardTypeChange(3)}>취업</NaviItem>
-        </NaviList>
-        {auth.isAuthenticated && (
-          <AddButton onClick={() => navi("/insert")}>글쓰기</AddButton>
-        )}
-      </NaviContainer>
-
-      <BodyContainer>
-        {boards == null || boards.length === 0 ? (
+      {auth.isAuthenticated && (
+        <CreateButton onClick={() => navi("/create")}>모임 생성</CreateButton>
+      )}
+      <ListContainer>
+        {reservations == null || reservations.length === 0 ? (
           <p style={{ textAlign: "center", padding: "20px" }}>
-            게시글이 없습니다.
+            등록된 모임이 없습니다.
           </p>
         ) : (
-          <BodyList>
-            {boards.map((board) => (
-              <BodyItem key={board.boardNo}>
-                <BodyLeft onClick={() => navi(`/boards/${board.boardNo}`)}>
-                  <BodyAuthor>작성자: {board.boardWriter}</BodyAuthor>
-                  <BodyTitle>{board.boardTitle}</BodyTitle>
-                  <BodyContent>{board.boardContent}</BodyContent>
-                  <BodyCount>조회수 {board.count}</BodyCount>
-                </BodyLeft>
-                <BodyRight>
-                  {board.boardFileUrl && (
-                    <BodyImg src={board.boardFileUrl} alt="첨부이미지" />
-                  )}
-                </BodyRight>
-              </BodyItem>
-            ))}
-          </BodyList>
+          reservations.map((res) => (
+            <ListItem key={res.reservationNo}>
+              <Thumbnail
+                onClick={() => navi(`/reservations/${res.reservationNo}`)}
+                src={res.fileUrl || "default_image.jpg"}
+                alt="모임 이미지"
+              />
+              <Info onClick={() => navi(`/reservations/${res.reservationNo}`)}>
+                <Title>{res.reservationName}</Title>
+                <Description>{res.reservationContent}</Description>
+                <Address>{res.placeAddress}</Address>
+                <MemberCount>
+                  👤 {res.currentMembers}명/ {res.reservationCount}명
+                </MemberCount>
+              </Info>
+            </ListItem>
+          ))
         )}
-      </BodyContainer>
+      </ListContainer>
 
       <PageArea>
         <SearchContainer>
@@ -127,9 +121,8 @@ const ReservationList = () => {
               value={condition}
               onChange={(e) => setCondition(e.target.value)}
             >
-              <option value="writer">작성자</option>
               <option value="title">제목</option>
-              <option value="content">내용</option>
+              <option value="place">장소</option>
             </SelectOption>
           </SelectContainer>
           <SearchInput
