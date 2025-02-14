@@ -11,6 +11,7 @@ import com.dev.forest.exception.InvalidParameterException;
 import com.dev.forest.exception.MissmatchPasswordException;
 import com.dev.forest.member.model.dto.ChangePwdDTO;
 import com.dev.forest.member.model.dto.MemberDTO;
+import com.dev.forest.member.model.dto.MyPageDTO;
 import com.dev.forest.member.model.dto.SnsMemberDTO;
 import com.dev.forest.member.model.mapper.MemberMapper;
 
@@ -51,8 +52,8 @@ public class MemberServiceImpl implements MemberService {
 			if ("".equals(member.getNickname())) {
 				throw new InvalidParameterException("유효하지 않은 값입니다.");
 			}
-			SnsMemberDTO searchedBySnsId = memberMapper.snsLogin(member);
-			if(searchedBySnsId != null) {
+			SnsMemberDTO searchedBySnsId = memberMapper.findBySnsId(member.getSnsId());
+			if (searchedBySnsId != null) {
 				throw new DupplicatedUserException("이미 가입한 아이디입니다.");
 			}
 			SnsMemberDTO searchedByNickname = memberMapper.findByNicknameSns(member.getNickname());
@@ -62,13 +63,7 @@ public class MemberServiceImpl implements MemberService {
 			memberMapper.saveSnsMember(member);
 		}
 	}
-	
-	@Override
-	public SnsMemberDTO snsLogin(SnsMemberDTO member) {
-		SnsMemberDTO response = memberMapper.snsLogin(member);
-		return response;
-	}
-	
+
 	@Override
 	public void update(ChangePwdDTO changePwd) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -91,6 +86,12 @@ public class MemberServiceImpl implements MemberService {
 		memberMapper.delete(user.getUserNo());
 	}
 
-
+	@Override
+	public MyPageDTO myPage() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
+		MyPageDTO response = memberMapper.findInfoByUserNo(user);
+		return response;
+	}
 
 }

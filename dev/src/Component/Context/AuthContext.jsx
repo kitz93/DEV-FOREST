@@ -4,7 +4,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
-    username: null,
+    nickname: null,
     accessToken: null,
     refreshToken: null,
     isAuthenticated: false,
@@ -13,10 +13,10 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const accessToken = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");
-    const username = sessionStorage.getItem("username");
-    if (accessToken && refreshToken && username) {
+    const nickname = sessionStorage.getItem("nickname");
+    if (accessToken && refreshToken && nickname) {
       setAuth({
-        username,
+        nickname,
         accessToken,
         refreshToken,
         isAuthenticated: true,
@@ -24,16 +24,24 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = (username, accessToken, refreshToken) => {
+  const login = (
+    nickname,
+    accessToken,
+    refreshToken,
+    snsAccessToken,
+    snsRefreshToken
+  ) => {
     setAuth({
-      username,
+      nickname,
       accessToken,
       refreshToken,
       isAuthenticated: true,
     });
-    sessionStorage.setItem("username", username);
+    sessionStorage.setItem("nickname", nickname);
     sessionStorage.setItem("accessToken", accessToken);
+    sessionStorage.setItem("snsAccessToken", snsAccessToken);
     sessionStorage.setItem("refreshToken", refreshToken);
+    sessionStorage.setItem("snsRefreshToken", snsRefreshToken);
   };
 
   const unlinkKakao = async () => {
@@ -41,21 +49,23 @@ export const AuthProvider = ({ children }) => {
       await fetch("https://kapi.kakao.com/v1/user/unlink", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${auth.accessToken}`,
+          Authorization: `Bearer ${sessionStorage.getItem("snsAccessToken")}`,
         },
       });
     } catch (error) {
       console.error("카카오 계정 해제 오류:", error);
     } finally {
       setAuth({
-        username: null,
+        nickname: null,
         accessToken: null,
         refreshToken: null,
         isAuthenticated: false,
       });
-      sessionStorage.removeItem("username");
+      sessionStorage.removeItem("nickname");
       sessionStorage.removeItem("accessToken");
+      sessionStorage.removeItem("snsAccessToken");
       sessionStorage.removeItem("refreshToken");
+      sessionStorage.removeItem("snsRefreshToken");
     }
   };
 
@@ -64,21 +74,23 @@ export const AuthProvider = ({ children }) => {
       await fetch("https://kapi.kakao.com/v1/user/logout", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${auth.accessToken}`,
+          Authorization: `Bearer ${sessionStorage.getItem("snsAccessToken")}`,
         },
       });
     } catch (error) {
       console.error("카카오 로그아웃 오류:", error);
     } finally {
       setAuth({
-        username: null,
+        nickname: null,
         accessToken: null,
         refreshToken: null,
         isAuthenticated: false,
       });
-      sessionStorage.removeItem("username");
+      sessionStorage.removeItem("nickname");
       sessionStorage.removeItem("accessToken");
+      sessionStorage.removeItem("snsAccessToken");
       sessionStorage.removeItem("refreshToken");
+      sessionStorage.removeItem("snsRefreshToken");
     }
   };
 

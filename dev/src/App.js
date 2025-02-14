@@ -1,33 +1,21 @@
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { AuthProvider } from "./Component/Context/AuthContext";
 import Footer from "./Component/Footer/Footer";
 import Header from "./Component/Header/Header";
-import styled from "styled-components";
-
-const TestDiv = styled.div`
-  width: 1000px;
-  background-color: skyblue;
-  margin: auto;
-`;
+import MyPage from "./Component/MyPage/MyPage";
+import Main from "./Component/Main/Main";
 
 function App() {
   return (
     <div className="App">
       <AuthProvider>
         <Header />
-        <TestDiv>
-          <h1>
-            메인임
-            <br />
-            <br />
-            카카오 회원가입 및 로그인 가능
-            <br />
-            <br />
-            기능은 아직
-            <br />
-            <br />
-          </h1>
-        </TestDiv>
+
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/myPage" element={<MyPage />} />
+        </Routes>
 
         <Footer />
       </AuthProvider>

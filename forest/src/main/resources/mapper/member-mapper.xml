@@ -61,7 +61,7 @@
 		       USER_ID = #{userId}
 	</select>
 	
-	<select id="snsLogin" parameterType="SnsMemberDTO" resultType="SnsMemberDTO">
+	<select id="findBySnsId" parameterType="SnsMemberDTO" resultType="SnsMemberDTO">
 		SELECT 
 		       USER_NO userNo,
 		       SIGN_UP signUp,
@@ -80,6 +80,7 @@
 	<select id="findByNickname" parameterType="String">
 		SELECT 
 		       USER_NO userNo,
+		       SIGN_UP signUp,
 		       USER_ID userId,
 		       USER_PWD userPwd,
 		       NICKNAME nickname,
@@ -96,6 +97,7 @@
 	<select id="findByNicknameSns" parameterType="String">
 		SELECT 
 		       USER_NO userNo,
+		       SIGN_UP signUp,
 		       SNS_ID snsId,
 		       NICKNAME nickname,
 		       ROLE role,
@@ -125,6 +127,55 @@
 		 WHERE 
 		       USER_NO = #{userNo}
 	</update>
+	
+	<select id="findInfoByUserNo" resultType="MyPageDTO">
+		SELECT
+		       userNo, 
+		       signUp, 
+		       snsId, 
+		       userId, 
+		       userPwd, 
+		       nickname, 
+		       role, 
+		       status, 
+		       correctCount, 
+		       wrongCount, 
+		       correctCount + wrongCount totalCount
+		  FROM 
+		       (
+				SELECT 
+   			           USER_NO userNo,
+			           SIGN_UP signUp,
+			           SNS_ID snsId,
+			           USER_ID userId,
+			           USER_PWD userPwd,
+			           NICKNAME nickname,
+			           ROLE role,
+			           STATUS status,
+			           (
+						SELECT 
+						       SUM(CORRECT_COUNT)
+						  FROM 
+						       TB_RANKING 
+						 WHERE 
+						       USER_NO = #{userNo}
+					   ) correctCount ,
+					   (
+						SELECT 
+						       SUM(WRONG_COUNT)  
+						  FROM 
+						       TB_RANKING 
+						 WHERE 
+						       USER_NO = #{userNo}
+					   ) wrongCount
+			      FROM 
+			           TB_MEMBER
+			     WHERE
+			           USER_NO = #{userNo}
+		        )
+	</select>
+	
+	
 	
 </mapper>
 
