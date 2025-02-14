@@ -1,6 +1,6 @@
 package com.dev.forest.reservation.controller;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,7 @@ public class ReservationController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<ReservationDTO>> findAll(@RequestParam(name = "page", defaultValue = "0") int page) {
+	public ResponseEntity<Map<String, Object>> findAll(@RequestParam(name = "page", defaultValue = "0") int page) {
 		return ResponseEntity.ok(reservationService.findAll(page));
 	}
 	
@@ -53,7 +53,7 @@ public class ReservationController {
 	}
 	
 	@GetMapping("/search")
-	public ResponseEntity<List<ReservationDTO>> search(@RequestParam(name = "page", defaultValue = "0")int page,
+	public ResponseEntity<Map<String, Object>> search(@RequestParam(name = "page", defaultValue = "0")int page,
 													   @RequestParam(name = "condition") String condition,									       
 													   @RequestParam(name = "keyword") String keyword) {
 		

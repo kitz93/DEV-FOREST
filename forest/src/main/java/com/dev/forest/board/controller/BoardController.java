@@ -1,6 +1,5 @@
 package com.dev.forest.board.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;

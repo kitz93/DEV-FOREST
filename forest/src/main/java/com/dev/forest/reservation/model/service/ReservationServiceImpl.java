@@ -93,11 +93,17 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
-	public List<ReservationDTO> findAll(int page) {
+	public Map<String, Object> findAll(int page) {
 		int totalCount = getTotalCount();
 		PageInfo pi = getPageInfo(totalCount, page);
 		RowBounds rowBounds = paging(pi);
-		return reservationMapper.findAll(rowBounds);
+		
+		List<ReservationDTO> reservationList = reservationMapper.findAll(rowBounds);
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("reservationList", reservationList);
+		map.put("pi", pi);
+		
+		return map;
 	}
 	
 	private ReservationDTO getBoardOrThrow(Long reservationNo) {
@@ -136,7 +142,7 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
-	public List<ReservationDTO> search(String keyword, String condition, int page) {
+	public Map<String, Object> search(String keyword, String condition, int page) {
 		validateKeyword(keyword);
 		
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -144,14 +150,15 @@ public class ReservationServiceImpl implements ReservationService {
 		params.put("condition", condition);
 		
 		int totalCount = reservationMapper.searchCount(params);
-		
 		PageInfo pageInfo = getPageInfo(totalCount, page);
+		RowBounds rowBounds = paging(pageInfo);
 		
-		params.put("pageInfo", pageInfo);
+		List<ReservationDTO> list = reservationMapper.search(rowBounds, params);
+		Map<String, Object> map = new HashMap<>();
+		map.put("reservationList",list);
+		map.put("pi", pageInfo);
 		
-		List<ReservationDTO> list = reservationMapper.search(params);
-		
-		return list;
+		return map;
 	}
 
 }

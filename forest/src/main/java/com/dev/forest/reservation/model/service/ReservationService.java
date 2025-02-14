@@ -1,6 +1,6 @@
 package com.dev.forest.reservation.model.service;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,12 +10,12 @@ public interface ReservationService {
 
 	void reservate(ReservationDTO reservation, MultipartFile file);
 
-	List<ReservationDTO> findAll(int page);
+	Map<String, Object> findAll(int page);
 
 	ReservationDTO findById(Long reservationNo);
 
 	void delete(Long reservationNo);
 	
-	List<ReservationDTO> search(String keyword, String condition, int page);
+	Map<String, Object> search(String keyword, String condition, int page);
 
 }
