@@ -24,7 +24,7 @@ const BoardDetail = () => {
   const [error, setError] = useState(false);
   const { auth } = useContext(AuthContext);
   const navi = useNavigate();
-  const [refreshComments, setRefreshComments] = useState(false); // 댓글 다시 조회하기용 상태
+  const [refreshComments, setRefreshComments] = useState(false);
 
   const handleBack = () => {
     navi(-1);

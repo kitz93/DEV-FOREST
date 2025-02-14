@@ -26,7 +26,7 @@ import {
 const ReservationList = () => {
   const [reservations, setReservations] = useState([]);
   const [page, setPage] = useState(1);
-  const [condition, setCondition] = useState("");
+  const [condition, setCondition] = useState("title");
   const [keyword, setKeyword] = useState("");
   const [totalPage, setTotalPage] = useState(0);
   const [isSearching, setIsSearching] = useState(false);

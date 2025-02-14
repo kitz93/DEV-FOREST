@@ -20,10 +20,12 @@ import com.dev.forest.reservation.model.service.ReservationService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("reservations")
+@Slf4j
 public class ReservationController {
 	
 	private final ReservationService reservationService;
@@ -56,6 +58,8 @@ public class ReservationController {
 	public ResponseEntity<Map<String, Object>> search(@RequestParam(name = "page", defaultValue = "0")int page,
 													   @RequestParam(name = "condition") String condition,									       
 													   @RequestParam(name = "keyword") String keyword) {
+		
+		log.info("condition, keyword : {},{}", condition, keyword);
 		
 		return ResponseEntity.ok(reservationService.search(keyword,condition,page));
 		

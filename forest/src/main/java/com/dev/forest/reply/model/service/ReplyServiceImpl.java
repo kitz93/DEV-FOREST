@@ -9,7 +9,6 @@ import com.dev.forest.auth.model.vo.CustomUserDetails;
 import com.dev.forest.board.model.service.BoardService;
 import com.dev.forest.reply.model.dto.ReplyDTO;
 import com.dev.forest.reply.model.mapper.ReplyMapper;
-import com.mysql.cj.log.Log;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
