@@ -1,10 +1,9 @@
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
-
 import { AuthProvider } from "./Component/Context/AuthContext";
 import styled from "styled-components";
 import Footer from "./Component/Footer/Footer";
 import Header from "./Component/Header/Header";
-import { Route, Routes } from "react-router-dom";
 import BoardList from "./Board/BoardList";
 import BoardDetail from "./Board/BoardDetail";
 import InsertBoard from "./Board/InsertBoard";
@@ -12,6 +11,9 @@ import EditBoard from "./Board/EditBoard";
 import ReservationList from "./Reservation/ReservationList";
 import StudyingList from "./Studying/StudyingList";
 import ReservationDetail from "./Reservation/ReservationDetail";
+import MyPage from "./Component/MyPage/MyPage";
+import Main from "./Component/Main/Main";
+import InsertReservation from "./Reservation/InsertReservation";
 
 const TestDiv = styled.div`
   width: 1000px;
@@ -33,21 +35,10 @@ function App() {
           <Route path="reservations" element={<ReservationList />} />
           <Route path="reservations/:id" element={<ReservationDetail />} />
           <Route path="studyings" element={<StudyingList />} />
+          <Route path="/" element={<Main />} />
+          <Route path="/myPage" element={<MyPage />} />
+          <Route path="create" element={<InsertReservation />} />
         </Routes>
-
-        <TestDiv>
-          <h1>
-            메인임
-            <br />
-            <br />
-            카카오 회원가입 및 로그인 가능
-            <br />
-            <br />
-            기능은 아직
-            <br />
-            <br />
-          </h1>
-        </TestDiv>
 
         <Footer />
       </AuthProvider>

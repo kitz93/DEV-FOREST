@@ -8,18 +8,15 @@ export const Container = styled.div`
   border: 1px solid #ddd;
   border-radius: 10px;
   background-color: #fff;
+  overflow: hidden;
 `;
 
-export const ImageBox = styled.div`
+export const ImageBox = styled.img`
   width: 100%;
-  height: 200px;
-  background-color: #f3f3f3;
+  height: auto;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: bold;
-  color: #999;
+  margin: 20px auto;
+  border-radius: 8px;
 `;
 
 export const InfoBox = styled.div`

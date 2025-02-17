@@ -12,6 +12,8 @@ import com.dev.forest.auth.model.vo.CustomUserDetails;
 import com.dev.forest.exception.DeleteMemberException;
 import com.dev.forest.member.model.dto.LoginMemberDTO;
 import com.dev.forest.member.model.dto.MemberDTO;
+import com.dev.forest.member.model.dto.SnsMemberDTO;
+import com.dev.forest.member.model.mapper.MemberMapper;
 import com.dev.forest.token.model.service.TokenService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private final AuthenticationManager authenticationManager;
+	private final MemberMapper memberMapper;
 	private final TokenService tokenService;
 
 	@Override
@@ -52,8 +55,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		if(writer != null && !writer.equals(username)) {
 			throw new RuntimeException("요청한 사용자와 게시글 작성자가 일치하지 않습니다.");
 		}
+	}
 		
-		
+	public LoginMemberDTO snsLogin(SnsMemberDTO member) {
+		SnsMemberDTO response = memberMapper.findBySnsId(member.getSnsId());
+		if(response != null && response.getStatus().equals("N")) {
+			throw new DeleteMemberException("탈퇴한 유저 입니다.");
+		}
+		Map<String, String> tokens = tokenService.generatorToken(response.getSnsId(), response.getUserNo());
+		LoginMemberDTO loginMember = LoginMemberDTO.builder().username(response.getSnsId()).nickname(response.getNickname()).tokens(tokens).build();
+		return loginMember;
 	}
 
 }

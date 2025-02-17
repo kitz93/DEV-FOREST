@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import com.dev.forest.auth.model.service.AuthenticationService;
 import com.dev.forest.member.model.dto.ChangePwdDTO;
 import com.dev.forest.member.model.dto.LoginMemberDTO;
 import com.dev.forest.member.model.dto.MemberDTO;
+import com.dev.forest.member.model.dto.MyPageDTO;
 import com.dev.forest.member.model.dto.SnsMemberDTO;
 import com.dev.forest.member.model.service.MemberService;
 
@@ -33,14 +35,13 @@ public class MemberController {
 	@PostMapping
 	public ResponseEntity<String> saveMember(@Valid @RequestBody MemberDTO member) {
 		memberService.saveMember(member);
-		return ResponseEntity.ok("회원 가입 성공");
+		return ResponseEntity.ok("사이트 회원 가입 성공");
 	}
 	
 	@PostMapping("sns")
 	public ResponseEntity<String> saveSnsMember(@Valid @RequestBody SnsMemberDTO member) {
-		log.info("member = {}", member);
 		memberService.saveSnsMember(member);
-		return ResponseEntity.ok("회원 가입 성공");
+		return ResponseEntity.ok("소셜 회원 가입 성공");
 	}
 	
 	@PostMapping("login")
@@ -50,9 +51,8 @@ public class MemberController {
 	}
 	
 	@PostMapping("snsLogin")
-	public ResponseEntity<SnsMemberDTO> login(@RequestBody SnsMemberDTO member) {
-		log.info("member = {}", member);
-		SnsMemberDTO loginMember = memberService.snsLogin(member);
+	public ResponseEntity<LoginMemberDTO> login(@RequestBody SnsMemberDTO member) {
+		LoginMemberDTO loginMember = authService.snsLogin(member);
 		return ResponseEntity.ok(loginMember);
 	}
 	
@@ -66,6 +66,12 @@ public class MemberController {
 	public ResponseEntity<String> delete(@RequestBody Map<String, String> userPwd) {
 		memberService.delete(userPwd.get("userPwd"));
 		return ResponseEntity.ok("회원 탈퇴 완료");
+	}
+	
+	@GetMapping("myPage")
+	public ResponseEntity<MyPageDTO> myPage() {
+		MyPageDTO response = memberService.myPage();
+		return ResponseEntity.ok(response);
 	}
 
 }

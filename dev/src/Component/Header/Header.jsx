@@ -15,6 +15,10 @@ const LogoDiv = styled.div`
 const LogoImg = styled.img`
   width: 600px;
   height: 300px;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const NavDiv = styled.div`
@@ -40,6 +44,10 @@ const NavLi = styled.li`
   padding-top: 10px;
   float: left;
   position: relative;
+
+  &:hover {
+    cursor: pointer;
+  }
 
   &:hover > ul {
     display: block;
@@ -67,6 +75,7 @@ const DropdownUl = styled.ul`
 
     &:hover {
       background-color: rgba(209, 209, 209, 0.5);
+      color: red;
     }
   }
 `;
@@ -74,6 +83,10 @@ const DropdownUl = styled.ul`
 const Header = () => {
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setSignupModalOpen] = useState(false);
+  const navi = useNavigate();
+  const goTo = (path) => {
+    navi(path);
+  };
 
   const openLoginModal = () => setLoginModalOpen(true);
   const closeLoginModal = () => setLoginModalOpen(false);
@@ -82,16 +95,11 @@ const Header = () => {
 
   const { auth, logout, unlinkKakao } = useContext(AuthContext);
 
-  const navi = useNavigate();
-
-  const goTo = (path) => {
-    navi(path);
-  };
-
   const handlelogout = () => {
     alert("안녕히 가세요.");
-    logout();
     unlinkKakao();
+    logout();
+    navi("/");
   };
 
   return (
@@ -119,7 +127,7 @@ const Header = () => {
           <NavLi onClick={() => goTo("/boards")}>커뮤니티</NavLi>
           {auth.isAuthenticated ? (
             <>
-              <NavLi>마이 페이지</NavLi>
+              <NavLi onClick={() => goTo("/myPage")}>마이 페이지</NavLi>
               <NavLi onClick={handlelogout}>로그아웃</NavLi>
             </>
           ) : (

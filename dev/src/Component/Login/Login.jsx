@@ -123,8 +123,8 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
         alert(`${response.data.nickname}님 환영합니다.`);
         setUserId("");
         setUserPwd("");
-        const { username, tokens } = response.data;
-        login(username, tokens.accessToken, tokens.refreshToken);
+        const { nickname, tokens } = response.data;
+        login(nickname, tokens.accessToken, tokens.refreshToken);
         onRequestClose();
       })
       .catch((error) => {
@@ -134,16 +134,23 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
   };
 
   const handleKakaoSuccess = (response) => {
-    const username = response.profile.id;
-    const accessToken = response.response.access_token;
-    const refreshToken = response.response.refresh_token;
+    const snsId = response.profile.id;
+    const snsAccessToken = response.response.access_token;
+    const snsRefreshToken = response.response.refresh_token;
     axios
       .post("http://localhost/members/snsLogin", {
-        snsId: username,
+        snsId: snsId,
       })
       .then((response) => {
         alert(`${response.data.nickname}님 환영합니다.`);
-        login(username, accessToken, refreshToken);
+        const { nickname, tokens } = response.data;
+        login(
+          nickname,
+          tokens.accessToken,
+          tokens.refreshToken,
+          snsAccessToken,
+          snsRefreshToken
+        );
         onRequestClose();
       })
       .catch((error) => {

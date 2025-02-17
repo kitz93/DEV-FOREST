@@ -39,7 +39,9 @@ public class BoardServiceImpl implements BoardService {
 
 		// 검증된 인원인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		authService.validWriter(board.getBoardWriter(), user.getUsername());
+		log.info("게시판 작성자 : {}", board.getBoardWriter());
+		log.info("로그인 우저 : {}", user.getUsername());
+		authService.validWriter(board.getBoardWriter(), user.getNickname());
 		
 		// 파일확인
 		if (file != null && !file.isEmpty()) {
@@ -123,7 +125,7 @@ public class BoardServiceImpl implements BoardService {
 
 		// 검증된 인원인지 파악
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		authService.validWriter(board.getBoardWriter(), user.getUsername());
+		authService.validWriter(board.getBoardWriter(), user.getNickname());
 
 		// 바뀐 제목, 내용 입력
 		exsitingBoard.setBoardTitle(board.getBoardTitle());

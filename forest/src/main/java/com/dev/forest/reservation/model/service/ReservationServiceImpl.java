@@ -43,7 +43,7 @@ public class ReservationServiceImpl implements ReservationService {
 		
 		// 검증된 인원인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		authService.validWriter(reservation.getReservationUser(), user.getUsername());
+		authService.validWriter(reservation.getReservationUser(), user.getNickname());
 		
 		// 파일 확인
 		if (file != null && !file.isEmpty()) {

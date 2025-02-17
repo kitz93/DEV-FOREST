@@ -83,6 +83,15 @@ const ReservationList = () => {
     searchReservations();
   };
 
+  const handleDetailClick = (reservationNo) => {
+    if (!auth.isAuthenticated) {
+      alert("로그인이 필요합니다!");
+      navi("/reservations");
+      return;
+    }
+    navi(`/reservations/${reservationNo}`);
+  };
+
   return (
     <Container>
       {auth.isAuthenticated && (
@@ -97,11 +106,11 @@ const ReservationList = () => {
           reservations.map((res) => (
             <ListItem key={res.reservationNo}>
               <Thumbnail
-                onClick={() => navi(`/reservations/${res.reservationNo}`)}
+                onClick={() => handleDetailClick(res.reservationNo)}
                 src={res.fileUrl || "default_image.jpg"}
                 alt="모임 이미지"
               />
-              <Info onClick={() => navi(`/reservations/${res.reservationNo}`)}>
+              <Info onClick={() => handleDetailClick(res.reservationNo)}>
                 <Title>{res.reservationName}</Title>
                 <Description>{res.reservationContent}</Description>
                 <Address>{res.placeAddress}</Address>

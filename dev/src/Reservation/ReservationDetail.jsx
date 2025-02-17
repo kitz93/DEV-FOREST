@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Component/Context/AuthContext";
+import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import StudyingList from "../Studying/StudyingList";
 import {
   Container,
   ImageBox,
@@ -9,62 +10,34 @@ import {
   Title,
   InfoItem,
   Description,
-  ActionButtons,
   Message,
-  Button,
 } from "./ReservationDetail.syles";
+import StudyingForm from "../Studying/StudyingForm";
 
-const ReservationDetail = ({ reservationNo }) => {
-  const { id } = useParams();
+const ReservationDetail = () => {
+  const { id: reservationNo } = useParams();
   const [reservation, setReservation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [refresh, setRefresh] = useState(false); // 🔹 참가자 목록 갱신을 위한 상태 추가
   const { auth } = useContext(AuthContext);
-  const navi = useNavigate();
-  const [refreshMembers, setRefreshMembers] = useState(false);
-
-  const handleBack = () => {
-    navi(-1);
-  };
 
   useEffect(() => {
     axios
-      .get(`http://localhost/reservations/${id}`)
+      .get(`http://localhost/reservations/${reservationNo}`)
       .then((response) => {
-        console.log(response);
         setReservation(response.data);
         setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        console.error("모임 정보 불러오기 실패:", error);
         setError(true);
         setLoading(false);
       });
   }, []);
 
-  const handleDelete = () => {
-    if (window.confirm("정말 삭제할거니?")) {
-      axios
-        .delete(`http://localhost/reservations/${id}`, {
-          headers: {
-            Authorization: `Bearer ${auth.accessToken}`,
-          },
-        })
-        .then(() => {
-          setReservation({
-            reservationName: "삭제중입니다...",
-            reservationPlace: "삭제중입니다...",
-            reservationContent: "삭제중입니다...",
-          });
-          setTimeout(() => {
-            navi("/reservations");
-          }, 3000);
-        });
-    }
-  };
-
-  const triggerRefreshMembers = () => {
-    setRefreshMembers((prev) => !prev);
+  const handleRefresh = () => {
+    setRefresh((prev) => !prev); // 🔹 참가/취소 시 상태 변경 → `StudyingList` 갱신
   };
 
   if (loading) {
@@ -85,23 +58,26 @@ const ReservationDetail = ({ reservationNo }) => {
 
   return (
     <Container>
-      <h2>우리의 </h2>
-      <ImageBox>대표 이미지</ImageBox>
+      <h2>모임 상세</h2>
+      {reservation.fileUrl && (
+        <ImageBox src={reservation.fileUrl} alt="첨부 이미지" />
+      )}
 
       <InfoBox>
-        <Title>모임명</Title>
+        <Title>{reservation.reservationName}</Title>
         <InfoItem>
-          📅 {reservation.startDate} ~ {reservation.endDate}
+          📅 {reservation.startTime} ~ {reservation.endTime}
         </InfoItem>
-        <InfoItem>📍 {reservation.location}</InfoItem>
-        <Description>{reservation.description}</Description>
+        <InfoItem>📍 {reservation.reservationPlace}</InfoItem>
+        <InfoItem>{reservation.placeAddress}</InfoItem>
+        <Description>{reservation.reservationContent}</Description>
       </InfoBox>
 
-      {/* 멤버 리스트 */}
-      <ActionButtons>
-        <Button>참여하기</Button>
-        <Button>취소하기</Button>
-      </ActionButtons>
+      {/* 멤버 리스트 포함 - refresh 상태 전달 */}
+      <StudyingList reservationNo={reservationNo} refresh={refresh} />
+
+      {/* 참가/취소 버튼 - onRefresh 함수 전달 */}
+      <StudyingForm reservationNo={reservationNo} onRefresh={handleRefresh} />
     </Container>
   );
 };

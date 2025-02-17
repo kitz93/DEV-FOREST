@@ -16,16 +16,18 @@ import com.dev.forest.reply.model.service.ReplyService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 @RequestMapping("replys")
 public class ReplyController {
 	
 	private final ReplyService replyService;
 	
 	@PostMapping
-	public ResponseEntity<?> saveReply(@Valid @RequestBody ReplyDTO reply){
+	public ResponseEntity<?> saveReply(ReplyDTO reply){
 		replyService.saveReply(reply);
 		return ResponseEntity.status(HttpStatus.CREATED).body("댓글 작성을 성공했습니다.");
 	}

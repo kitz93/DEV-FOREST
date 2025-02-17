@@ -19,11 +19,13 @@ const StudyingList = ({ reservationNo, refresh }) => {
     axios
       .get(`http://localhost/studyings/${reservationNo}`)
       .then((response) => {
+        console.log(response.data);
         setStudyings(response.data || []);
-      });
+      })
+      .catch((error) => console.error("참가자 목록 불러오기 실패:", error));
   }, [reservationNo, refresh]);
 
-  // 모임 개설자를 따로 분리 (예제에서는 첫 번째 멤버를 개설자로 가정)
+  // 개설자와 일반 참가자 구분 (첫 번째 멤버를 개설자로 가정)
   const host = studyings.length > 0 ? studyings[0] : null;
   const members = studyings.length > 1 ? studyings.slice(1) : [];
 
@@ -33,12 +35,14 @@ const StudyingList = ({ reservationNo, refresh }) => {
         {host && (
           <Host>
             <CrownIcon>👑</CrownIcon>
-            <HostName>{host.nickname}</HostName>
+            <HostName>{host.studyingUser}</HostName>
           </Host>
         )}
         <MemberList>
           {members.slice(0, showAll ? members.length : 3).map((member) => (
-            <MemberItem key={member.id}>{member.nickname}</MemberItem>
+            <MemberItem key={member.studyingNo}>
+              🧑‍💻 {member.studyingUser}
+            </MemberItem>
           ))}
         </MemberList>
         {members.length > 3 && !showAll && (

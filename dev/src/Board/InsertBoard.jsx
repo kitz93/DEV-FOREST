@@ -18,7 +18,7 @@ const InsertBoard = () => {
   const navi = useNavigate();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [userId, setUserId] = useState("");
+  const [nickname, setNickname] = useState("");
   const [file, setFile] = useState(null);
   const [boardType, setBoardType] = useState("1"); // 기본값: 자유 (1)
   const [accessToken, setAccessToken] = useState("");
@@ -28,7 +28,7 @@ const InsertBoard = () => {
       alert("로그인이 필요합니다.");
       navi("/login");
     } else {
-      setUserId(auth.username);
+      setNickname(auth.nickname);
       setAccessToken(auth.accessToken);
     }
   }, []);
@@ -62,7 +62,7 @@ const InsertBoard = () => {
     const formData = new FormData();
     formData.append("boardTitle", title);
     formData.append("boardContent", content);
-    formData.append("boardWriter", userId);
+    formData.append("boardWriter", nickname);
     formData.append("boardType", boardType);
     if (file) {
       formData.append("file", file);
@@ -110,8 +110,8 @@ const InsertBoard = () => {
           ></TextArea>
         </div>
         <div>
-          <Label htmlFor="username">작성자 ID</Label>
-          <Input id="username" type="text" readOnly value={userId} />
+          <Label htmlFor="nickname">작성자 ID</Label>
+          <Input id="nickname" type="text" readOnly value={nickname} />
         </div>
         <div>
           <Label htmlFor="boardType">게시판 종류</Label>
@@ -121,7 +121,7 @@ const InsertBoard = () => {
             onChange={(e) => setBoardType(e.target.value)}
           >
             <option value="1">자유</option>
-            {auth.username === "ADMIN" && <option value="2">공지</option>}
+            {auth.nickname === "ADMIN" && <option value="2">공지</option>}
             <option value="3">취업</option>
           </select>
         </div>

@@ -2,6 +2,7 @@ package com.dev.forest.member.model.service;
 
 import com.dev.forest.member.model.dto.ChangePwdDTO;
 import com.dev.forest.member.model.dto.MemberDTO;
+import com.dev.forest.member.model.dto.MyPageDTO;
 import com.dev.forest.member.model.dto.SnsMemberDTO;
 
 public interface MemberService {
@@ -14,6 +15,7 @@ public interface MemberService {
 
 	void delete(String password);
 
-	SnsMemberDTO snsLogin(SnsMemberDTO member);
+	MyPageDTO myPage();
+
 
 }

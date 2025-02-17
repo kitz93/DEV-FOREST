@@ -100,10 +100,12 @@ const BoardDetail = () => {
       )}
       <Content>{board.boardContent}</Content>
 
-      <EditForm>
-        <EditButton onClick={handleEdit}>수정하기</EditButton>
-        <DeleteButton onClick={handleDelete}>삭제하기</DeleteButton>
-      </EditForm>
+      {auth.nickname === board.boardWriter && (
+        <EditForm>
+          <EditButton onClick={handleEdit}>수정하기</EditButton>
+          <DeleteButton onClick={handleDelete}>삭제하기</DeleteButton>
+        </EditForm>
+      )}
 
       <BackButton onClick={handleBack}>뒤로가기</BackButton>
 
