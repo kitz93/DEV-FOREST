@@ -52,7 +52,7 @@ public class SecurityConfiguration {
 					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login", "/members/sns", "/members/snsLogin").permitAll();
 					requests.requestMatchers(HttpMethod.GET, "/members/myPage").authenticated();
 					requests.requestMatchers(HttpMethod.PUT, "/members").authenticated();
-					requests.requestMatchers(HttpMethod.DELETE, "/members").authenticated();
+					requests.requestMatchers(HttpMethod.DELETE, "/members", "/members/sns").authenticated();
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");
 				})
 				.sessionManagement(
