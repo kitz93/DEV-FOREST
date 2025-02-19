@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.RuntimeErrorException;
+
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,6 +57,12 @@ public class ReservationServiceImpl implements ReservationService {
 		}
 		
 		reservation.setReservationUser(String.valueOf(user.getUserNo()));
+		
+		LocalDateTime now = LocalDateTime.now();
+		
+		if(reservation.getStartTime().isBefore(now) && reservation.getEndTime().isBefore(now)) {
+			throw new InvalidParameterException("시작시간 / 끝시간이 현재시간 전입니다.");
+		}
 		
 		// 모임 등록
 		reservationMapper.reservate(reservation);
