@@ -63,3 +63,21 @@ export const Message = styled.p`
   color: ${(props) => (props.$error ? "#e74c3c" : "#2ecc71")};
   margin-bottom: 20px;
 `;
+
+export const CancleButton = styled.button`
+  display: block;
+  background-color: rgb(255, 0, 0);
+  color: white;
+  text-align: center;
+  margin: 20px auto;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s;
+
+  &:hover {
+    background-color: rgba(253, 0, 0, 0.64);
+  }
+`;

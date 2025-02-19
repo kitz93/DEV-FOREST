@@ -31,7 +31,7 @@ const StudyingForm = ({ reservationNo, onRefresh }) => {
         setIsJoined(isUserJoined);
       })
       .catch((error) => console.error("참가자 목록 불러오기 실패:", error));
-  }, [reservationNo, auth.nickname]); // reservationNo 또는 사용자 변경 시 확인
+  }, [reservationNo, auth.nickname]);
 
   const handleJoin = () => {
     const formData = new FormData();
@@ -68,7 +68,7 @@ const StudyingForm = ({ reservationNo, onRefresh }) => {
         })
         .then(() => {
           setIsJoined(false);
-          onRefresh(); // 참가자 목록 갱신
+          onRefresh();
         })
         .catch((error) => console.error("참여 취소 실패:", error));
     }

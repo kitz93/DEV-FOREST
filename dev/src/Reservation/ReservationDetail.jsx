@@ -11,21 +11,26 @@ import {
   InfoItem,
   Description,
   Message,
+  CancleButton,
 } from "./ReservationDetail.syles";
 import StudyingForm from "../Studying/StudyingForm";
+import { useNavigate } from "react-router-dom";
 
 const ReservationDetail = () => {
   const { id: reservationNo } = useParams();
   const [reservation, setReservation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [refresh, setRefresh] = useState(false); // 🔹 참가자 목록 갱신을 위한 상태 추가
+  const [refresh, setRefresh] = useState(false);
   const { auth } = useContext(AuthContext);
+
+  const navi = useNavigate();
 
   useEffect(() => {
     axios
       .get(`http://localhost/reservations/${reservationNo}`)
       .then((response) => {
+        console.log(response.data);
         setReservation(response.data);
         setLoading(false);
       })
@@ -37,7 +42,28 @@ const ReservationDetail = () => {
   }, []);
 
   const handleRefresh = () => {
-    setRefresh((prev) => !prev); // 🔹 참가/취소 시 상태 변경 → `StudyingList` 갱신
+    setRefresh((prev) => !prev);
+  };
+
+  const handleCancle = () => {
+    if (window.confirm("정말 삭제할거니?")) {
+      axios
+        .delete(`http://localhost/reservations/${reservationNo}`, {
+          headers: {
+            Authorization: `Bearer ${auth.accessToken}`,
+          },
+        })
+        .then(() => {
+          setReservation({
+            reservationName: "삭제중입니다....",
+            reservationContent: "삭제중입니다...",
+          });
+          setTimeout(() => {
+            alert("삭제가 완료되었습니다.");
+            navi("/reservations");
+          }, 3000);
+        });
+    }
   };
 
   if (loading) {
@@ -73,11 +99,12 @@ const ReservationDetail = () => {
         <Description>{reservation.reservationContent}</Description>
       </InfoBox>
 
-      {/* 멤버 리스트 포함 - refresh 상태 전달 */}
       <StudyingList reservationNo={reservationNo} refresh={refresh} />
 
-      {/* 참가/취소 버튼 - onRefresh 함수 전달 */}
       <StudyingForm reservationNo={reservationNo} onRefresh={handleRefresh} />
+      {auth.nickname === reservation.reservationUser && (
+        <CancleButton onClick={handleCancle}>취소하기</CancleButton>
+      )}
     </Container>
   );
 };
