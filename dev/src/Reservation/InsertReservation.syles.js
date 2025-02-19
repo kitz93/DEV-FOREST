@@ -100,3 +100,9 @@ export const Button = styled.button`
     transform: translateY(0);
   }
 `;
+
+export const PlaceDiv = styled.div`
+  display: "flex";
+  gap: "10px";
+  alignitems: "center";
+`;

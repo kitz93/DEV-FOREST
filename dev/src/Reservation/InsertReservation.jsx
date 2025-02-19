@@ -7,15 +7,16 @@ import {
   InputForm,
   Label,
   TextArea,
-  Title,
+  PlaceDiv,
 } from "./InsertReservation.syles";
-import { useState, useEffect, useContext } from "react";
+import { useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../Component/Context/AuthContext";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { Content } from "../Board/BoardDetail.styles";
+import KakaoMap from "../Component/Map/KakaoMap";
 
 const InsertReservation = () => {
+  const { auth } = useContext(AuthContext);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [nickname, setNickname] = useState("");
@@ -23,8 +24,22 @@ const InsertReservation = () => {
   const [file, setFile] = useState(null);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [location, setLocation] = useState("");
+  const [address, setAddress] = useState("");
+  const [accessToken, setAccessToken] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
 
   const navi = useNavigate();
+
+  useEffect(() => {
+    if (!auth.isAuthenticated) {
+      alert("로그인이 필요합니다.");
+      navi("/login");
+    } else {
+      setNickname(auth.nickname);
+      setAccessToken(auth.accessToken);
+    }
+  }, []);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -44,9 +59,53 @@ const InsertReservation = () => {
     setFile(selectedFile);
   };
 
+  const handleInsertReservation = (e) => {
+    e.preventDefault();
+
+    if (
+      !title ||
+      !content ||
+      !count ||
+      !startTime ||
+      !endTime ||
+      !location ||
+      !address ||
+      !file
+    ) {
+      alert("빈칸없이 입력해주세요.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("reservationName", title);
+    formData.append("reservationContent", content);
+    formData.append("reservationUser", nickname);
+    formData.append("reservationCount", count);
+    formData.append("reservationPlace", location);
+    formData.append("placeAddress", address);
+    formData.append("startTime", startTime);
+    formData.append("endTime", endTime);
+    formData.append("file", file);
+
+    axios
+      .post("http://localhost/reservations", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 201) {
+          alert("게시글이 성공적으로 작성되었습니다.");
+          navi("/reservations");
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
   return (
     <Container>
-      <InputForm>
+      <InputForm onSubmit={handleInsertReservation}>
         <Label>모임명</Label>
         <Input
           id="title"
@@ -62,10 +121,32 @@ const InsertReservation = () => {
           id="content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          type="text"
           required
           placeholder="모임에 대한 설명을 입력해주세요."
         />
+
+        <Label>모임 장소</Label>
+        <KakaoMap
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSelectPlace={({ place_name, address_name }) => {
+            setLocation(place_name);
+            setAddress(address_name);
+          }}
+        />
+
+        <PlaceDiv>
+          <Input
+            id="location"
+            type="text"
+            value={`${location}${address ? ` (${address})` : ""}`}
+            readOnly
+            placeholder="장소를 선택하세요."
+          />
+          <Button type="button" onClick={() => setIsModalOpen(true)}>
+            장소 선택
+          </Button>
+        </PlaceDiv>
 
         <Label>대표 예약자</Label>
         <Input id="nickname" type="text" readOnly value={nickname} />
@@ -76,7 +157,7 @@ const InsertReservation = () => {
           type="number"
           min="1"
           value={count}
-          onChange={(e) => setCount(e.target.value)}
+          onChange={(e) => setCount(Number(e.target.value))}
         />
 
         <Label>시작 시간</Label>
@@ -104,14 +185,8 @@ const InsertReservation = () => {
         />
 
         <ButtonForm>
-          <Button>제출하기</Button>
-          <Button
-            onClick={() => {
-              navi("/reservations");
-            }}
-          >
-            취소하기
-          </Button>
+          <Button type="submit">제출하기</Button>
+          <Button onClick={() => navi("/reservations")}>취소하기</Button>
         </ButtonForm>
       </InputForm>
     </Container>

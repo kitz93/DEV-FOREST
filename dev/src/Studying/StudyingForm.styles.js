@@ -35,3 +35,18 @@ export const LeaveButton = styled.button`
     background-color: #e63939;
   }
 `;
+
+export const BackButton = styled.button`
+  background-color: rgb(78, 78, 255);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s;
+
+  &:hover {
+    background-color: rgb(116, 116, 254);
+  }
+`;

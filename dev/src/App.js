@@ -14,6 +14,7 @@ import ReservationDetail from "./Reservation/ReservationDetail";
 import MyPage from "./Component/MyPage/MyPage";
 import Main from "./Component/Main/Main";
 import InsertReservation from "./Reservation/InsertReservation";
+import KakaoMap from "./Component/Map/KakaoMap";
 
 const TestDiv = styled.div`
   width: 1000px;

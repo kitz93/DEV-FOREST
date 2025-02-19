@@ -2,14 +2,22 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../Component/Context/AuthContext";
 import {
+  BackButton,
   ButtonContainer,
   JoinButton,
   LeaveButton,
 } from "./StudyingForm.styles";
+import { useNavigate } from "react-router-dom";
 
 const StudyingForm = ({ reservationNo, onRefresh }) => {
   const { auth } = useContext(AuthContext);
   const [isJoined, setIsJoined] = useState(false);
+
+  const navi = useNavigate();
+
+  const handleBack = () => {
+    navi(-1);
+  };
 
   useEffect(() => {
     // 참가 여부 확인
@@ -45,7 +53,7 @@ const StudyingForm = ({ reservationNo, onRefresh }) => {
             setIsJoined(true);
             onRefresh();
           })
-          .catch((error) => console.error("참여 실패:", error));
+          .catch((error) => alert("현재 모임 정원이 다 찼습니다."));
       }
     }
   };
@@ -73,6 +81,7 @@ const StudyingForm = ({ reservationNo, onRefresh }) => {
       ) : (
         <JoinButton onClick={handleJoin}>참여하기</JoinButton>
       )}
+      <BackButton onClick={handleBack}>뒤로가기</BackButton>
     </ButtonContainer>
   );
 };
