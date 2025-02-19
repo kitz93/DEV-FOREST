@@ -113,15 +113,15 @@ const Header = () => {
           <NavLi>
             퀴즈 퀴즈
             <DropdownUl>
-              <li>문제 풀기</li>
-              <li>랭킹</li>
+              <li onClick={() => goTo("/quizs")}>문제 풀기</li>
+              <li onClick={() => goTo("/rankings")}>랭킹</li>
             </DropdownUl>
           </NavLi>
           <NavLi>
             이론 공부
             <DropdownUl>
-              <li>백 엔드</li>
-              <li>프론트 엔드</li>
+              <li onClick={() => goTo("/backend")}>백 엔드</li>
+              <li onClick={() => goTo("/frontend")}>프론트 엔드</li>
             </DropdownUl>
           </NavLi>
           <NavLi onClick={() => goTo("/boards")}>커뮤니티</NavLi>

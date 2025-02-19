@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.dev.forest.wrong.model.mapper.WrongMapper">
+  
+  <select id="findById" resultType="WrongDTO">
+  	SELECT
+  			ANSWER_NO answerNo,
+  			QUIZ_NO quizNo,
+  			USER_NO userNo,
+  			TEST_DATE testDate,
+  			ENT_ANSWER entAnswer
+  	  FROM
+  	  		TB_WRONG_ANSWER
+  	 WHERE
+  	 		USER_NO = #{userNo}
+  	 ORDER
+  	    BY
+  	    	ANSWER_NO
+  </select>
+  
+  <insert id="insertWrong" parameterType="WrongDTO">
+  	INSERT
+  	  INTO
+  	  		TB_WRONG_ANSWER
+	VALUES
+			(
+				SEQ_ANSWER_NO.NEXTVAL,
+				#{quizNo},
+				#{userNo},
+				SYSDATE,
+				#{entAnswer}
+			)
+  </insert>
+  
+  
+  
+  
+  
+  </mapper>

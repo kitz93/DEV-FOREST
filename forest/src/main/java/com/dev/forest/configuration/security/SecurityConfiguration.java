@@ -49,6 +49,16 @@ public class SecurityConfiguration {
 		return httpSecurity.formLogin(AbstractHttpConfigurer::disable).httpBasic(AbstractHttpConfigurer::disable)
 				.csrf(AbstractHttpConfigurer::disable).cors(Customizer.withDefaults())
 				.authorizeHttpRequests(requests -> {
+
+					requests.requestMatchers(HttpMethod.GET, "/quizs/random").authenticated();
+					requests.requestMatchers("/wrongs", "/wrongs/**").permitAll();
+					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login").permitAll();
+					requests.requestMatchers(HttpMethod.GET, "/rankings").permitAll();
+					requests.requestMatchers(HttpMethod.POST, "/rankings/insert").authenticated();
+					requests.requestMatchers("/theorys", "/theorys/**").permitAll();
+					requests.requestMatchers("/progress", "/progress/**").permitAll();
+					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login", "/members/sns",
+							"/members/snsLogin").permitAll();
 					requests.requestMatchers("/uploads/**").permitAll();
 					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login", "/members/sns", "/members/snsLogin").permitAll();
 					requests.requestMatchers(HttpMethod.GET, "/members/myPage").authenticated();

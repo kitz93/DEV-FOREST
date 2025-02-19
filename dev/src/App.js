@@ -1,5 +1,8 @@
-import { Route, Routes } from "react-router-dom";
 import "./App.css";
+import RankingChart from "./Ranking/RankingChart";
+import Quiz from "./Quiz/Quiz";
+import { Route, Routes } from "react-router-dom";
+import BackendTheory from "./Theory/BackendTheory.";
 import { AuthProvider } from "./Component/Context/AuthContext";
 import styled from "styled-components";
 import Footer from "./Component/Footer/Footer";
@@ -13,6 +16,7 @@ import StudyingList from "./Studying/StudyingList";
 import ReservationDetail from "./Reservation/ReservationDetail";
 import MyPage from "./Component/MyPage/MyPage";
 import Main from "./Component/Main/Main";
+import FrontendTheory from "./Theory/FrontendTheory";
 import InsertReservation from "./Reservation/InsertReservation";
 import KakaoMap from "./Component/Map/KakaoMap";
 
@@ -38,7 +42,12 @@ function App() {
           <Route path="studyings" element={<StudyingList />} />
           <Route path="/" element={<Main />} />
           <Route path="/myPage" element={<MyPage />} />
+          <Route path="/quizs" element={<Quiz />} />
+          <Route path="/rankings" element={<RankingChart />} />
+          <Route path="/backend" element={<BackendTheory />} />
+          <Route path="/frontend" element={<FrontendTheory />} />
           <Route path="create" element={<InsertReservation />} />
+
         </Routes>
 
         <Footer />
