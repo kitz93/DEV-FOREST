@@ -100,7 +100,7 @@ const InsertReservation = () => {
           navi("/reservations");
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => alert(error.response.data));
   };
 
   return (

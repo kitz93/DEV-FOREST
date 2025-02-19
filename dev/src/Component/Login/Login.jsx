@@ -128,8 +128,18 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
         onRequestClose();
       })
       .catch((error) => {
-        console.log(error);
-        alert(error.response.data);
+        // console.log(error);
+        const msg = error.response.data;
+        if (msg === "탈퇴한 유저 입니다.") {
+          const res = window.confirm(error.response.data);
+          if (res) {
+            alert("재가입 성공(구현 안함)");
+          } else {
+            alert("재가입 취소");
+          }
+        } else {
+          alert(error.response.data);
+        }
       });
   };
 
@@ -159,7 +169,7 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
   };
 
   const handleKakaoFailure = (error) => {
-    console.log(error);
+    // console.log(error);
     alert("카카오 로그인에 실패하였습니다.");
   };
 

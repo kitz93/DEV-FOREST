@@ -42,7 +42,7 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	public void reservate(ReservationDTO reservation, MultipartFile file) {
 		
-		log.info("게시글정보 : {} \n 파일정보 : {} ",reservation, file);
+//		log.info("게시글정보 : {} \n 파일정보 : {} ",reservation, file);
 		
 		// 검증된 인원인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
@@ -53,15 +53,19 @@ public class ReservationServiceImpl implements ReservationService {
 			String filePath = fileService.store(file, "RservationImg");
 			reservation.setFileUrl(filePath);
 		} else {
-			reservation.setFileUrl(null);
+			throw new InvalidParameterException("모임 대표사진이 누락되었습니다.");
 		}
 		
 		reservation.setReservationUser(String.valueOf(user.getUserNo()));
 		
 		LocalDateTime now = LocalDateTime.now();
 		
-		if(reservation.getStartTime().isBefore(now) && reservation.getEndTime().isBefore(now)) {
-			throw new InvalidParameterException("시작시간 / 끝시간이 현재시간 전입니다.");
+		log.info("현재시간 : {}",now);
+		log.info("start time : {}", reservation.getStartTime());
+		log.info("end time : {}", reservation.getEndTime());
+		
+		if(reservation.getStartTime().isBefore(now) || reservation.getEndTime().isBefore(now)) {
+			throw new InvalidParameterException("시작시간 또는 종료시간이 현재시간 전입니다.");
 		}
 		
 		// 모임 등록
