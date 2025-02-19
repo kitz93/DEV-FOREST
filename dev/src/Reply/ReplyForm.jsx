@@ -39,9 +39,9 @@ const ReplyForm = ({ boardNo, onSuccess }) => {
           //console.log(response);
         })
         .catch((error) => {
-          console.log(boardNo);
-          console.log(auth.nickname);
-          console.log(reply);
+          //console.log(boardNo);
+          //console.log(auth.nickname);
+          //console.log(reply);
           console.log(error);
         });
     }

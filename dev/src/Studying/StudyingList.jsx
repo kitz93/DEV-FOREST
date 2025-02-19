@@ -19,7 +19,7 @@ const StudyingList = ({ reservationNo, refresh }) => {
     axios
       .get(`http://localhost/studyings/${reservationNo}`)
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         setStudyings(response.data || []);
       })
       .catch((error) => console.error("참가자 목록 불러오기 실패:", error));

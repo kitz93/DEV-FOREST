@@ -14,6 +14,12 @@ export const Container = styled.div`
   }
 `;
 
+export const Message = styled.p`
+  text-align: center;
+  color: ${(props) => (props.$error ? "#e74c3c" : "#2ecc71")};
+  margin-bottom: 20px;
+`;
+
 export const NaviContainer = styled.div`
   display: flex;
   justify-content: space-between;

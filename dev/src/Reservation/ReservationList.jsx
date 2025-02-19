@@ -21,6 +21,7 @@ import {
   Address,
   MemberCount,
   CreateButton,
+  Message,
 } from "./ReservationList.syles";
 
 const ReservationList = () => {
@@ -30,6 +31,8 @@ const ReservationList = () => {
   const [keyword, setKeyword] = useState("");
   const [totalPage, setTotalPage] = useState(0);
   const [isSearching, setIsSearching] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const { auth } = useContext(AuthContext);
   const navi = useNavigate();
@@ -42,11 +45,16 @@ const ReservationList = () => {
         },
       })
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         setReservations(response.data.reservationList || []);
         setTotalPage(response.data.pi?.maxPage || 1);
+        setLoading(false);
       })
-      .catch(() => setReservations([]));
+      .catch(() => {
+        setReservations([]);
+        setError(true);
+        setLoading(false);
+      });
   };
 
   const searchReservations = () => {
@@ -61,8 +69,13 @@ const ReservationList = () => {
       .then((response) => {
         setReservations(response.data.reservationList || []);
         setTotalPage(response.data.pi?.maxPage || 1);
+        setLoading(false);
       })
-      .catch(() => setReservations([]));
+      .catch(() => {
+        setReservations([]);
+        setError(true);
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -91,6 +104,22 @@ const ReservationList = () => {
     }
     navi(`/reservations/${reservationNo}`);
   };
+
+  if (loading) {
+    return (
+      <Container>
+        <Message>로딩 중...</Message>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container>
+        <Message>게시글을 찾을 수 없습니다.</Message>
+      </Container>
+    );
+  }
 
   return (
     <Container>

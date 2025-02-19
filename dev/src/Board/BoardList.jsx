@@ -22,6 +22,7 @@ import {
   SearchButton,
   SelectOption,
   SearchInput,
+  Message,
 } from "./BoardList.styles";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Component/Context/AuthContext";
@@ -36,7 +37,7 @@ const BoardList = () => {
   const [keyword, setKeyword] = useState("");
   const [totalPage, setTotalPage] = useState(0);
   const [isSearching, setIsSearching] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const { auth } = useContext(AuthContext);
 
   const navi = useNavigate();
@@ -52,10 +53,12 @@ const BoardList = () => {
       .then((response) => {
         setBoards([...response.data.boardList] || []); // 게시글이 없을 경우 빈 배열 설정
         setTotalPage(response.data.pi?.maxPage || 1); // 페이지가 없으면 기본값 설정
+        setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        console.log("게시글이 비어있습니다.");
         setBoards([]); // 에러 발생 시 빈 배열 설정
+        setLoading(false);
       });
   };
 
@@ -72,9 +75,11 @@ const BoardList = () => {
       .then((response) => {
         setBoards([...response.data.boardList] || []); // 게시글이 없을 경우 빈 배열 설정
         setTotalPage(response.data.pi?.maxPage || 1); // 페이지가 없으면 기본값 설정
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
 
@@ -105,6 +110,14 @@ const BoardList = () => {
     setIsSearching(true);
     searchBoards();
   };
+
+  if (loading) {
+    return (
+      <Container>
+        <Message>로딩 중...</Message>
+      </Container>
+    );
+  }
 
   return (
     <Container>

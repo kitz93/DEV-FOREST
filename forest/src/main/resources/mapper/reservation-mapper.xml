@@ -49,6 +49,7 @@
 			   RESERVATION_COUNT reservationCount,
 			   RESERVATION_PLACE reservationPlace,
 			   PLACE_ADDRESS placeAddress,
+			   END_TIME endTime,
 			   FILE_URL fileUrl,
 			   R.STATUS status
 	</sql>
@@ -183,6 +184,17 @@
 		 	   STATUS = 'Y'
 		   AND
 		   	   RESERVATION_STATUS = 'Y'
+		   AND
+		       RESERVATION_NO = #{reservationNo}
+	</update>
+	
+	<update id="updateToExpired" parameterType="Long">
+		UPDATE
+		       TB_RESERVATION
+		   SET
+		   	   STATUS = 'N'
+		 WHERE
+		       STATUS = 'Y'
 		   AND
 		       RESERVATION_NO = #{reservationNo}
 	</update>

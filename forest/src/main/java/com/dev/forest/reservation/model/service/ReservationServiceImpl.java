@@ -1,5 +1,6 @@
 package com.dev.forest.reservation.model.service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,8 +101,18 @@ public class ReservationServiceImpl implements ReservationService {
 		
 		List<ReservationDTO> reservationList = reservationMapper.findAll(rowBounds);
 		
+		LocalDateTime now = LocalDateTime.now();
+		
+		for(ReservationDTO reservation : reservationList) {
+			if(reservation.getEndTime() != null && reservation.getEndTime().isBefore(now)) {				
+				reservationMapper.updateToExpired(reservation.getReservationNo());
+			}
+		}
+		
+		List<ReservationDTO> list = reservationMapper.findAll(rowBounds);
+		
 		HashMap<String, Object> map = new HashMap<>();
-		map.put("reservationList", reservationList);
+		map.put("reservationList", list);
 		map.put("pi", pi);
 		
 		return map;
@@ -114,7 +125,7 @@ public class ReservationServiceImpl implements ReservationService {
 			throw new InvalidParameterException("올바른 게시판 번호가 아닙니다."); // 오류처리
 		}
 		
-		return reservation; // 이미지있는 게시판 반환
+		return reservation;
 	}
 	
 	@Override

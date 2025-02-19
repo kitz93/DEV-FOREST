@@ -30,7 +30,7 @@ const ReservationDetail = () => {
     axios
       .get(`http://localhost/reservations/${reservationNo}`)
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         setReservation(response.data);
         setLoading(false);
       })

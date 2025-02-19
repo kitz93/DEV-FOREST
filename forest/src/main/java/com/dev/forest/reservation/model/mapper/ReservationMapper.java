@@ -31,4 +31,6 @@ public interface ReservationMapper {
 
 	void notPullReservationStatus(Long reservationNo);
 
+	void updateToExpired(Long reservationNo);
+
 }

@@ -11,6 +11,12 @@ export const Container = styled.div`
   align-items: center;
 `;
 
+export const Message = styled.p`
+  text-align: center;
+  color: ${(props) => (props.$error ? "#e74c3c" : "#2ecc71")};
+  margin-bottom: 20px;
+`;
+
 // 리스트 컨테이너
 export const ListContainer = styled.div`
   width: 100%;
