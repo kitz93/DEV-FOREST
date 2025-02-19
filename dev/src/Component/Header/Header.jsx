@@ -109,7 +109,7 @@ const Header = () => {
       </LogoDiv>
       <NavDiv>
         <NavUl>
-          <NavLi>스터디 룸</NavLi>
+          <NavLi onClick={() => goTo("/reservations")}>스터디 룸</NavLi>
           <NavLi>
             퀴즈 퀴즈
             <DropdownUl>
@@ -124,7 +124,7 @@ const Header = () => {
               <li>프론트 엔드</li>
             </DropdownUl>
           </NavLi>
-          <NavLi>커뮤니티</NavLi>
+          <NavLi onClick={() => goTo("/boards")}>커뮤니티</NavLi>
           {auth.isAuthenticated ? (
             <>
               <NavLi onClick={() => goTo("/myPage")}>마이 페이지</NavLi>

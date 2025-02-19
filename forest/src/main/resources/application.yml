@@ -24,7 +24,7 @@ mybatis:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     jdbc-type-for-null: VARCHAR
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.dev.forest.member.model.dto, com.dev.forest.token.model.dto
+  type-aliases-package: com.dev.forest.member.model.dto, com.dev.forest.token.model.dto, com.dev.forest.board.model.dto, com.dev.forest.reservation.model.dto, com.dev.forest.studying.model.dto, com.dev.forest.reply.model.dto
 
 logging:
   level:

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.forest.studying.model.mapper.StudyingMapper">
+
+	<insert id="attend">
+		INSERT
+		  INTO
+		  	   TB_STUDYING
+		  	   (
+				STUDYING_NO,
+				REF_RNO,
+				STUDYING_USER
+			   )
+		VALUES
+			   (
+				SEQ_SNO.NEXTVAL,
+				#{refRno},
+				#{studyingUser}
+			   )
+	
+	</insert>
+	
+	<select id="findByRervationNo" parameterType="Long" resultType="StudyingDTO">
+		SELECT
+			   STUDYING_NO studyingNo,
+			   REF_RNO refRno,
+			   M.NICKNAME studyingUser,
+			   CREATE_DATE createDate
+		  FROM
+		  	   TB_STUDYING S
+		  JOIN
+		  	   TB_MEMBER M ON(STUDYING_USER = USER_NO)
+		 WHERE
+		 	   S.STATUS = 'Y'
+		   AND
+		   	   REF_RNO = #{refBno}
+		 ORDER
+		    BY
+		       CREATE_DATE ASC
+	
+	</select>
+	
+	<update id="cancle" parameterType="map">
+		UPDATE
+			   TB_STUDYING
+		   SET
+		   	   STATUS = 'N'
+		 WHERE
+		 	   STATUS = 'Y'
+		   AND
+		   	   REF_RNO = #{refBno}
+		   AND
+		   	   STUDYING_USER = #{studyingUser}
+	
+	</update>
+	
+	<select id="countByReservationNo" parameterType="Long" resultType="_int">
+		SELECT
+		       COUNT(*)
+		  FROM
+		  	   TB_STUDYING
+		 WHERE
+		 	   STATUS = 'Y'
+		   AND
+		   	   REF_RNO = #{refBno}
+		   	    
+	</select>
+
+
+</mapper>
