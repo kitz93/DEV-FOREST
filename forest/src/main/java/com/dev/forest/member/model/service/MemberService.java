@@ -14,6 +14,8 @@ public interface MemberService {
 	void update(ChangePwdDTO changePwd);
 
 	void delete(String password);
+	
+	void snsDelete();
 
 	MyPageDTO myPage();
 

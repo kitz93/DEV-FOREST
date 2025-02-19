@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.forest.reservation.model.mapper.ReservationMapper">
+	
+	<insert id="reservate">
+	<selectKey keyProperty="reservationNo" resultType="long" order="BEFORE">
+        SELECT 
+        	   SEQ_RNO.NEXTVAL 
+          FROM 
+          	   DUAL
+    </selectKey>
+		INSERT
+		  INTO
+		  	   TB_RESERVATION
+		  	   (
+				RESERVATION_NO,
+				RESERVATION_USER,
+				RESERVATION_NAME,
+				RESERVATION_CONTENT,
+				RESERVATION_COUNT,
+				RESERVATION_PLACE,
+				PLACE_ADDRESS,
+				START_TIME,
+				END_TIME,
+				FILE_URL
+			   )
+		VALUES
+			   (
+				#{reservationNo},
+				#{reservationUser},
+				#{reservationName},
+				#{reservationContent},
+				#{reservationCount},
+				#{reservationPlace},
+				#{placeAddress},
+				#{startTime},
+				#{endTime},
+				#{fileUrl}
+			   )
+	</insert>
+	
+	<sql id="reservationColumn">
+		SELECT
+			   RESERVATION_NO reservationNo,
+			   RESERVATION_NAME reservationName,
+			   RESERVATION_CONTENT reservationContent,
+			   RESERVATION_COUNT reservationCount,
+			   RESERVATION_PLACE reservationPlace,
+			   PLACE_ADDRESS placeAddress,
+			   END_TIME endTime,
+			   FILE_URL fileUrl,
+			   R.STATUS status
+	</sql>
+
+	<select id="findAll" resultType="ReservationDTO">
+		<include refid="reservationColumn" />,
+				(SELECT
+						COUNT(*)
+				   FROM
+				   	    TB_STUDYING S
+				  WHERE
+				        S.STATUS = 'Y'
+				    AND
+				        REF_RNO = R.RESERVATION_NO
+				 ) AS currentMembers
+		  FROM
+		  	   TB_RESERVATION R
+	      JOIN
+		       TB_MEMBER M ON (RESERVATION_USER = USER_NO)
+		 WHERE
+		 	   R.STATUS = 'Y'	
+		 ORDER
+		    BY
+		       RESERVATION_NO DESC
+	</select>
+	
+	<select id="findById" parameterType="Long" resultType="ReservationDTO">
+		<include refid="reservationColumn" />,
+				M.NICKNAME reservationUser,
+				START_TIME startTime,
+				END_TIME endTime,
+				RESERVATION_STATUS reservationStatus
+		  FROM
+		  	   TB_RESERVATION R
+		  JOIN
+		  	   TB_MEMBER M ON(RESERVATION_USER = USER_NO)
+		 WHERE
+		 	   RESERVATION_NO = #{reservationNo}
+	</select>
+	
+	<select id="selectTotalCount" resultType="_int">
+		SELECT
+			   COUNT(*)
+		  FROM
+		  	   TB_RESERVATION
+		 WHERE
+		 	   STATUS = 'Y'
+	</select>
+	
+	<sql id="searchColumn">
+		FROM
+		  	  TB_RESERVATION R
+		JOIN
+			  TB_MEMBER M ON(RESERVATION_USER = USER_NO)	
+	   WHERE
+		 	  R.STATUS = 'Y'
+	<if test="condition == 'title'">
+		 AND
+		   	  RESERVATION_NAME
+	</if>
+	<if test="condition == 'place'">
+		 AND
+		   	  PLACE_ADDRESS 
+	</if>
+		LIKE '%' || #{keyword} || '%'
+	</sql>
+	
+	<select id="searchCount" parameterType="map" resultType="_int">
+		SELECT
+			   COUNT(*)
+		  <include refid="searchColumn" />
+	</select>
+	
+	<select id="search" parameterType="map" resultType="ReservationDTO">
+		<include refid="reservationColumn" />,
+				(SELECT
+						COUNT(*)
+				   FROM
+				   	    TB_STUDYING S
+				  WHERE
+				        S.STATUS = 'Y'
+				    AND
+				        REF_RNO = R.RESERVATION_NO
+				 ) AS currentMembers
+		<include refid="searchColumn" />
+		ORDER
+		   BY
+		   	  RESERVATION_NO DESC
+	</select>
+	
+	<update id="delete" parameterType="ReservationDTO">
+		UPDATE
+			   TB_RESERVATION
+		   SET
+		   	   STATUS = 'N'
+		 WHERE
+		 	   STATUS = 'Y'
+		   AND
+		 	   RESERVATION_NO = #{reservationNo}
+	</update>
+	
+	<select id="getMaxCount" parameterType="Long" resultType="int">
+		SELECT
+			   RESERVATION_COUNT
+		  FROM
+		  	   TB_RESERVATION
+		 WHERE
+		 	   STATUS = 'Y'
+		   AND
+		   	   RESERVATION_NO = #{reservationNo}
+	</select>
+	
+	<update id="pullReservationStatus" parameterType="Long">
+		UPDATE
+		   	   TB_RESERVATION
+		   SET
+		   	   RESERVATION_STATUS = 'Y'
+		 WHERE
+		 	   STATUS = 'Y'
+		   AND
+		   	   RESERVATION_STATUS = 'N'
+		   AND
+		   	   RESERVATION_NO = #{reservationNo}
+	</update>
+	
+	<update id="notPullReservationStatus" parameterType="Long">
+		UPDATE
+		   	   TB_RESERVATION
+		   SET
+		   	   RESERVATION_STATUS = 'N'
+		 WHERE
+		 	   STATUS = 'Y'
+		   AND
+		   	   RESERVATION_STATUS = 'Y'
+		   AND
+		       RESERVATION_NO = #{reservationNo}
+	</update>
+	
+	<update id="updateToExpired" parameterType="Long">
+		UPDATE
+		       TB_RESERVATION
+		   SET
+		   	   STATUS = 'N'
+		 WHERE
+		       STATUS = 'Y'
+		   AND
+		       RESERVATION_NO = #{reservationNo}
+	</update>
+
+</mapper>

@@ -58,6 +58,7 @@ public class MemberController {
 	
 	@PutMapping
 	public ResponseEntity<String> update(@Valid @RequestBody ChangePwdDTO changePwd) {
+		log.info("request = {}", changePwd);
 		memberService.update(changePwd);
 		return ResponseEntity.ok("비밀번호 수정 완료");
 	}
@@ -65,6 +66,12 @@ public class MemberController {
 	@DeleteMapping
 	public ResponseEntity<String> delete(@RequestBody Map<String, String> userPwd) {
 		memberService.delete(userPwd.get("userPwd"));
+		return ResponseEntity.ok("회원 탈퇴 완료");
+	}
+	
+	@DeleteMapping("sns")
+	public ResponseEntity<String> snsDelete() {
+		memberService.snsDelete();
 		return ResponseEntity.ok("회원 탈퇴 완료");
 	}
 	

@@ -85,6 +85,13 @@ public class MemberServiceImpl implements MemberService {
 		}
 		memberMapper.delete(user.getUserNo());
 	}
+	
+	@Override
+	public void snsDelete() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
+		memberMapper.delete(user.getUserNo());
+	}
 
 	@Override
 	public MyPageDTO myPage() {
