@@ -127,7 +127,7 @@ const BoardList = () => {
           <NaviItem onClick={() => handleBoardTypeChange(2)}>공지</NaviItem>
           <NaviItem onClick={() => handleBoardTypeChange(3)}>취업</NaviItem>
         </NaviList>
-        {auth.isAuthenticated && (
+        {auth.isAuthenticated && boardType !== 2 && (
           <AddButton onClick={() => navi("/insert")}>글쓰기</AddButton>
         )}
       </NaviContainer>

@@ -130,6 +130,7 @@ const MyPage = () => {
           .then((response) => {
             alert(response.data);
             logout();
+            navi("/");
           })
           .catch((error) => {
             console.log(error);

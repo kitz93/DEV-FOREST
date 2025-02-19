@@ -3,6 +3,7 @@ import "./Quiz.css";
 import QuizResults from "./QuizResults";
 import axios from "axios";
 import { AuthContext } from "../Component/Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Quiz = () => {
   const [quizzes, setQuizzes] = useState([]);
@@ -12,11 +13,18 @@ const Quiz = () => {
   const [timeLeft, setTimeLeft] = useState(10);
   const [showResults, setShowResults] = useState(false);
   const [quizLength, setQuizLength] = useState(0);
+  const navi = useNavigate();
   const timerRef = useRef(null);
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
     const abc = () => {
+      if (!auth.isAuthenticated) {
+        alert("로그인 후 이용 가능합니다.");
+        navi("/");
+        return;
+      }
+
       axios
         .get("http://localhost/quizs/random", {
           headers: {
