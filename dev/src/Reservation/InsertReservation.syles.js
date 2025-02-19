@@ -78,6 +78,52 @@ export const ButtonForm = styled.div`
   margin-top: 20px;
 `;
 
+export const CancleButton = styled.button`
+  padding: 12px 20px;
+  background-color: #2ecc71;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    background-color: #1e8449;
+    transform: translateY(0);
+  }
+`;
+
+export const ReservationButton = styled.button`
+  padding: 12px 20px;
+  background-color: #2ecc71;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    background-color: #1e8449;
+    transform: translateY(0);
+  }
+`;
+
 export const Button = styled.button`
   padding: 12px 20px;
   background-color: #2ecc71;

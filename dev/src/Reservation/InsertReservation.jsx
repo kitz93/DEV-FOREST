@@ -8,6 +8,8 @@ import {
   Label,
   TextArea,
   PlaceDiv,
+  CancleButton,
+  ReservationButton,
 } from "./InsertReservation.syles";
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -185,8 +187,10 @@ const InsertReservation = () => {
         />
 
         <ButtonForm>
-          <Button type="submit">제출하기</Button>
-          <Button onClick={() => navi("/reservations")}>취소하기</Button>
+          <CancleButton type="button" onClick={() => navi("/reservations")}>
+            취소하기
+          </CancleButton>
+          <ReservationButton type="submit">제출하기</ReservationButton>
         </ButtonForm>
       </InputForm>
     </Container>
