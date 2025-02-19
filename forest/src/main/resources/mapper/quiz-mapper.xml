@@ -8,36 +8,7 @@
   	
   </sql>
   
-  <select id="findAll" resultType="QuizDTO">
-  	SELECT
-  			QUIZ_NO quizNo,
-  			QUESTION question,
-  			CATEGORY category,
-  			QUESTION_TYPE questionType,
-  			ANSWER answer,
-  			EXPLANATION explanation
-  	  FROM
-  	  		TB_QUIZ
-  	 ORDER
-  	    BY
-  	    	QUIZ_NO DESC
-  </select>
-  
-	<select id="findById" resultType="QuizDTO">
-	  	SELECT
-	  			QUIZ_NO quizNo,
-	  			QUESTION question,
-	  			CATEGORY category,
-	  			QUESTION_TYPE questionType,
-	  			ANSWER answer,
-	  			EXPLANATION explanation
-	  	  FROM
-	  	  		TB_QUIZ
-	  	 WHERE
-	  	 		QUIZ_NO = #{quizNo}
-	  </select>
-  
-	 <select id="findByCategory" resultType="QuizDTO">
+  <select id="findByCategory" resultType="QuizDTO">
   	SELECT
   			QUIZ_NO quizNo,
   			QUESTION question,

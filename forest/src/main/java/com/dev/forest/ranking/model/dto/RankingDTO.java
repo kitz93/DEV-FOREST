@@ -17,8 +17,8 @@ public class RankingDTO {
 	private Long divisionNo;
 	private Long userNo;
 	private String nickName;
-	private Long correctCount;
-	private Long wrongCount;
+	private Long correct;
+	private Long wrong;
 	private Date testDate;
 	
 }

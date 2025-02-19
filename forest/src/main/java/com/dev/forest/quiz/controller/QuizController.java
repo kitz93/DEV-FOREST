@@ -29,28 +29,8 @@ public class QuizController {
 	
 	private final QuizService quizService;
 	
-	@PostMapping
-	public ResponseEntity<?> insertQuiz(@RequestBody @Valid QuizDTO quiz) {
-		log.info("퀴즈 입력값 : {}", quiz);
-		return ResponseEntity.status(HttpStatus.CREATED).body("퀴즈 등록 성공");
-	}
-	
-	@GetMapping
-	public ResponseEntity<List<QuizDTO>> findAll() {
-		List<QuizDTO> quizDTO = quizService.findAll();
-		return ResponseEntity.ok(quizDTO);
-	}
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<QuizDTO> findById(@PathVariable(name="id") @Min(value=1, message="0보다 작은 수 입니다.") Long quizNo) {
-		// log.info("퀴즈 정보 : {}", quizNo);
-		QuizDTO quiz = quizService.findById(quizNo);
-		return ResponseEntity.ok(quiz);
-	}
-	
 	@GetMapping("/category")
 	public ResponseEntity<List<QuizDTO>> findByCategory(@RequestParam (name="category") String category) {
-		// log.info("카테고리 정보 : {}", category);
 		List<QuizDTO> quizList = quizService.findByCategory(category);
 		return ResponseEntity.ok(quizList);
 	}

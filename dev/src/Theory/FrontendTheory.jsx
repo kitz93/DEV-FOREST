@@ -2,17 +2,38 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 const data = [
-  { SUBJECT_NO: 1, SUBJECT: "Java", CONTENT: "객체 지향 프로그래밍이다." },
   {
-    SUBJECT_NO: 7,
-    SUBJECT: "JDBC",
-    CONTENT:
-      "Connection 객체를 미리 생성하여 보관하고 애플리케이션이 필요할 때 꺼내서 사용할 수 있도록 관리해 주는 것이 Connection Pool이다.",
+    SUBJECT_NO: 2,
+    SUBJECT: "AJAX",
+    CONTENT: "JavaScript와 XML 형식을 이용한 비동기적 정보 교환 기법이다.",
   },
   {
-    SUBJECT_NO: 9,
-    SUBJECT: "ORACLE",
-    CONTENT: "관계형 데이터베이스 관리 시스템이다.",
+    SUBJECT_NO: 3,
+    SUBJECT: "AXIOS",
+    CONTENT: "AXIOS는 Promise API를 활용하는 HTTP 비동기 통신 라이브러리",
+  },
+  {
+    SUBJECT_NO: 4,
+    SUBJECT: "CSS",
+    CONTENT:
+      "HTML 등의 마크업 언어로 작성된 문서가 실제로 웹사이트에 표현되는 방법을 정해주는 스타일 시트 언어이다.",
+  },
+  {
+    SUBJECT_NO: 5,
+    SUBJECT: "HTML",
+    CONTENT: "HTML에서는 내부요소 태그가 반드시 닫혀야한다",
+  },
+  {
+    SUBJECT_NO: 6,
+    SUBJECT: "JavaScript",
+    CONTENT: "HTML, CSS와 함께 웹을 구성하는 요소 중 하나.",
+  },
+
+  {
+    SUBJECT_NO: 8,
+    SUBJECT: "JSON",
+    CONTENT:
+      "JSON의 언어 독립적 특성은 다양한 프로그래밍 언어와 플랫폼에서 데이터를 교환하는 데 이상적인 형식",
   },
 ];
 
@@ -54,7 +75,7 @@ const SubjectContent = styled.div`
   background-color: #f9f9f9;
 `;
 
-const BackendTheory = () => {
+const FrontendTheory = () => {
   const [expandedSubject, setExpandedSubject] = useState(null);
 
   const handleSubjectClick = (subjectNo) => {
@@ -100,4 +121,4 @@ const BackendTheory = () => {
   );
 };
 
-export default BackendTheory;
+export default FrontendTheory;

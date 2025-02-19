@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
-import { getAllQuizzes } from "../api/quizApi";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import "./Quiz.css";
 import QuizResults from "./QuizResults";
+import axios from "axios";
+import { AuthContext } from "../Component/Context/AuthContext";
 
 const Quiz = () => {
   const [quizzes, setQuizzes] = useState([]);
@@ -12,28 +13,29 @@ const Quiz = () => {
   const [showResults, setShowResults] = useState(false);
   const [quizLength, setQuizLength] = useState(0);
   const timerRef = useRef(null);
+  const { auth } = useContext(AuthContext);
 
   useEffect(() => {
-    const abc = async () => {
-      const response = await getAllQuizzes();
-      /*
-      .then((response) => {
-        setQuizLength(response.data.length);
-        setQuizzes([...quizzes, ...response.data]);
-        startTimer();
+    const abc = () => {
+      axios
+        .get("http://localhost/quizs/random", {
+          headers: {
+            Authorization: `Bearer ${auth.accessToken}`,
+          },
+        })
+        .then((response) => {
+          setQuizLength(response.data.length);
+          setQuizzes([...response.data]);
         })
         .catch((error) => {
-          console.error("Error fetching quiz:", error);
-          });
-          */
-      //console.log(response.data.length);
-      setQuizLength(response.data.length);
-      setQuizzes([...quizzes, ...response.data]);
-      startTimer();
+          console.log(error);
+        });
+
       return;
     };
 
     abc();
+    startTimer();
 
     return () => clearInterval(timerRef.current);
   }, []);
@@ -45,13 +47,18 @@ const Quiz = () => {
 
     timerRef.current = setInterval(() => {
       setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
+        if (prevTime >= 1) {
+          // return;
+          return prevTime - 1;
+        } else {
           clearInterval(timerRef.current);
-          alert("시간이 초과되었습니다!");
+          // alert("시간이 초과되었습니다!");
+          //setUserAnswers([...userAnswers, "시간초과"]);
+
+          //goToNextQuestion();
+          setUserAnswers((userAnswers) => [...userAnswers, "시간초과"]);
           goToNextQuestion();
-          return 0;
         }
-        return prevTime - 1;
       });
     }, 1000);
   };
@@ -59,7 +66,7 @@ const Quiz = () => {
   const goToNextQuestion = () => {
     if (currentQuizIndex < 5 - 1) {
       setCurrentQuizIndex((prevIndex) => prevIndex + 1);
-      setAnswer(""); // Reset the answer for the next question
+      //setAnswer("");
       startTimer();
     } else {
       setShowResults(true);

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dev.forest.ranking.model.dto.RankingDTO;
 import com.dev.forest.ranking.model.service.RankingService;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,9 +24,10 @@ public class RankingController {
 	
 	private final RankingService rankingService;
 	
-	@PostMapping
-	public ResponseEntity<?> insertRanking(@RequestBody @Valid RankingDTO ranking) {
+	@PostMapping("insert")
+	public ResponseEntity<String> insertRanking(@RequestBody RankingDTO ranking) {
 		log.info("랭킹 입력값 : {}", ranking);
+		rankingService.insertRanking(ranking);
 		return ResponseEntity.status(HttpStatus.CREATED).body("");
 	}
 	

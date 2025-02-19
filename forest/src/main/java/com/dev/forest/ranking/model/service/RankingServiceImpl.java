@@ -2,8 +2,11 @@ package com.dev.forest.ranking.model.service;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.dev.forest.auth.model.vo.CustomUserDetails;
 import com.dev.forest.ranking.model.dto.RankingDTO;
 import com.dev.forest.ranking.model.mapper.RankingMapper;
 
@@ -19,7 +22,11 @@ public class RankingServiceImpl implements RankingService {
 	
 	@Override
 	public void insertRanking(RankingDTO ranking) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
+		ranking.setUserNo(user.getUserNo());
 		log.info("랭킹 정보 : {}", ranking);
+		rankingMapper.insertRanking(ranking);
 	}
 
 	@Override

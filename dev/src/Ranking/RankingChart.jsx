@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import axios from "axios";
+import styled from "styled-components";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,6 +22,12 @@ ChartJS.register(
   Legend
 );
 
+const RankingDiv = styled.div`
+  width: 800px;
+  height: 400px;
+  margin: 40px auto 60px auto;
+`;
+
 const RankingChart = () => {
   const [chartData, setChartData] = useState({
     labels: [],
@@ -33,7 +40,7 @@ const RankingChart = () => {
       .then((data) => {
         // console.log(data.data);
         const names = data.data.map((item) => item.nickName);
-        const scores = data.data.map((item) => item.correctCount);
+        const scores = data.data.map((item) => item.correct);
 
         setChartData({
           labels: names,
@@ -52,13 +59,13 @@ const RankingChart = () => {
   }, []);
 
   return (
-    <div>
+    <RankingDiv>
       <h2>🏆 랭킹 차트</h2>
       <Bar
         data={chartData}
         options={{ responsive: true, scales: { y: { beginAtZero: true } } }}
       />
-    </div>
+    </RankingDiv>
   );
 };
 

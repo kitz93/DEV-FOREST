@@ -12,10 +12,6 @@ import com.dev.forest.quiz.model.dto.QuizOptionDTO;
 @Mapper
 public interface QuizMapper {
 
-	List<QuizDTO> findAll();
-	
-	QuizDTO findById(Long quizNo);
-
 	List<QuizDTO> findByCategory(String category);
 
 	QuizDTO findByRandomNo(Object next);

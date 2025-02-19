@@ -11,4 +11,6 @@ public interface RankingMapper {
 
 	List<RankingDTO> getRanking();
 
+	void insertRanking(RankingDTO ranking);
+
 }

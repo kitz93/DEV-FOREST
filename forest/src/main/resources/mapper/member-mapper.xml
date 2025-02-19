@@ -25,6 +25,25 @@
 			   ) 
 	</insert>
 	
+	<insert id="saveSnsMember" parameterType="SnsMemberDTO">
+		INSERT 
+		  INTO 
+		       TB_MEMBER 
+		       (
+				USER_NO, 
+				SIGN_UP,
+				SNS_ID,
+				NICKNAME
+			   ) 
+	     VALUES 
+			   (
+				SEQ_USER_NO.NEXTVAL, 
+				#{signUp},
+				#{snsId},
+				#{nickname}
+			   ) 
+	</insert>
+	
 	<select id="findByUserId" parameterType="String" resultType="MemberDTO">
 		SELECT 
 		       USER_NO userNo,
@@ -42,11 +61,44 @@
 		       USER_ID = #{userId}
 	</select>
 	
+	<select id="findBySnsId" parameterType="SnsMemberDTO" resultType="SnsMemberDTO">
+		SELECT 
+		       USER_NO userNo,
+		       SIGN_UP signUp,
+		       SNS_ID snsId,
+		       NICKNAME nickname,
+		       ROLE role,
+		       ENROLL_DATE enrollDate,
+		       UPDATE_DATE updateDate,
+		       STATUS status
+		  FROM 
+		       TB_MEMBER
+		 WHERE 
+		       SNS_ID = #{snsId}
+	</select>
+	
 	<select id="findByNickname" parameterType="String">
 		SELECT 
 		       USER_NO userNo,
+		       SIGN_UP signUp,
 		       USER_ID userId,
 		       USER_PWD userPwd,
+		       NICKNAME nickname,
+		       ROLE role,
+		       ENROLL_DATE enrollDate,
+		       UPDATE_DATE updateDate,
+		       STATUS status
+		  FROM 
+		       TB_MEMBER
+		 WHERE 
+		       NICKNAME = #{nickname}
+	</select>
+	
+	<select id="findByNicknameSns" parameterType="String">
+		SELECT 
+		       USER_NO userNo,
+		       SIGN_UP signUp,
+		       SNS_ID snsId,
 		       NICKNAME nickname,
 		       ROLE role,
 		       ENROLL_DATE enrollDate,
@@ -75,6 +127,55 @@
 		 WHERE 
 		       USER_NO = #{userNo}
 	</update>
+	
+	<select id="findInfoByUserNo" resultType="MyPageDTO">
+		SELECT
+		       userNo, 
+		       signUp, 
+		       snsId, 
+		       userId, 
+		       userPwd, 
+		       nickname, 
+		       role, 
+		       status, 
+		       correctCount, 
+		       wrongCount, 
+		       correctCount + wrongCount totalCount
+		  FROM 
+		       (
+				SELECT 
+   			           USER_NO userNo,
+			           SIGN_UP signUp,
+			           SNS_ID snsId,
+			           USER_ID userId,
+			           USER_PWD userPwd,
+			           NICKNAME nickname,
+			           ROLE role,
+			           STATUS status,
+			           (
+						SELECT 
+						       SUM(CORRECT_COUNT)
+						  FROM 
+						       TB_RANKING 
+						 WHERE 
+						       USER_NO = #{userNo}
+					   ) correctCount ,
+					   (
+						SELECT 
+						       SUM(WRONG_COUNT)  
+						  FROM 
+						       TB_RANKING 
+						 WHERE 
+						       USER_NO = #{userNo}
+					   ) wrongCount
+			      FROM 
+			           TB_MEMBER
+			     WHERE
+			           USER_NO = #{userNo}
+		        )
+	</select>
+	
+	
 	
 </mapper>
 

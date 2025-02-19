@@ -8,19 +8,19 @@
 	<select id="getRanking">
 		SELECT 
 				userNo, 
-				correctCount,
+				correct,
 				nickName
 		  FROM 
 		  		(
 				    SELECT 
 					       userNo, 
-					       correctCount,
+					       correct,
 					       nickName 
 					  FROM 
 					       (
 							SELECT 
 							       USER_NO userNo, 
-							       SUM(CORRECT_COUNT) correctCount,
+							       SUM(CORRECT_COUNT) correct,
 							       NICKNAME nickName 
 							  FROM 
 							       TB_RANKING 
@@ -33,7 +33,7 @@
 						   ) 
 					 ORDER 
 					    BY 
-						   correctCount DESC
+						   correct DESC
 				)
 		  WHERE 
 				 ROWNUM &lt; 11
@@ -43,6 +43,20 @@
 
 	
 	</select>
+	
+	<insert id="insertRanking" parameterType="RankingDTO">
+	INSERT
+	  INTO
+	  		TB_RANKING
+	VALUES
+			(
+			SEQ_DIVISION_NO.NEXTVAL,
+			#{userNo},
+			#{correct},
+			#{wrong},
+			SYSDATE
+			)
+	</insert>
 	
 	
 	

@@ -39,7 +39,7 @@ public class SecurityConfiguration {
 		corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
 		corsConfiguration.setAllowCredentials(true);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", corsConfiguration); 
+		source.registerCorsConfiguration("/**", corsConfiguration);
 		return source;
 	}
 
@@ -49,12 +49,16 @@ public class SecurityConfiguration {
 		return httpSecurity.formLogin(AbstractHttpConfigurer::disable).httpBasic(AbstractHttpConfigurer::disable)
 				.csrf(AbstractHttpConfigurer::disable).cors(Customizer.withDefaults())
 				.authorizeHttpRequests(requests -> {
-					requests.requestMatchers("/quizs", "/quizs/**").permitAll();
+					requests.requestMatchers(HttpMethod.GET, "/quizs/random").authenticated();
 					requests.requestMatchers("/wrongs", "/wrongs/**").permitAll();
 					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login").permitAll();
-					requests.requestMatchers("/rankings", "/rankings/**").permitAll();
+					requests.requestMatchers(HttpMethod.GET, "/rankings").permitAll();
+					requests.requestMatchers(HttpMethod.POST, "/rankings/insert").authenticated();
 					requests.requestMatchers("/theorys", "/theorys/**").permitAll();
 					requests.requestMatchers("/progress", "/progress/**").permitAll();
+					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login", "/members/sns",
+							"/members/snsLogin").permitAll();
+					requests.requestMatchers(HttpMethod.GET, "/members/myPage").authenticated();
 					requests.requestMatchers(HttpMethod.PUT, "/members").authenticated();
 					requests.requestMatchers(HttpMethod.DELETE, "/members").authenticated();
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");

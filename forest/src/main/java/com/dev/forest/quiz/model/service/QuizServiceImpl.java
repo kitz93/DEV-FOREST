@@ -23,29 +23,6 @@ public class QuizServiceImpl implements QuizService {
 	
 	private final QuizMapper quizMapper;
 	
-	@Override
-	public void insertQuiz(QuizDTO quiz) {
-		log.info("퀴즈 정보 : {}", quiz);
-	}
-
-	@Override
-	public List<QuizDTO> findAll() {
-		return quizMapper.findAll();
-	}
-	
-	private QuizDTO getQuizOrThrow(Long quizNo) {
-		QuizDTO quiz = quizMapper.findById(quizNo);
-		if(quiz == null) {
-			throw new InvalidParameterException("올바르지 않은 퀴즈 번호입니다.");
-		}
-		return quiz;
-	}
-
-	@Override
-	public QuizDTO findById(Long quizNo) {
-		return getQuizOrThrow(quizNo);
-	}
-
 	private List<QuizDTO> getQuizsOrThrow(String category) {
 		List<QuizDTO> quizList = quizMapper.findByCategory(category);
 		if(quizList.isEmpty()) {
