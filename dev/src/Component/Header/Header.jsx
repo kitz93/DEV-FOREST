@@ -4,6 +4,7 @@ import styled from "styled-components";
 import logo from "../image/logo.jpg";
 import Register from "../Register/Register";
 import LoginModal from "../Login/Login";
+import { useNavigate } from "react-router-dom";
 
 const LogoDiv = styled.div`
   width: 600px;
@@ -79,6 +80,12 @@ const Header = () => {
   const openSignupModal = () => setSignupModalOpen(true);
   const closeSignupModal = () => setSignupModalOpen(false);
 
+  const navi = useNavigate();
+
+  const goTo = (path) => {
+    navi(path);
+  };
+
   const { auth, logout, unlinkKakao } = useContext(AuthContext);
 
   const handlelogout = () => {
@@ -109,7 +116,7 @@ const Header = () => {
               <li>프론트 엔드</li>
             </DropdownUl>
           </NavLi>
-          <NavLi>커뮤니티</NavLi>
+          <NavLi onClick={() => goTo("/boards")}>커뮤니티</NavLi>
           {auth.isAuthenticated ? (
             <>
               <NavLi>마이 페이지</NavLi>

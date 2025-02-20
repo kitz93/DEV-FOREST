@@ -1,6 +1,7 @@
 package com.dev.forest.studying.model.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,9 +12,11 @@ public interface StudyingMapper {
 
 	void attend(StudyingDTO studying);
 
-	List<StudyingDTO> findByRervationNo(Long reservationNo);
+	List<StudyingDTO> findByRervationNo(Long refBno);
 
-	void cancle(Long reservationNo);
+	void cancle(Map<String, Object> params);
+
+	int countByReservationNo(Long refBno);
 
 	int countReservationByNo(Long reservationNo);
 

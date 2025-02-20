@@ -1,30 +1,35 @@
 package com.dev.forest.studying.model.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.dev.forest.auth.model.service.AuthenticationService;
 import com.dev.forest.auth.model.vo.CustomUserDetails;
-import com.dev.forest.board.model.dto.BoardDTO;
+import com.dev.forest.exception.PullCountStudyingException;
 import com.dev.forest.exception.UserNotFoundException;
-import com.dev.forest.reservation.model.dto.ReservationDTO;
+import com.dev.forest.member.model.dto.MemberDTO;
+import com.dev.forest.member.model.mapper.MemberMapper;
 import com.dev.forest.reservation.model.mapper.ReservationMapper;
 import com.dev.forest.reservation.model.service.ReservationService;
-import com.dev.forest.reservation.model.service.ReservationServiceImpl;
 import com.dev.forest.studying.model.dto.StudyingDTO;
 import com.dev.forest.studying.model.mapper.StudyingMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class StudyingServiceImpl implements StudyingService {
 	
 	private final StudyingMapper studyingMapper;
 	private final ReservationMapper reservationMapper;
 	private final AuthenticationService authService;
 	private final ReservationService reservationService;
+	private final MemberMapper memberMapper;
 	
 	@Override
 	public void attend(StudyingDTO studying) {
@@ -36,14 +41,28 @@ public class StudyingServiceImpl implements StudyingService {
 		CustomUserDetails user = authService.getAuthenticatedUser();
 		authService.validWriter(studying.getStudyingUser(), user.getUsername());
 		
+		int currentCount = studyingMapper.countByReservationNo(studying.getRefRno());
+		
+		int maxCapacity = reservationMapper.getMaxCount(studying.getRefRno());
+		
+		if (currentCount >= maxCapacity) {
+	        throw new PullCountStudyingException("모임 정원이 초과되었습니다.");
+	    }
+		
+		studying.setStudyingUser(String.valueOf(user.getUserNo()));
+		
 		// 모임 참석
 		studyingMapper.attend(studying);
+		
+		if (currentCount + 1 == maxCapacity) {
+	        reservationMapper.pullReservationStatus(studying.getRefRno());
+	    }
 		
 	}
 
 	@Override
-	public List<StudyingDTO> findByRervationNo(Long reservationNo) {
-		return studyingMapper.findByRervationNo(reservationNo);
+	public List<StudyingDTO> findByRervationNo(Long refBno) {
+		return studyingMapper.findByRervationNo(refBno);
 	}
 	
 	public int countReservationByNo(Long reservationNo) {
@@ -57,28 +76,39 @@ public class StudyingServiceImpl implements StudyingService {
 	
 
 	@Override
-	public void cancle(Long reservationNo) {
+	public void cancle(Long refBno) {
 		
 		// 모임이 존재하는지 확인
-		reservationService.findById(reservationNo);
+		reservationService.findById(refBno);
 		
 		// 로그인 인원이 리스트안에 있는지 확인
-		List<StudyingDTO> list = findByRervationNo(reservationNo);
+		List<StudyingDTO> list = findByRervationNo(refBno);
 		CustomUserDetails user = authService.getAuthenticatedUser();
+		MemberDTO userNickname = memberMapper.findByUserId(user.getUsername());
 		
-		StudyingDTO studyingUser = null;
+		boolean isAttendee = false;
 	    for (StudyingDTO studying : list) {
-	        if (studying.getStudyingUser().equals(user.getUsername())) {
-	            studyingUser = studying;
+	        if (studying.getStudyingUser().equals(userNickname.getNickname())) {
+	            isAttendee = true;
 	            break;
 	        }
 	    }
 	    
-	    // 리스트에 존재하지 않으면 예외 발생
-	    if (studyingUser == null) {
-	        throw new UserNotFoundException("모임에 참석하지 않은 사용자입니다.");
+	    if(!isAttendee) {
+	    	throw new UserNotFoundException("해당 모임에 참석자가 아닙니다.");
 	    } else {
-	    	studyingMapper.cancle(reservationNo);
+	    	Map<String, Object> params = new HashMap<>();
+	    	params.put("refBno", refBno);
+	    	params.put("studyingUser", user.getUserNo());
+	    	
+	    	studyingMapper.cancle(params);
+	    	
+	    	int currentCount = studyingMapper.countByReservationNo(refBno);
+			int maxCapacity = reservationMapper.getMaxCount(refBno);
+			
+			if (currentCount < maxCapacity) {
+		        reservationMapper.notPullReservationStatus(refBno);
+		    }
 	    }
 		
 	}

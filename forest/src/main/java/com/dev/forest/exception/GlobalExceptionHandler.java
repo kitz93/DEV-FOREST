@@ -15,7 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 	
-<<<<<<< HEAD
+	@ExceptionHandler(PullCountStudyingException.class)
+	public ResponseEntity<?> handlePullCountStudying(PullCountStudyingException e){
+		return ResponseEntity.badRequest().body(e.getMessage());
+	}
+	
 	@ExceptionHandler(UserNotFoundException.class)
 	public ResponseEntity<?> handleUserNotFound(UserNotFoundException e){
 		return ResponseEntity.badRequest().body(e.getMessage());
@@ -24,11 +28,12 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(BoardNotFoundException.class)
 	public ResponseEntity<?> handleBoardNotFound(BoardNotFoundException e){
 		return ResponseEntity.badRequest().body(e.getMessage());
-=======
+	}
+
 	@ExceptionHandler(AuthenticationException.class)
 	public ResponseEntity<?> handlerAuthentic(AuthenticationException e) {
 		return ResponseEntity.badRequest().body("아이디 및 비밀번호 오류");
->>>>>>> 7623b116629445a6ed7cb047ff4a9f130ff9b447
+
 	}
 
 	@ExceptionHandler(InvalidParameterException.class)

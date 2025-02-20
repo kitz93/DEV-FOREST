@@ -22,35 +22,51 @@
 	
 	</insert>
 	
-	<select id="findByRervation" parameterType="Long" resultType="StudyingDTO">
+	<select id="findByRervationNo" parameterType="Long" resultType="StudyingDTO">
 		SELECT
 			   STUDYING_NO studyingNo,
 			   REF_RNO refRno,
 			   M.NICKNAME studyingUser,
 			   CREATE_DATE createDate
 		  FROM
-		  	   TB_STUDYING
+		  	   TB_STUDYING S
 		  JOIN
 		  	   TB_MEMBER M ON(STUDYING_USER = USER_NO)
 		 WHERE
-		 	   STATUS = 'Y'
+		 	   S.STATUS = 'Y'
 		   AND
-		   	   REF_RNO = #{refRno}
+		   	   REF_RNO = #{refBno}
 		 ORDER
 		    BY
 		       CREATE_DATE DESC
 	
 	</select>
 	
-	<update id="cancle" parameterType="StudyingDTO">
+	<update id="cancle" parameterType="map">
 		UPDATE
 			   TB_STUDYING
 		   SET
 		   	   STATUS = 'N'
 		 WHERE
 		 	   STATUS = 'Y'
+		   AND
+		   	   REF_RNO = #{refBno}
+		   AND
+		   	   STUDYING_USER = #{studyingUser}
 	
 	</update>
+	
+	<select id="countByReservationNo" parameterType="Long" resultType="_int">
+		SELECT
+		       COUNT(*)
+		  FROM
+		  	   TB_STUDYING
+		 WHERE
+		 	   STATUS = 'Y'
+		   AND
+		   	   REF_RNO = #{refBno}
+		   	    
+	</select>
 
 
 </mapper>
