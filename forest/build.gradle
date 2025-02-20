@@ -28,12 +28,20 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
 	// JWT 토큰용 라이브러리
+<<<<<<< HEAD
+   implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+   implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+   implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+   // 유효성 검사 라이브러리
+   implementation 'org.springframework.boot:spring-boot-starter-validation'
+=======
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	// 유효성 검사 라이브러리
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	
+>>>>>>> a6e62694c9c7abd2726f66dc544ddaea3e03511d
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'

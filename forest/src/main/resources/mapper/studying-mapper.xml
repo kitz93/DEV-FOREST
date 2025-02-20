@@ -38,7 +38,7 @@
 		   	   REF_RNO = #{refBno}
 		 ORDER
 		    BY
-		       CREATE_DATE DESC
+		       CREATE_DATE ASC
 	
 	</select>
 	

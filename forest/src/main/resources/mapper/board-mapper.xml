@@ -54,12 +54,12 @@
 		   BOARD_TITLE boardTitle,
 		   BOARD_CONTENT boardContent,
 		   BOARD_TYPE boardType,
-		   BOARD_FILE_URL
+		   BOARD_FILE_URL boardFileUrl
 </sql>
 
 <select id="findAll" resultType="BoardDTO">
 <include refid="boardColumn"/>
-			,COUNT
+			,COUNT count
 	  FROM 
 	  	    TB_BOARD B
 	  JOIN 
@@ -84,6 +84,18 @@
 	   AND
 	 		BOARD_NO = #{boardNo}
 </select>
+
+<update id="increaseCount" parameterType="Long">
+		UPDATE
+			   TB_BOARD
+		   SET
+		   	   COUNT = COUNT + 1
+		 WHERE
+		 	   STATUS = 'Y'
+		   AND
+		  	   BOARD_NO = #{boardNo}
+</update>
+
 
 <update id="update" parameterType="BoardDTO">
 	 UPDATE 
@@ -118,16 +130,16 @@
 	   AND
 	   	   BOARD_TYPE = #{boardType}
 	 <if test="condition == 'writer'">
-	 	AND
-	 	    M.NICKNAME
+	   AND
+	 	   M.NICKNAME
 	 </if>
 	 <if test="condition == 'title'">
-	 	AND
-	 		BOARD_TITLE
+	   AND
+	 	   BOARD_TITLE
 	 </if>
 	 <if test="condition == 'content'">
-	 	AND
-	 		BOARD_CONTENT
+	   AND
+	 	   BOARD_CONTENT
 	 </if>
 	 LIKE '%' || #{keyword} || '%'
 </sql>

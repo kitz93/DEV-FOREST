@@ -33,5 +33,6 @@ public class ReservationDTO {
 	private String reservationStatus;
 	private String status;
 	private String fileUrl;
+	private int currentMembers;
 	
 }

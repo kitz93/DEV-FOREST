@@ -121,6 +121,7 @@ const Register = ({ isOpen, onRequestClose }) => {
         setPassword("");
       })
       .catch((error) => {
+        console.log(error);
         if (error.response && error.response.data) {
           const errorMsg = error.response.data;
           let alertMsg = "";
@@ -132,6 +133,9 @@ const Register = ({ isOpen, onRequestClose }) => {
           }
           if (errorMsg.userPwd) {
             alertMsg += `${errorMsg.userPwd}\n`;
+          }
+          if (errorMsg) {
+            alertMsg += `${errorMsg}\n`;
           }
           alert(alertMsg);
         } else {

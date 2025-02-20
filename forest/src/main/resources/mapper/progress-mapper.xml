@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.dev.forest.progress.model.mapper.ProgressMapper">
+  
+   <select id="getAllProgress" resultType="ProgressDTO">
+    SELECT
+	      USER_NO userNo,
+	      SUBJECT_NO subjectNo,
+	      STATUS
+    FROM
+      	  TB_PROGRESS
+  </select>
+  
+  
+  
+  
+  
+  
+  </mapper>

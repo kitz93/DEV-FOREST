@@ -23,14 +23,14 @@ public interface ReservationMapper {
 
 	int searchCount(Map<String, Object> params);
 
-	List<ReservationDTO> search(Map<String, Object> params);
-
-	void attend(ReservationDTO reservation);
+	List<ReservationDTO> search(RowBounds rowBounds, Map<String, Object> params);
 
 	int getMaxCount(Long reservationNo);
 
 	void pullReservationStatus(Long reservationNo);
 
 	void notPullReservationStatus(Long reservationNo);
+
+	void updateToExpired(Long reservationNo);
 
 }

@@ -4,7 +4,7 @@ import {
   ReplyAuthor,
   ReplyContent,
   ReplyDate,
-} from "./CommentList.styles";
+} from "./ReplyList.styles";
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 

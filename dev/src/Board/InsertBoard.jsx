@@ -8,7 +8,7 @@ import {
   FileInput,
   Button,
   Message,
-} from "./InsertBoard.syles";
+} from "./InsertBoard.styles";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Component/Context/AuthContext";
 import axios from "axios";
@@ -19,16 +19,17 @@ const InsertBoard = () => {
   const navi = useNavigate();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [userId, setUserId] = useState("");
+  const [nickname, setNickname] = useState("");
   const [file, setFile] = useState(null);
+  const [boardType, setBoardType] = useState("1"); // 기본값: 자유 (1)
   const [accessToken, setAccessToken] = useState("");
 
   useEffect(() => {
     if (!auth.isAuthenticated) {
-      alert("괘씸하구만! 친구");
+      alert("로그인이 필요합니다.");
       navi("/login");
     } else {
-      setUserId(auth.username);
+      setNickname(auth.nickname);
       setAccessToken(auth.accessToken);
     }
   }, []);
@@ -44,7 +45,7 @@ const InsertBoard = () => {
     }
 
     if (selectedFile && selectedFile.size > maxSize) {
-      alert("파일의 크기가 너무 큽니다. 10MB이하로 선택해주세요.");
+      alert("파일의 크기가 너무 큽니다. 10MB 이하로 선택해주세요.");
       return;
     }
 
@@ -55,14 +56,15 @@ const InsertBoard = () => {
     e.preventDefault();
 
     if (!title || !content) {
-      alert("제목과 내용을 입력해주세요 쫌~");
+      alert("제목과 내용을 입력해주세요.");
       return;
     }
 
     const formData = new FormData();
     formData.append("boardTitle", title);
     formData.append("boardContent", content);
-    formData.append("boardWriter", userId);
+    formData.append("boardWriter", nickname);
+    formData.append("boardType", boardType);
     if (file) {
       formData.append("file", file);
     }
@@ -75,7 +77,6 @@ const InsertBoard = () => {
         },
       })
       .then((response) => {
-        //console.log(response);
         if (response.status === 201) {
           alert("게시글이 성공적으로 작성되었습니다.");
           navi("/boards");
@@ -86,7 +87,7 @@ const InsertBoard = () => {
 
   return (
     <Container>
-      <Title>게시글 작성 </Title>
+      <Title>게시글 작성</Title>
       <Form onSubmit={handleInsertBoard}>
         <div>
           <Label htmlFor="title">제목</Label>
@@ -110,11 +111,23 @@ const InsertBoard = () => {
           ></TextArea>
         </div>
         <div>
-          <Label htmlFor="username">작성자 ID</Label>
-          <Input id="username" type="text" readOnly value={userId} />
+          <Label htmlFor="nickname">작성자 ID</Label>
+          <Input id="nickname" type="text" readOnly value={nickname} />
         </div>
         <div>
-          <Label htmlFor="file">파일 첨부: </Label>
+          <Label htmlFor="boardType">게시판 종류</Label>
+          <select
+            id="boardType"
+            value={boardType}
+            onChange={(e) => setBoardType(e.target.value)}
+          >
+            <option value="1">자유</option>
+            {auth.nickname === "ADMIN" && <option value="2">공지</option>}
+            <option value="3">취업</option>
+          </select>
+        </div>
+        <div>
+          <Label htmlFor="file">파일 첨부</Label>
           <FileInput
             id="file"
             type="file"

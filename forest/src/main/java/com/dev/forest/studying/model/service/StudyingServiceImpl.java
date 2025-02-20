@@ -39,7 +39,7 @@ public class StudyingServiceImpl implements StudyingService {
 		
 		// 검증된 인원인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		authService.validWriter(studying.getStudyingUser(), user.getUsername());
+		authService.validWriter(studying.getStudyingUser(), user.getNickname());
 		
 		int currentCount = studyingMapper.countByReservationNo(studying.getRefRno());
 		

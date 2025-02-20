@@ -39,7 +39,9 @@ public class BoardServiceImpl implements BoardService {
 
 		// 검증된 인원인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		authService.validWriter(board.getBoardWriter(), user.getUsername());
+		log.info("게시판 작성자 : {}", board.getBoardWriter());
+		log.info("로그인 우저 : {}", user.getUsername());
+		authService.validWriter(board.getBoardWriter(), user.getNickname());
 		
 		// 파일확인
 		if (file != null && !file.isEmpty()) {
@@ -56,7 +58,7 @@ public class BoardServiceImpl implements BoardService {
 			boardMapper.saveBasic(board);
 		} else if (boardType == 2) {
 			boardMapper.saveNotice(board);
-		} else {
+		} else if(boardType == 3) {
 			boardMapper.saveInfo(board);
 		}
 
@@ -71,7 +73,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	private PageInfo getPageInfo(int totalCount, int page) {
-		return Pagination.getPageInfo(totalCount, page, 10);
+		return Pagination.getPageInfo(totalCount, page, 5);
 	}
 	
 	private RowBounds paging(PageInfo pi) {
@@ -79,13 +81,26 @@ public class BoardServiceImpl implements BoardService {
 		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
 		return rowBounds;
 	}
+	
+	private void incrementViewCount(Long boardNo) {
+		int result = boardMapper.increaseCount(boardNo);
+		if(result < 1) {
+			throw new BoardNotFoundException("게시글이 존재하지 않습니다.");
+		}
+	}
 
 	@Override
-	public List<BoardDTO> findAll(int boardType, int page) {
+	public Map<String,Object> findAll(int boardType, int page) {
 		int totalCount = getTotalCount(boardType);
 		PageInfo pi = getPageInfo(totalCount, page);
 		RowBounds rowBounds = paging(pi);
-		return boardMapper.findAll(rowBounds, boardType);
+		
+		List<BoardDTO> boardList = boardMapper.findAll(rowBounds, boardType);
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("boardList", boardList);
+		map.put("pi", pi);
+		
+		return map;
 	}
 
 	private BoardDTO getBoardOrThrow(Long boardNo) {
@@ -100,6 +115,7 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public BoardDTO findById(Long boardNo) {
+		incrementViewCount(boardNo);
 		return getBoardOrThrow(boardNo);
 	}
 
@@ -109,7 +125,7 @@ public class BoardServiceImpl implements BoardService {
 
 		// 검증된 인원인지 파악
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		authService.validWriter(board.getBoardWriter(), user.getUsername());
+		authService.validWriter(board.getBoardWriter(), user.getNickname());
 
 		// 바뀐 제목, 내용 입력
 		exsitingBoard.setBoardTitle(board.getBoardTitle());
@@ -144,7 +160,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<BoardDTO> search(int boardType, String condition, String keyword, int page) {
+	public Map<String,Object> search(int boardType, String condition, String keyword, int page) {
 		validateKeyword(keyword);
 		
 		 Map<String, Object> params = new HashMap<String, Object>();
@@ -154,12 +170,14 @@ public class BoardServiceImpl implements BoardService {
 		
 		int totalCount = boardMapper.searchCount(params);
 		PageInfo pageInfo = getPageInfo(totalCount, page);
+		RowBounds rowBounds = paging(pageInfo);
 		
-		params.put("pageInfo", pageInfo);
+		List<BoardDTO> boardList = boardMapper.search(rowBounds, params);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("pi", pageInfo);
+		map.put("boardList", boardList);
 		
-		List<BoardDTO> list = boardMapper.search(params);
-		
-		return list;
+		return map;
 	}
 
 }

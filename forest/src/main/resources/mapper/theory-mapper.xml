@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.dev.forest.theory.model.mapper.TheoryMapper">
+  
+  <select id="getAllTheorys" resultType="TheoryDTO">
+  	SELECT
+  			SUBJECT_NO subjectNo,
+  			SUBJECT,
+  			CONTENT
+  	  FROM
+  	  		TB_THEORY
+  </select>
+  
+  <select id="getTheoryById" parameterType="long" resultType="TheoryDTO">
+  	SELECT 
+  			SUBJECT_NO subjectNo,
+  			SUBJECT,
+  			CONTENT 
+  	  FROM 
+  	  		TB_THEORY 
+  	 WHERE 
+  	 		subject_no = #{id}
+  </select>
+  
+  
+  
+  
+  
+  </mapper>

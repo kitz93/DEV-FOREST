@@ -15,48 +15,32 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.h2`
-  font-size: 1.8em;
-  color: #333;
-  margin-bottom: 10px;
-  text-align: left;
-  border-bottom: 2px solid #ddd;
-  padding-bottom: 10px;
+  font-size: 2em;
+  color: #333333;
+  margin-bottom: 20px;
+  text-align: center;
+  min-height: 50px;
 `;
 
-export const Author = styled.p`
-  font-size: 1em;
-  color: #777;
-  margin-bottom: 20px;
-`;
-
-export const ContentWrapper = styled.div`
-  border: 1px solid #ddd;
-  padding: 20px;
-  border-radius: 8px;
-  min-height: 250px;
-  margin-bottom: 20px;
+export const Content = styled.p`
   font-size: 1.2em;
-  color: #555;
+  color: #555555;
   line-height: 1.6;
+  margin-bottom: 20px;
+  min-height: 200px;
 `;
 
-export const ImageContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+export const Author = styled.span`
+  font-size: 0.9em;
+  color: #888888;
 `;
 
 export const Image = styled.img`
   width: 100%;
-  max-width: 300px;
+  height: 100%;
+  display: block;
+  margin: 20px auto;
   border-radius: 8px;
-`;
-
-export const ButtonGroup = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 20px;
 `;
 
 export const BackButton = styled.button`
@@ -68,21 +52,32 @@ export const BackButton = styled.button`
   font-size: 1em;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  display: block;
+  margin: auto;
+  margin-top: 20px;
 
   &:hover {
     background-color: #2980b9;
   }
 `;
 
+export const EditForm = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: center; /* 버튼 정렬을 위해 추가 */
+  justify-content: center; /* 가로 중앙 정렬 */
+`;
+
 export const EditButton = styled.button`
   padding: 10px 20px;
   background-color: #fff099;
-  color: #333;
+  color: black;
   border: none;
   border-radius: 20px;
   font-size: 1em;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-top: 20px;
 
   &:hover {
     background-color: #fff066;
@@ -92,14 +87,21 @@ export const EditButton = styled.button`
 export const DeleteButton = styled.button`
   padding: 10px 20px;
   background-color: #e74c3c;
-  color: #ffffff;
+  color: black;
   border: none;
   border-radius: 20px;
   font-size: 1em;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-top: 20px;
 
   &:hover {
     background-color: #c0392b;
   }
+`;
+
+export const Message = styled.p`
+  text-align: center;
+  color: ${(props) => (props.$error ? "#e74c3c" : "#2ecc71")};
+  margin-bottom: 20px;
 `;

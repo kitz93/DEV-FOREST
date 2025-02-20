@@ -1,6 +1,6 @@
 package com.dev.forest.board.controller;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +42,7 @@ public class BoardController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<BoardDTO>> findAll(@RequestParam(name = "page", defaultValue = "0") int page,
+	public ResponseEntity<Map<String, Object>> findAll(@RequestParam(name = "page", defaultValue = "0") int page,
 												  @RequestParam(name = "boardType") int boardType ){
 		
 		return ResponseEntity.ok(service.findAll(boardType, page));
@@ -72,12 +72,11 @@ public class BoardController {
 	}
 	
 	@GetMapping("/search")
-	public ResponseEntity<List<BoardDTO>> search(@RequestParam(name = "page", defaultValue = "0") int page
+	public ResponseEntity<Map<String, Object>> search(@RequestParam(name = "page", defaultValue = "0") int page
 												 ,@RequestParam(name = "boardType") int boardType
 												 ,@RequestParam(name = "condition") String condition
 												 ,@RequestParam(name = "keyword") String keyword
 			){
-		log.info("헤헤헤헤헤{}, {},{}", boardType, condition, keyword);
 		return ResponseEntity.ok(service.search(boardType, condition, keyword, page));
 	}
 

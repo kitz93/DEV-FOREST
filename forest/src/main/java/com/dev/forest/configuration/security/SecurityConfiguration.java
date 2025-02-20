@@ -49,9 +49,21 @@ public class SecurityConfiguration {
 		return httpSecurity.formLogin(AbstractHttpConfigurer::disable).httpBasic(AbstractHttpConfigurer::disable)
 				.csrf(AbstractHttpConfigurer::disable).cors(Customizer.withDefaults())
 				.authorizeHttpRequests(requests -> {
+
+					requests.requestMatchers(HttpMethod.GET, "/quizs/random").authenticated();
+					requests.requestMatchers("/wrongs", "/wrongs/**").permitAll();
+					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login").permitAll();
+					requests.requestMatchers(HttpMethod.GET, "/rankings").permitAll();
+					requests.requestMatchers(HttpMethod.POST, "/rankings/insert").authenticated();
+					requests.requestMatchers("/theorys", "/theorys/**").permitAll();
+					requests.requestMatchers("/progress", "/progress/**").permitAll();
+					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login", "/members/sns",
+							"/members/snsLogin").permitAll();
+					requests.requestMatchers("/uploads/**").permitAll();
 					requests.requestMatchers(HttpMethod.POST, "/members", "/members/login", "/members/sns", "/members/snsLogin").permitAll();
+					requests.requestMatchers(HttpMethod.GET, "/members/myPage").authenticated();
 					requests.requestMatchers(HttpMethod.PUT, "/members").authenticated();
-					requests.requestMatchers(HttpMethod.DELETE, "/members","/boards/**", "/reservations/**", "/studyings/**").authenticated();
+					requests.requestMatchers(HttpMethod.DELETE, "/members","/members/sns", "/boards/**", "/reservations/**", "/studyings/**").authenticated();
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");
 					requests.requestMatchers(HttpMethod.POST, "/boards/**", "/reservations/**", "/replys","/studyings").authenticated();
 					requests.requestMatchers(HttpMethod.GET, "/boards/**", "/reservations/**", "/replys/**", "/studyings/**").permitAll();
