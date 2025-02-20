@@ -18,7 +18,6 @@ import MyPage from "./Component/MyPage/MyPage";
 import Main from "./Component/Main/Main";
 import FrontendTheory from "./Theory/FrontendTheory";
 import InsertReservation from "./Reservation/InsertReservation";
-import KakaoMap from "./Component/Map/KakaoMap";
 
 const TestDiv = styled.div`
   width: 1000px;
@@ -47,7 +46,6 @@ function App() {
           <Route path="/backend" element={<BackendTheory />} />
           <Route path="/frontend" element={<FrontendTheory />} />
           <Route path="create" element={<InsertReservation />} />
-
         </Routes>
 
         <Footer />

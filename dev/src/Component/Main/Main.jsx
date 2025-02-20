@@ -9,22 +9,43 @@ const TestDiv = styled.div`
 const Main = () => {
   return (
     <>
+      <br />
+      <br />
       <TestDiv>
-        <h1>
-          메인임
-          <br />
-          <br />
-          로고 클릭하면 메인화면으로 이동
-          <br />
-          <br />
-          카카오 회원가입 및 로그인 가능
-          <br />
-          <br />
-          기능은 아직
-          <br />
-          <br />
-        </h1>
+        <div
+          id="carouselExampleSlidesOnly"
+          class="carousel slide"
+          data-bs-ride="carousel"
+        >
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img
+                src="http://localhost/uploads/mainImg.png"
+                class="d-block w-100"
+                alt="..."
+              />
+            </div>
+            <div class="carousel-item">
+              <img
+                src="http://localhost/uploads/mainImg2.png"
+                class="d-block w-100"
+                alt="..."
+              />
+            </div>
+            <div class="carousel-item">
+              <img
+                src="http://localhost/uploads/mainImg3.png"
+                class="d-block w-100"
+                alt="..."
+              />
+            </div>
+          </div>
+        </div>
       </TestDiv>
+
+      <div>
+        <span>모두의 퀴즈 퀴즈 우리 모두 한 걸음</span>
+      </div>
     </>
   );
 };
