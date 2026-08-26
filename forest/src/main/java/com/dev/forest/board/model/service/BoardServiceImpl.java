@@ -125,7 +125,7 @@ public class BoardServiceImpl implements BoardService {
 
 		// 검증된 인원인지 파악
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		authService.validWriter(board.getBoardWriter(), user.getNickname());
+		authService.validWriter(exsitingBoard.getBoardWriter(), user.getNickname());
 
 		// 바뀐 제목, 내용 입력
 		exsitingBoard.setBoardTitle(board.getBoardTitle());
@@ -163,10 +163,10 @@ public class BoardServiceImpl implements BoardService {
 	public Map<String,Object> search(int boardType, String condition, String keyword, int page) {
 		validateKeyword(keyword);
 		
-		 Map<String, Object> params = new HashMap<String, Object>();
-		 params.put("keyword", keyword);
-		 params.put("condition", condition);
-		 params.put("boardType", boardType);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("keyword", keyword);
+		params.put("condition", condition);
+		params.put("boardType", boardType);
 		
 		int totalCount = boardMapper.searchCount(params);
 		PageInfo pageInfo = getPageInfo(totalCount, page);
