@@ -14,7 +14,7 @@ import {
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../Component/Context/AuthContext";
-import axios from "axios";
+import http, { getErrorMessage } from "../api/http";
 import KakaoMap from "../Component/Map/KakaoMap";
 
 const InsertReservation = () => {
@@ -89,8 +89,8 @@ const InsertReservation = () => {
     formData.append("endTime", endTime);
     formData.append("file", file);
 
-    axios
-      .post("http://localhost/reservations", formData, {
+    http
+      .post("/reservations", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${accessToken}`,
@@ -102,7 +102,7 @@ const InsertReservation = () => {
           navi("/reservations");
         }
       })
-      .catch((error) => alert(error.response.data));
+      .catch((error) => alert(getErrorMessage(error, "모임 등록에 실패했습니다.")));
   };
 
   return (

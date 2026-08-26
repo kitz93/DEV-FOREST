@@ -12,7 +12,7 @@ import {
 } from "./BoardDetail.styles";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Component/Context/AuthContext";
-import axios from "axios";
+import http, { getErrorMessage } from "../api/http";
 import { useNavigate, useParams } from "react-router-dom";
 import ReplyForm from "../Reply/ReplyForm";
 import ReplyList from "../Reply/ReplyList";
@@ -31,8 +31,8 @@ const BoardDetail = () => {
   };
 
   useEffect(() => {
-    axios
-      .get(`http://localhost/boards/${id}`)
+    http
+      .get(`/boards/${id}`)
       .then((response) => {
         //console.log(response);
         setBoard(response.data);
@@ -47,14 +47,13 @@ const BoardDetail = () => {
 
   const handleDelete = () => {
     if (window.confirm("정말 삭제할거니?")) {
-      axios
-        .delete(`http://localhost/boards/${id}`, {
+      http
+        .delete(`/boards/${id}`, {
           headers: {
             Authorization: `Bearer ${auth.accessToken}`,
           },
         })
         .then(() => {
-          //setLoading(true);
           setBoard({
             boardTitle: "삭제중입니다...",
             boardContent: "삭제중입니다...",
@@ -63,6 +62,9 @@ const BoardDetail = () => {
           setTimeout(() => {
             navi("/boards");
           }, 3000);
+        })
+        .catch((error) => {
+          alert(getErrorMessage(error, "게시글 삭제에 실패했습니다."));
         });
     }
   };

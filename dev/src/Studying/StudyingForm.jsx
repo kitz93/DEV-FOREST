@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import http, { getErrorMessage } from "../api/http";
 import { AuthContext } from "../Component/Context/AuthContext";
 import {
   BackButton,
@@ -21,8 +21,8 @@ const StudyingForm = ({ reservationNo, onRefresh }) => {
 
   useEffect(() => {
     // 참가 여부 확인
-    axios
-      .get(`http://localhost/studyings/${reservationNo}`)
+    http
+      .get(`/studyings/${reservationNo}`)
       .then((response) => {
         const participants = response.data || [];
         const isUserJoined = participants.some(
@@ -43,8 +43,8 @@ const StudyingForm = ({ reservationNo, onRefresh }) => {
       return;
     } else {
       if (window.confirm("모임에 참석하실 건가요?")) {
-        axios
-          .post(`http://localhost/studyings`, formData, {
+        http
+          .post(`/studyings`, formData, {
             headers: {
               Authorization: `Bearer ${auth.accessToken}`,
             },
@@ -53,15 +53,17 @@ const StudyingForm = ({ reservationNo, onRefresh }) => {
             setIsJoined(true);
             onRefresh();
           })
-          .catch((error) => alert("현재 모임 정원이 다 찼습니다."));
+          .catch((error) =>
+            alert(getErrorMessage(error, "모임 참석에 실패했습니다."))
+          );
       }
     }
   };
 
   const handleLeave = () => {
     if (window.confirm("정말 취소할 건가요?")) {
-      axios
-        .delete(`http://localhost/studyings/${reservationNo}`, {
+      http
+        .delete(`/studyings/${reservationNo}`, {
           headers: {
             Authorization: `Bearer ${auth.accessToken}`,
           },
@@ -70,7 +72,9 @@ const StudyingForm = ({ reservationNo, onRefresh }) => {
           setIsJoined(false);
           onRefresh();
         })
-        .catch((error) => console.error("참여 취소 실패:", error));
+        .catch((error) => {
+          alert(getErrorMessage(error, "모임 참석 취소에 실패했습니다."));
+        });
     }
   };
 

@@ -12,7 +12,7 @@ import {
 } from "./EditBoard.styles";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Component/Context/AuthContext";
-import axios from "axios";
+import http, { getErrorMessage } from "../api/http";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EditBoard = () => {
@@ -32,7 +32,7 @@ const EditBoard = () => {
       alert("괘씸하도다");
       navigate("/login");
     } else {
-      axios.get(`http://localhost/boards/${id}`).then((response) => {
+      http.get(`/boards/${id}`).then((response) => {
         setBoardTitle(response.data.boardTitle);
         setBoardContent(response.data.boardContent);
         setBoardWriter(response.data.boardWriter);
@@ -53,15 +53,14 @@ const EditBoard = () => {
     const formData = new FormData();
     formData.append("boardTitle", boardTitle);
     formData.append("boardContent", boardContent);
-    formData.append("boardWriter", "aaa@dev.com");
     formData.append("boardFileUrl", existingFileUrl);
 
     if (file) {
       formData.append("file", file);
     }
 
-    axios
-      .put(`http://localhost/boards/${id}`, formData, {
+    http
+      .put(`/boards/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${auth.accessToken}`,
@@ -75,6 +74,9 @@ const EditBoard = () => {
         setTimeout(() => {
           navigate(`/boards/${id}`);
         }, 3000);
+      })
+      .catch((error) => {
+        alert(getErrorMessage(error, "게시글 수정에 실패했습니다."));
       });
   };
 

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import "./QuizResult.css";
-import axios from "axios";
+import http from "../api/http";
 import { AuthContext } from "../Component/Context/AuthContext";
 
 const QuizResults = ({ quizzes, userAnswers }) => {
@@ -20,9 +20,9 @@ const QuizResults = ({ quizzes, userAnswers }) => {
     }
     console.log(correctCount, wrongCount);
     console.log(auth);
-    axios
+    http
       .post(
-        "http://localhost/rankings/insert",
+        "/rankings/insert",
         {
           correct: correctCount,
           wrong: wrongCount,

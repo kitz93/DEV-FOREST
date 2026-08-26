@@ -11,7 +11,7 @@ import {
 } from "./InsertBoard.styles";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Component/Context/AuthContext";
-import axios from "axios";
+import http, { getErrorMessage } from "../api/http";
 import { useNavigate } from "react-router-dom";
 
 const InsertBoard = () => {
@@ -69,8 +69,8 @@ const InsertBoard = () => {
       formData.append("file", file);
     }
 
-    axios
-      .post("http://localhost/boards", formData, {
+    http
+      .post("/boards", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${accessToken}`,
@@ -82,7 +82,9 @@ const InsertBoard = () => {
           navi("/boards");
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        alert(getErrorMessage(error, "게시글 작성에 실패했습니다."));
+      });
   };
 
   return (

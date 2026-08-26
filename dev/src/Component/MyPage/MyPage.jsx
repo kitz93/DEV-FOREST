@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import http, { getErrorMessage } from "../../api/http";
 import Modal from "react-modal";
 
 const MyPageContainer = styled.div`
@@ -123,8 +123,8 @@ const MyPage = () => {
       if (userInfo.signUp === "사이트") {
         setModalIsOpen(true);
       } else {
-        axios
-          .delete("http://localhost/members/sns", {
+        http
+          .delete("/members/sns", {
             headers: { Authorization: `Bearer ${auth.accessToken}` },
           })
           .then((response) => {
@@ -133,7 +133,7 @@ const MyPage = () => {
             navi("/");
           })
           .catch((error) => {
-            console.log(error);
+            alert(getErrorMessage(error, "회원 탈퇴에 실패했습니다."));
           });
       }
     }
@@ -152,8 +152,8 @@ const MyPage = () => {
   };
 
   const handlePasswordSubmit = () => {
-    axios
-      .delete("http://localhost/members", {
+    http
+      .delete("/members", {
         headers: { Authorization: `Bearer ${auth.accessToken}` },
         data: { userPwd: password },
       })
@@ -164,15 +164,14 @@ const MyPage = () => {
         navi("/");
       })
       .catch((error) => {
-        console.log(error);
-        alert(error.response.data);
+        alert(getErrorMessage(error, "회원 탈퇴에 실패했습니다."));
       });
   };
 
   const handleChangePasswordSubmit = () => {
-    axios
+    http
       .put(
-        "http://localhost/members",
+        "/members",
         {
           currPwd: currentPassword,
           newPwd: newPassword,
@@ -188,11 +187,7 @@ const MyPage = () => {
         navi("/");
       })
       .catch((error) => {
-        alert(
-          error.response.data.newPwd
-            ? error.response.data.newPwd
-            : error.response.data
-        );
+        alert(getErrorMessage(error, "비밀번호 변경에 실패했습니다."));
       });
   };
 
@@ -205,8 +200,8 @@ const MyPage = () => {
       return;
     }
 
-    axios
-      .get("http://localhost/members/myPage", {
+    http
+      .get("/members/myPage", {
         headers: { Authorization: `Bearer ${auth.accessToken}` },
       })
       .then((response) => {

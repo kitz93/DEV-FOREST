@@ -6,15 +6,18 @@ import {
   ReplyDate,
 } from "./ReplyList.styles";
 import { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import http from "../api/http";
 
 const ReplyList = ({ boardNo, refresh }) => {
   const [replys, setReplys] = useState([]);
 
   useEffect(() => {
-    axios.get(`http://localhost/replys/${boardNo}`).then((response) => {
-      setReplys([...response.data]);
-    });
+    http
+      .get(`/replys/${boardNo}`)
+      .then((response) => {
+        setReplys([...response.data]);
+      })
+      .catch((error) => console.error("댓글 목록 불러오기 실패:", error));
   }, [refresh]);
 
   return (
