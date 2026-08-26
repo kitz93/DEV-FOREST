@@ -171,7 +171,7 @@
 
 	<!-- 정원 체크 동시성 제어: 참석자 수가 별도 테이블 COUNT(*)로 계산되어 단일 UPDATE로
 	     원자적 체크가 불가능하므로, 예약 행 자체에 FOR UPDATE 락을 걸어 같은 모임에 대한
-	     attend/cancle 트랜잭션을 직렬화한다. -->
+	     attend/cancel 트랜잭션을 직렬화한다. -->
 	<select id="getMaxCountForUpdate" parameterType="Long" resultType="java.lang.Integer">
 		SELECT
 			   RESERVATION_COUNT

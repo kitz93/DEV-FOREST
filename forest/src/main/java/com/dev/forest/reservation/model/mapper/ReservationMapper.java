@@ -19,7 +19,7 @@ public interface ReservationMapper {
 
 	ReservationDTO findById(Long reservationNo);
 
-	void delete(ReservationDTO exsitingReservation);
+	void delete(ReservationDTO existingReservation);
 
 	int searchCount(Map<String, Object> params);
 

@@ -30,9 +30,9 @@ public interface BoardMapper {
 
 	int increaseCount(Long boardNo);
 
-	void update(BoardDTO exsitingBoard);
+	void update(BoardDTO existingBoard);
 
-	void delete(BoardDTO exsitingBoard);
+	void delete(BoardDTO existingBoard);
 
 	int searchCount(Map<String, Object> params);
 

@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
 
 	// 409
 	@ExceptionHandler({ PullCountStudyingException.class, DuplicateAttendException.class,
-			DupplicatedUserException.class })
+			DuplicatedUserException.class })
 	public ResponseEntity<ErrorResponse> handleConflict(RuntimeException e) {
 		return build(HttpStatus.CONFLICT, e);
 	}
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
 				.body(ErrorResponse.of(HttpStatus.UNAUTHORIZED, e.getClass().getSimpleName(), "아이디 및 비밀번호 오류"));
 	}
 
-	@ExceptionHandler({ AccessTokenExpiredException.class, JwtTokenException.class, MissmatchPasswordException.class })
+	@ExceptionHandler({ AccessTokenExpiredException.class, JwtTokenException.class, MismatchPasswordException.class })
 	public ResponseEntity<ErrorResponse> handleUnauthorized(RuntimeException e) {
 		return build(HttpStatus.UNAUTHORIZED, e);
 	}

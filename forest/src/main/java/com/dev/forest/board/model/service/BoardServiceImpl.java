@@ -33,11 +33,7 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	public void save(BoardDTO board, int boardType, MultipartFile file) {
 
-//		log.info("게시글정보 : {} \n 파일정보 : {} ",board, file, boardType);
-
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		log.info("게시판 작성자 : {}", board.getBoardWriter());
-		log.info("로그인 우저 : {}", user.getUsername());
 
 		// 파일확인
 		if (file != null && !file.isEmpty()) {
@@ -105,39 +101,39 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public BoardDTO update(BoardDTO board, MultipartFile file) {
-		BoardDTO exsitingBoard = getBoardOrThrow(board.getBoardNo()); // 특정 게시판 출력
+		BoardDTO existingBoard = getBoardOrThrow(board.getBoardNo()); // 특정 게시판 출력
 
 		// 작성자 본인인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		if (!exsitingBoard.getWriterNo().equals(user.getUserNo())) {
+		if (!existingBoard.getWriterNo().equals(user.getUserNo())) {
 			throw new AccessDeniedException("요청한 사용자와 게시글 작성자가 일치하지 않습니다.");
 		}
 
 		// 바뀐 제목, 내용 입력
-		exsitingBoard.setBoardTitle(board.getBoardTitle());
-		exsitingBoard.setBoardContent(board.getBoardContent());
+		existingBoard.setBoardTitle(board.getBoardTitle());
+		existingBoard.setBoardContent(board.getBoardContent());
 
 		if (file != null && !file.isEmpty()) {
 			String filePath = fileService.store(file, "BoardImg");
-			exsitingBoard.setBoardFileUrl(filePath);
+			existingBoard.setBoardFileUrl(filePath);
 		}
 
-		boardMapper.update(exsitingBoard);
-		return exsitingBoard;
+		boardMapper.update(existingBoard);
+		return existingBoard;
 	}
 
 	@Override
 	@Transactional
 	public void delete(Long boardNo) {
-		BoardDTO exsitingBoard = getBoardOrThrow(boardNo); // 특정 게시판 출력
+		BoardDTO existingBoard = getBoardOrThrow(boardNo); // 특정 게시판 출력
 
 		// 작성자 본인인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		if (!exsitingBoard.getWriterNo().equals(user.getUserNo())) {
+		if (!existingBoard.getWriterNo().equals(user.getUserNo())) {
 			throw new AccessDeniedException("요청한 사용자와 게시글 작성자가 일치하지 않습니다.");
 		}
 
-		boardMapper.delete(exsitingBoard); // 게시판 삭제(상태 N으로 변환)
+		boardMapper.delete(existingBoard); // 게시판 삭제(상태 N으로 변환)
 	}
 	
 	@Override

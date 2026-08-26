@@ -101,7 +101,7 @@ public class ReservationServiceImpl implements ReservationService {
 		return map;
 	}
 	
-	private ReservationDTO getBoardOrThrow(Long reservationNo) {
+	private ReservationDTO getReservationOrThrow(Long reservationNo) {
 		ReservationDTO reservation = reservationMapper.findById(reservationNo); // 모임 상세보기
 
 		if (reservation == null) {
@@ -114,21 +114,21 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	@Transactional(readOnly = true)
 	public ReservationDTO findById(Long reservationNo) {
-		return getBoardOrThrow(reservationNo);
+		return getReservationOrThrow(reservationNo);
 	}
 
 	@Override
 	@Transactional
 	public void delete(Long reservationNo) {
-		ReservationDTO exsitingReservation = getBoardOrThrow(reservationNo);
+		ReservationDTO existingReservation = getReservationOrThrow(reservationNo);
 
 		// 주최자 본인인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		if (!exsitingReservation.getHostNo().equals(user.getUserNo())) {
+		if (!existingReservation.getHostNo().equals(user.getUserNo())) {
 			throw new AccessDeniedException("요청한 사용자와 모임 주최자가 일치하지 않습니다.");
 		}
 
-		reservationMapper.delete(exsitingReservation);
+		reservationMapper.delete(existingReservation);
 	}
 	
 	@Override

@@ -33,7 +33,7 @@ public class StudyingServiceImpl implements StudyingService {
 	@Transactional
 	public void attend(StudyingDTO studying) {
 
-		// 모임 존재 확인 + 정원 체크용 락(같은 모임에 대한 attend/cancle을 직렬화)
+		// 모임 존재 확인 + 정원 체크용 락(같은 모임에 대한 attend/cancel을 직렬화)
 		Integer maxCapacity = reservationMapper.getMaxCountForUpdate(studying.getRefRno());
 		if (maxCapacity == null) {
 			throw new ReservationNotFoundException("존재하지 않는 모임입니다.");
@@ -64,13 +64,13 @@ public class StudyingServiceImpl implements StudyingService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<StudyingDTO> findByRervationNo(Long refBno) {
-		return studyingMapper.findByRervationNo(refBno);
+	public List<StudyingDTO> findByReservationNo(Long refBno) {
+		return studyingMapper.findByReservationNo(refBno);
 	}
 
 	@Override
 	@Transactional
-	public void cancle(Long refBno) {
+	public void cancel(Long refBno) {
 
 		// 모임 존재 확인 + 정원 체크용 락(attend와 동일한 락으로 직렬화)
 		Integer maxCapacity = reservationMapper.getMaxCountForUpdate(refBno);
@@ -88,7 +88,7 @@ public class StudyingServiceImpl implements StudyingService {
 		params.put("refBno", refBno);
 		params.put("studyingUser", user.getUserNo());
 
-		studyingMapper.cancle(params);
+		studyingMapper.cancel(params);
 
 		int currentCount = studyingMapper.countByReservationNo(refBno);
 

@@ -13,9 +13,9 @@ public interface StudyingMapper {
 
 	void attend(StudyingDTO studying);
 
-	List<StudyingDTO> findByRervationNo(Long refBno);
+	List<StudyingDTO> findByReservationNo(Long refBno);
 
-	void cancle(Map<String, Object> params);
+	void cancel(Map<String, Object> params);
 
 	int countByReservationNo(Long refBno);
 
