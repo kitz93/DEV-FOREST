@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dev.forest.auth.model.service.AuthenticationService;
 import com.dev.forest.auth.model.vo.CustomUserDetails;
@@ -32,6 +33,7 @@ public class StudyingServiceImpl implements StudyingService {
 	private final MemberMapper memberMapper;
 	
 	@Override
+	@Transactional
 	public void attend(StudyingDTO studying) {
 		
 		// 모임있는지 여부 확인
@@ -61,11 +63,13 @@ public class StudyingServiceImpl implements StudyingService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<StudyingDTO> findByRervationNo(Long refBno) {
 		return studyingMapper.findByRervationNo(refBno);
 	}
 
 	@Override
+	@Transactional
 	public void cancle(Long refBno) {
 		
 		// 모임이 존재하는지 확인

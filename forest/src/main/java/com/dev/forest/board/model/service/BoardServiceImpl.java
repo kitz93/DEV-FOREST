@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dev.forest.auth.model.service.AuthenticationService;
@@ -33,6 +34,7 @@ public class BoardServiceImpl implements BoardService {
 	private final MemberMapper memberMapper;
 	
 	@Override
+	@Transactional
 	public void save(BoardDTO board, int boardType, MultipartFile file) {
 		
 //		log.info("게시글정보 : {} \n 파일정보 : {} ",board, file, boardType);
@@ -90,6 +92,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Map<String,Object> findAll(int boardType, int page) {
 		int totalCount = getTotalCount(boardType);
 		PageInfo pi = getPageInfo(totalCount, page);
@@ -114,12 +117,14 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
+	@Transactional
 	public BoardDTO findById(Long boardNo) {
 		incrementViewCount(boardNo);
 		return getBoardOrThrow(boardNo);
 	}
 
 	@Override
+	@Transactional
 	public BoardDTO update(BoardDTO board, MultipartFile file) {
 		BoardDTO exsitingBoard = getBoardOrThrow(board.getBoardNo()); // 특정 게시판 출력
 
@@ -141,6 +146,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
+	@Transactional
 	public void delete(Long boardNo) {
 		BoardDTO exsitingBoard = getBoardOrThrow(boardNo); // 특정 게시판 출력
 		
@@ -160,6 +166,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Map<String,Object> search(int boardType, String condition, String keyword, int page) {
 		validateKeyword(keyword);
 		

@@ -3,6 +3,7 @@ package com.dev.forest.reply.model.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dev.forest.auth.model.service.AuthenticationService;
 import com.dev.forest.auth.model.vo.CustomUserDetails;
@@ -23,6 +24,7 @@ public class ReplyServiceImpl implements ReplyService {
 	private final AuthenticationService authService;
 
 	@Override
+	@Transactional
 	public void saveReply(ReplyDTO reply) {
 		// 게시글 존재여부 확인
 		boardService.findById(reply.getRefBno());
@@ -40,6 +42,7 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<ReplyDTO> findByBoardNo(Long boardNo) {
 		return replyMapper.findByBoardNo(boardNo);
 	}

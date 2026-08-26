@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dev.forest.auth.model.service.AuthenticationService;
@@ -38,6 +39,7 @@ public class ReservationServiceImpl implements ReservationService {
 	private final MemberMapper memberMapper;
 	
 	@Override
+	@Transactional
 	public void reservate(ReservationDTO reservation, MultipartFile file) {
 		
 //		log.info("게시글정보 : {} \n 파일정보 : {} ",reservation, file);
@@ -104,6 +106,7 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
+	@Transactional
 	public Map<String, Object> findAll(int page) {
 		int totalCount = getTotalCount();
 		PageInfo pi = getPageInfo(totalCount, page);
@@ -139,11 +142,13 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public ReservationDTO findById(Long reservationNo) {
 		return getBoardOrThrow(reservationNo);
 	}
 
 	@Override
+	@Transactional
 	public void delete(Long reservationNo) {
 		ReservationDTO exsitingReservation = getBoardOrThrow(reservationNo);
 		
@@ -164,6 +169,7 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Map<String, Object> search(String keyword, String condition, int page) {
 		validateKeyword(keyword);
 		
