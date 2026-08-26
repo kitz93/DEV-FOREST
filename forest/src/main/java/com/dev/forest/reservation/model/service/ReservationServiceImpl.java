@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,24 +86,13 @@ public class ReservationServiceImpl implements ReservationService {
 		return reservationMapper.selectTotalCount();
 	}
 
-	private PageInfo getPageInfo(int totalCount, int page) {
-		return Pagination.getPageInfo(totalCount, page, 10);
-	}
-	
-	private RowBounds paging(PageInfo pi) {
-		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
-		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
-		return rowBounds;
-	}
-
 	@Override
 	@Transactional(readOnly = true)
 	public Map<String, Object> findAll(int page) {
 		int totalCount = getTotalCount();
-		PageInfo pi = getPageInfo(totalCount, page);
-		RowBounds rowBounds = paging(pi);
+		PageInfo pi = Pagination.getPageInfo(totalCount, page, 10);
 
-		List<ReservationDTO> reservationList = reservationMapper.findAll(rowBounds);
+		List<ReservationDTO> reservationList = reservationMapper.findAll(pi.offset(), pi.getBoardLimit());
 
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("reservationList", reservationList);
@@ -143,26 +131,21 @@ public class ReservationServiceImpl implements ReservationService {
 		reservationMapper.delete(exsitingReservation);
 	}
 	
-	private void validateKeyword(String keyword) {
-		if(keyword == null || keyword.trim().isEmpty()) {
-			throw new InvalidParameterException("검색어를 입력해주세요.");
-		}
-	}
-
 	@Override
 	@Transactional(readOnly = true)
 	public Map<String, Object> search(String keyword, String condition, int page) {
-		validateKeyword(keyword);
-		
+		Pagination.validateKeyword(keyword);
+
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("keyword", keyword);
 		params.put("condition", condition);
-		
+
 		int totalCount = reservationMapper.searchCount(params);
-		PageInfo pageInfo = getPageInfo(totalCount, page);
-		RowBounds rowBounds = paging(pageInfo);
-		
-		List<ReservationDTO> list = reservationMapper.search(rowBounds, params);
+		PageInfo pageInfo = Pagination.getPageInfo(totalCount, page, 10);
+		params.put("offset", pageInfo.offset());
+		params.put("limit", pageInfo.getBoardLimit());
+
+		List<ReservationDTO> list = reservationMapper.search(params);
 		Map<String, Object> map = new HashMap<>();
 		map.put("reservationList",list);
 		map.put("pi", pageInfo);

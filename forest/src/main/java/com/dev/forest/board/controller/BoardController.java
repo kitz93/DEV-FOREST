@@ -42,7 +42,7 @@ public class BoardController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<Map<String, Object>> findAll(@RequestParam(name = "page", defaultValue = "0") int page,
+	public ResponseEntity<Map<String, Object>> findAll(@RequestParam(name = "page", defaultValue = "1") int page,
 												  @RequestParam(name = "boardType") int boardType ){
 		
 		return ResponseEntity.ok(service.findAll(boardType, page));
@@ -72,7 +72,7 @@ public class BoardController {
 	}
 	
 	@GetMapping("/search")
-	public ResponseEntity<Map<String, Object>> search(@RequestParam(name = "page", defaultValue = "0") int page
+	public ResponseEntity<Map<String, Object>> search(@RequestParam(name = "page", defaultValue = "1") int page
 												 ,@RequestParam(name = "boardType") int boardType
 												 ,@RequestParam(name = "condition") String condition
 												 ,@RequestParam(name = "keyword") String keyword

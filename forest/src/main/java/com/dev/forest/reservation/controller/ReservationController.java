@@ -39,7 +39,7 @@ public class ReservationController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<Map<String, Object>> findAll(@RequestParam(name = "page", defaultValue = "0") int page) {
+	public ResponseEntity<Map<String, Object>> findAll(@RequestParam(name = "page", defaultValue = "1") int page) {
 		return ResponseEntity.ok(reservationService.findAll(page));
 	}
 	
@@ -55,7 +55,7 @@ public class ReservationController {
 	}
 	
 	@GetMapping("/search")
-	public ResponseEntity<Map<String, Object>> search(@RequestParam(name = "page", defaultValue = "0")int page,
+	public ResponseEntity<Map<String, Object>> search(@RequestParam(name = "page", defaultValue = "1")int page,
 													   @RequestParam(name = "condition") String condition,									       
 													   @RequestParam(name = "keyword") String keyword) {
 		

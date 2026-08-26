@@ -14,6 +14,10 @@ public class PageInfo {
 	private int currentPage;
 	private int boardLimit;
 	private int maxPage;
-	
+
+	public int offset() {
+		return (currentPage - 1) * boardLimit;
+	}
+
 }
 

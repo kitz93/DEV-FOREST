@@ -76,8 +76,9 @@
 		 ORDER
 		    BY
 		       RESERVATION_NO DESC
+		OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
 	</select>
-	
+
 	<select id="findById" parameterType="Long" resultType="ReservationDTO">
 		<include refid="reservationColumn" />,
 				M.NICKNAME reservationUser,
@@ -143,8 +144,9 @@
 		ORDER
 		   BY
 		   	  RESERVATION_NO DESC
+		OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
 	</select>
-	
+
 	<update id="delete" parameterType="ReservationDTO">
 		UPDATE
 			   TB_RESERVATION

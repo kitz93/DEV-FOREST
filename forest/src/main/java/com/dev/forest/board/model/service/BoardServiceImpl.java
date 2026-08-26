@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +16,6 @@ import com.dev.forest.common.model.dto.PageInfo;
 import com.dev.forest.common.template.Pagination;
 import com.dev.forest.exception.AccessDeniedException;
 import com.dev.forest.exception.BoardNotFoundException;
-import com.dev.forest.exception.InvalidParameterException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,16 +64,6 @@ public class BoardServiceImpl implements BoardService {
 		return boardMapper.selectTotalCount(boardType);
 	}
 
-	private PageInfo getPageInfo(int totalCount, int page) {
-		return Pagination.getPageInfo(totalCount, page, 5);
-	}
-	
-	private RowBounds paging(PageInfo pi) {
-		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
-		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
-		return rowBounds;
-	}
-	
 	private void incrementViewCount(Long boardNo) {
 		int result = boardMapper.increaseCount(boardNo);
 		if(result < 1) {
@@ -87,10 +75,9 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional(readOnly = true)
 	public Map<String,Object> findAll(int boardType, int page) {
 		int totalCount = getTotalCount(boardType);
-		PageInfo pi = getPageInfo(totalCount, page);
-		RowBounds rowBounds = paging(pi);
-		
-		List<BoardDTO> boardList = boardMapper.findAll(rowBounds, boardType);
+		PageInfo pi = Pagination.getPageInfo(totalCount, page, 5);
+
+		List<BoardDTO> boardList = boardMapper.findAll(pi.offset(), pi.getBoardLimit(), boardType);
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("boardList", boardList);
 		map.put("pi", pi);
@@ -153,27 +140,22 @@ public class BoardServiceImpl implements BoardService {
 		boardMapper.delete(exsitingBoard); // 게시판 삭제(상태 N으로 변환)
 	}
 	
-	private void validateKeyword(String keyword) {
-		if(keyword == null || keyword.trim().isEmpty()) {
-			throw new InvalidParameterException("검색어를 입력해주세요.");
-		}
-	}
-
 	@Override
 	@Transactional(readOnly = true)
 	public Map<String,Object> search(int boardType, String condition, String keyword, int page) {
-		validateKeyword(keyword);
-		
+		Pagination.validateKeyword(keyword);
+
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("keyword", keyword);
 		params.put("condition", condition);
 		params.put("boardType", boardType);
-		
+
 		int totalCount = boardMapper.searchCount(params);
-		PageInfo pageInfo = getPageInfo(totalCount, page);
-		RowBounds rowBounds = paging(pageInfo);
-		
-		List<BoardDTO> boardList = boardMapper.search(rowBounds, params);
+		PageInfo pageInfo = Pagination.getPageInfo(totalCount, page, 5);
+		params.put("offset", pageInfo.offset());
+		params.put("limit", pageInfo.getBoardLimit());
+
+		List<BoardDTO> boardList = boardMapper.search(params);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("pi", pageInfo);
 		map.put("boardList", boardList);
