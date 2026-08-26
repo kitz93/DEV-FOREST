@@ -15,8 +15,8 @@ import com.dev.forest.auth.model.vo.CustomUserDetails;
 import com.dev.forest.board.model.service.FileService;
 import com.dev.forest.common.model.dto.PageInfo;
 import com.dev.forest.common.template.Pagination;
-import com.dev.forest.exception.BoardNotFoundException;
 import com.dev.forest.exception.InvalidParameterException;
+import com.dev.forest.exception.ReservationNotFoundException;
 import com.dev.forest.member.model.dto.MemberDTO;
 import com.dev.forest.member.model.mapper.MemberMapper;
 import com.dev.forest.reservation.model.dto.ReservationDTO;
@@ -76,7 +76,7 @@ public class ReservationServiceImpl implements ReservationService {
 //		log.info("번호번호 : {}", reservationNo);
 
 		if (reservationNo == null) {
-			throw new BoardNotFoundException("모임 등록 후 ID를 가져올 수 없습니다.");
+			throw new IllegalStateException("모임 등록 후 ID를 가져올 수 없습니다.");
 		}
 
 		StudyingDTO studying = StudyingDTO.builder()
@@ -88,11 +88,7 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 	
 	private int getTotalCount() {
-		int totalCount = reservationMapper.selectTotalCount();
-		if (totalCount == 0) {
-			throw new BoardNotFoundException("게시글이 존재하지 않습니다.");
-		}
-		return totalCount;
+		return reservationMapper.selectTotalCount();
 	}
 
 	private PageInfo getPageInfo(int totalCount, int page) {
@@ -122,12 +118,12 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 	
 	private ReservationDTO getBoardOrThrow(Long reservationNo) {
-		ReservationDTO reservation = reservationMapper.findById(reservationNo); // 게시판 상세보기
-		
+		ReservationDTO reservation = reservationMapper.findById(reservationNo); // 모임 상세보기
+
 		if (reservation == null) {
-			throw new InvalidParameterException("올바른 게시판 번호가 아닙니다."); // 오류처리
+			throw new ReservationNotFoundException("모임이 존재하지 않습니다.");
 		}
-		
+
 		return reservation;
 	}
 	

@@ -67,11 +67,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	private int getTotalCount(int boardType) {
-		int totalCount = boardMapper.selectTotalCount(boardType);
-		if (totalCount == 0) {
-			throw new BoardNotFoundException("게시글이 존재하지 않습니다.");
-		}
-		return totalCount;
+		return boardMapper.selectTotalCount(boardType);
 	}
 
 	private PageInfo getPageInfo(int totalCount, int page) {
@@ -108,11 +104,11 @@ public class BoardServiceImpl implements BoardService {
 
 	private BoardDTO getBoardOrThrow(Long boardNo) {
 		BoardDTO board = boardMapper.findById(boardNo); // 게시판 상세보기
-		
+
 		if (board == null) {
-			throw new InvalidParameterException("올바른 게시판 번호가 아닙니다."); // 오류처리
+			throw new BoardNotFoundException("게시글이 존재하지 않습니다.");
 		}
-		
+
 		return board; // 게시판 반환
 	}
 
