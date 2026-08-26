@@ -27,6 +27,8 @@ public interface ReservationMapper {
 
 	int getMaxCount(Long reservationNo);
 
+	Integer getMaxCountForUpdate(Long reservationNo);
+
 	void pullReservationStatus(Long reservationNo);
 
 	void notPullReservationStatus(Long reservationNo);
