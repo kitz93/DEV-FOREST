@@ -55,12 +55,10 @@ public class ReservationServiceImpl implements ReservationService {
 		
 		LocalDateTime now = LocalDateTime.now();
 		
-		log.info("현재시간 : {}",now);
-		log.info("start time : {}", reservation.getStartTime());
-		log.info("end time : {}", reservation.getEndTime());
-		
 		if(reservation.getStartTime().isBefore(now) || reservation.getEndTime().isBefore(now)) {
 			throw new InvalidParameterException("시작시간 또는 종료시간이 현재시간 전입니다.");
+		} else if (reservation.getStartTime().isAfter(reservation.getEndTime())) {
+			throw new InvalidParameterException("시작시간이 종료시간보다 이후의 시간입니다.");
 		}
 		
 		// 모임 등록

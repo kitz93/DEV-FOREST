@@ -7,6 +7,7 @@ import {
   TextArea,
   FileInput,
   Button,
+  Message,
 } from "./InsertBoard.styles";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Component/Context/AuthContext";

@@ -83,15 +83,16 @@ const DropdownUl = styled.ul`
 const Header = () => {
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setSignupModalOpen] = useState(false);
-  const navi = useNavigate();
-  const goTo = (path) => {
-    navi(path);
-  };
-
   const openLoginModal = () => setLoginModalOpen(true);
   const closeLoginModal = () => setLoginModalOpen(false);
   const openSignupModal = () => setSignupModalOpen(true);
   const closeSignupModal = () => setSignupModalOpen(false);
+
+  const navi = useNavigate();
+
+  const goTo = (path) => {
+    navi(path);
+  };
 
   const { auth, logout, unlinkKakao } = useContext(AuthContext);
 
