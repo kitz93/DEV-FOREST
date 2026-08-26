@@ -13,8 +13,6 @@ import com.dev.forest.exception.DuplicateAttendException;
 import com.dev.forest.exception.PullCountStudyingException;
 import com.dev.forest.exception.ReservationNotFoundException;
 import com.dev.forest.exception.UserNotFoundException;
-import com.dev.forest.member.model.dto.MemberDTO;
-import com.dev.forest.member.model.mapper.MemberMapper;
 import com.dev.forest.reservation.model.mapper.ReservationMapper;
 import com.dev.forest.studying.model.dto.StudyingDTO;
 import com.dev.forest.studying.model.mapper.StudyingMapper;
@@ -30,7 +28,6 @@ public class StudyingServiceImpl implements StudyingService {
 	private final StudyingMapper studyingMapper;
 	private final ReservationMapper reservationMapper;
 	private final AuthenticationService authService;
-	private final MemberMapper memberMapper;
 
 	@Override
 	@Transactional
@@ -42,9 +39,7 @@ public class StudyingServiceImpl implements StudyingService {
 			throw new ReservationNotFoundException("존재하지 않는 모임입니다.");
 		}
 
-		// 검증된 인원인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		authService.validWriter(studying.getStudyingUser(), user.getNickname());
 
 		if (studyingMapper.existsAttendee(studying.getRefRno(), user.getUserNo()) > 0) {
 			throw new DuplicateAttendException("이미 참석 중인 모임입니다.");
@@ -83,35 +78,23 @@ public class StudyingServiceImpl implements StudyingService {
 			throw new ReservationNotFoundException("존재하지 않는 모임입니다.");
 		}
 
-		// 로그인 인원이 리스트안에 있는지 확인
-		List<StudyingDTO> list = findByRervationNo(refBno);
+		// 참석자 본인인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		MemberDTO userNickname = memberMapper.findByUserId(user.getUsername());
-
-		boolean isAttendee = false;
-	    for (StudyingDTO studying : list) {
-	        if (studying.getStudyingUser().equals(userNickname.getNickname())) {
-	            isAttendee = true;
-	            break;
-	        }
-	    }
-
-	    if(!isAttendee) {
+		if (studyingMapper.existsAttendee(refBno, user.getUserNo()) == 0) {
 	    	throw new UserNotFoundException("해당 모임에 참석자가 아닙니다.");
-	    } else {
-	    	Map<String, Object> params = new HashMap<>();
-	    	params.put("refBno", refBno);
-	    	params.put("studyingUser", user.getUserNo());
-
-	    	studyingMapper.cancle(params);
-
-	    	int currentCount = studyingMapper.countByReservationNo(refBno);
-
-			if (currentCount < maxCapacity) {
-		        reservationMapper.notPullReservationStatus(refBno);
-		    }
 	    }
 
+		Map<String, Object> params = new HashMap<>();
+		params.put("refBno", refBno);
+		params.put("studyingUser", user.getUserNo());
+
+		studyingMapper.cancle(params);
+
+		int currentCount = studyingMapper.countByReservationNo(refBno);
+
+		if (currentCount < maxCapacity) {
+			reservationMapper.notPullReservationStatus(refBno);
+		}
 	}
 
 }

@@ -10,8 +10,6 @@ public interface AuthenticationService {
 	LoginMemberDTO login(MemberDTO member);
 	
 	CustomUserDetails getAuthenticatedUser();
-	
-	void validWriter(String writer, String username);
 
 	LoginMemberDTO snsLogin(SnsMemberDTO member);
 

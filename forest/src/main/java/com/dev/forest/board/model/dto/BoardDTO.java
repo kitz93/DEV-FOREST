@@ -14,10 +14,12 @@ import lombok.ToString;
 @ToString
 public class BoardDTO {
 	private Long boardNo;
-	
-	@NotBlank(message = "게시글 작성자는 비어있을 수 없습니다.")
+
+	// 화면 표시용 닉네임. 작성자 판별에는 쓰지 않는다(principal 기준 writerNo 사용).
 	private String boardWriter;
-	
+
+	private Long writerNo;
+
 	@NotBlank(message = "게시글 제목은 비어있을 수 없습니다.")
 	private String boardTitle;
 	

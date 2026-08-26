@@ -24,7 +24,10 @@ public interface BoardMapper {
 	List<BoardDTO> findAll(RowBounds rowBounds, int boardType);
 
 	BoardDTO findById(Long boardNo);
-	
+
+	@Select("SELECT COUNT(*) FROM TB_BOARD WHERE STATUS = 'Y' AND BOARD_NO = #{boardNo}")
+	int existsById(Long boardNo);
+
 	int increaseCount(Long boardNo);
 
 	void update(BoardDTO exsitingBoard);

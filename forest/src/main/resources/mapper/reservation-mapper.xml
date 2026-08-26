@@ -81,6 +81,7 @@
 	<select id="findById" parameterType="Long" resultType="ReservationDTO">
 		<include refid="reservationColumn" />,
 				M.NICKNAME reservationUser,
+				R.RESERVATION_USER hostNo,
 				START_TIME startTime,
 				END_TIME endTime,
 				RESERVATION_STATUS reservationStatus

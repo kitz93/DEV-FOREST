@@ -75,7 +75,8 @@
 
 <select id="findById" parameterType="long" resultType="BoardDTO">
 <include refid="boardColumn"/>
-	  FROM 
+			,B.BOARD_WRITER writerNo
+	  FROM
 	  		TB_BOARD B 
 	  JOIN 
 	  		TB_MEMBER M ON(BOARD_WRITER = USER_NO) 

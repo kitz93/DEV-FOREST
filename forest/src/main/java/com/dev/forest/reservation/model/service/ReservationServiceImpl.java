@@ -15,10 +15,9 @@ import com.dev.forest.auth.model.vo.CustomUserDetails;
 import com.dev.forest.board.model.service.FileService;
 import com.dev.forest.common.model.dto.PageInfo;
 import com.dev.forest.common.template.Pagination;
+import com.dev.forest.exception.AccessDeniedException;
 import com.dev.forest.exception.InvalidParameterException;
 import com.dev.forest.exception.ReservationNotFoundException;
-import com.dev.forest.member.model.dto.MemberDTO;
-import com.dev.forest.member.model.mapper.MemberMapper;
 import com.dev.forest.reservation.model.dto.ReservationDTO;
 import com.dev.forest.reservation.model.mapper.ReservationMapper;
 import com.dev.forest.studying.model.dto.StudyingDTO;
@@ -36,18 +35,15 @@ public class ReservationServiceImpl implements ReservationService {
 	private final FileService fileService;
 	private final AuthenticationService authService;
 	private final StudyingMapper studyingMapper;
-	private final MemberMapper memberMapper;
-	
+
 	@Override
 	@Transactional
 	public void reservate(ReservationDTO reservation, MultipartFile file) {
-		
+
 //		log.info("게시글정보 : {} \n 파일정보 : {} ",reservation, file);
-		
-		// 검증된 인원인지 확인
+
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		authService.validWriter(reservation.getReservationUser(), user.getNickname());
-		
+
 		// 파일 확인
 		if (file != null && !file.isEmpty()) {
 			String filePath = fileService.store(file, "RservationImg");
@@ -137,14 +133,13 @@ public class ReservationServiceImpl implements ReservationService {
 	@Transactional
 	public void delete(Long reservationNo) {
 		ReservationDTO exsitingReservation = getBoardOrThrow(reservationNo);
-		
-		// 검증된 인원인지 확인
+
+		// 주최자 본인인지 확인
 		CustomUserDetails user = authService.getAuthenticatedUser();
-		
-		MemberDTO userNickname = memberMapper.findByUserId(user.getUsername());
-		
-		authService.validWriter(exsitingReservation.getReservationUser(),userNickname.getNickname());
-		
+		if (!exsitingReservation.getHostNo().equals(user.getUserNo())) {
+			throw new AccessDeniedException("요청한 사용자와 모임 주최자가 일치하지 않습니다.");
+		}
+
 		reservationMapper.delete(exsitingReservation);
 	}
 	
