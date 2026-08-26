@@ -3,81 +3,84 @@ package com.dev.forest.exception;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-	
-	@ExceptionHandler(PullCountStudyingException.class)
-	public ResponseEntity<?> handlePullCountStudying(PullCountStudyingException e){
-		return ResponseEntity.badRequest().body(e.getMessage());
-	}
-	
-	@ExceptionHandler(UserNotFoundException.class)
-	public ResponseEntity<?> handleUserNotFound(UserNotFoundException e){
-		return ResponseEntity.badRequest().body(e.getMessage());
-	}
-	
-	@ExceptionHandler(BoardNotFoundException.class)
-	public ResponseEntity<?> handleBoardNotFound(BoardNotFoundException e){
-		return ResponseEntity.badRequest().body(e.getMessage());
+
+	// 404
+	@ExceptionHandler({ BoardNotFoundException.class, ReservationNotFoundException.class,
+			UserNotFoundException.class })
+	public ResponseEntity<ErrorResponse> handleNotFound(RuntimeException e) {
+		return build(HttpStatus.NOT_FOUND, e);
 	}
 
-	@ExceptionHandler(AuthenticationException.class)
-	public ResponseEntity<?> handlerAuthentic(AuthenticationException e) {
-		return ResponseEntity.badRequest().body("아이디 및 비밀번호 오류");
-
+	// 409
+	@ExceptionHandler({ PullCountStudyingException.class, DuplicateAttendException.class,
+			DuplicatedUserException.class })
+	public ResponseEntity<ErrorResponse> handleConflict(RuntimeException e) {
+		return build(HttpStatus.CONFLICT, e);
 	}
 
+	// 400
 	@ExceptionHandler(InvalidParameterException.class)
-	public ResponseEntity<?> handleInvalidParameter(InvalidParameterException e) {
-		return ResponseEntity.badRequest().body(e.getMessage());
-	}
-
-	@ExceptionHandler(DupplicatedUserException.class)
-	public ResponseEntity<?> handlerDupplication(DupplicatedUserException e) {
-		return ResponseEntity.badRequest().body(e.getMessage());
+	public ResponseEntity<ErrorResponse> handleInvalidParameter(InvalidParameterException e) {
+		return build(HttpStatus.BAD_REQUEST, e);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<?> handlerArgumentValid(MethodArgumentNotValidException e) {
-		Map<String, String> errors = new HashMap<String, String>();
-		/*
-		 * List<FieldError> list = e.getBindingResult().getFieldErrors(); for(int i = 0;
-		 * i < list.size(); i++) { // log.info("예외가 발생한 필드 명 : {}, 이유 : {} ",
-		 * list.get(i).getField(), list.get(i).getDefaultMessage());
-		 * errors.put(list.get(i).getField(), list.get(i).getDefaultMessage()); }
-		 */
-		e.getBindingResult().getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-		;
-		return ResponseEntity.badRequest().body(errors);
+	public ResponseEntity<ErrorResponse> handleArgumentValid(MethodArgumentNotValidException e) {
+		Map<String, String> fieldErrors = new HashMap<>();
+		e.getBindingResult().getFieldErrors().forEach(error -> fieldErrors.put(error.getField(), error.getDefaultMessage()));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getClass().getSimpleName(), "요청값이 올바르지 않습니다.", fieldErrors));
 	}
-	
-	@ExceptionHandler(AccessTokenExpiredException.class)
-	public ResponseEntity<?> handlerExpiredAccessToken(AccessTokenExpiredException e) {
-		return ResponseEntity.badRequest().body(e.getMessage());
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException e) {
+		Map<String, String> fieldErrors = new HashMap<>();
+		e.getConstraintViolations().forEach(v -> fieldErrors.put(v.getPropertyPath().toString(), v.getMessage()));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getClass().getSimpleName(), "요청값이 올바르지 않습니다.", fieldErrors));
 	}
-	
-	@ExceptionHandler(JwtTokenException.class)
-	public ResponseEntity<?> handlerinvalidToken(JwtTokenException e) {
-		return ResponseEntity.badRequest().body(e.getMessage());
+
+	// 401
+	@ExceptionHandler(AuthenticationException.class)
+	public ResponseEntity<ErrorResponse> handleAuthentication(AuthenticationException e) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+				.body(ErrorResponse.of(HttpStatus.UNAUTHORIZED, e.getClass().getSimpleName(), "아이디 및 비밀번호 오류"));
 	}
-	
-	@ExceptionHandler(MissmatchPasswordException.class)
-	public ResponseEntity<?> handlerMissmatchPassword(MissmatchPasswordException e) {
-		return ResponseEntity.badRequest().body(e.getMessage());
+
+	@ExceptionHandler({ AccessTokenExpiredException.class, JwtTokenException.class, MismatchPasswordException.class })
+	public ResponseEntity<ErrorResponse> handleUnauthorized(RuntimeException e) {
+		return build(HttpStatus.UNAUTHORIZED, e);
 	}
-	
-	@ExceptionHandler(DeleteMemberException.class)
-	public ResponseEntity<?> handlerDeleteMember(DeleteMemberException e) {
-		return ResponseEntity.badRequest().body(e.getMessage());
+
+	// 403
+	@ExceptionHandler({ AccessDeniedException.class, DeleteMemberException.class })
+	public ResponseEntity<ErrorResponse> handleForbidden(RuntimeException e) {
+		return build(HttpStatus.FORBIDDEN, e);
+	}
+
+	// 500
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ErrorResponse> handleUnexpected(Exception e) {
+		log.error("처리되지 않은 예외", e);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "InternalServerError", "서버 오류가 발생했습니다."));
+	}
+
+	private ResponseEntity<ErrorResponse> build(HttpStatus status, RuntimeException e) {
+		return ResponseEntity.status(status).body(ErrorResponse.of(status, e.getClass().getSimpleName(), e.getMessage()));
 	}
 
 }

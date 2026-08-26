@@ -8,8 +8,8 @@ public interface StudyingService {
 
 	void attend(StudyingDTO studying);
 
-	List<StudyingDTO> findByRervationNo(Long reservationNo);
+	List<StudyingDTO> findByReservationNo(Long reservationNo);
 
-	void cancle(Long reservationNo);
+	void cancel(Long reservationNo);
 
 }

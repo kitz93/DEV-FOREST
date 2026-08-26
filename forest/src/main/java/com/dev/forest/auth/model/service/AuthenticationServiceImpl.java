@@ -48,15 +48,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		return user;
 	}
 
-	@Override
-	public void validWriter(String writer, String username) {
-		System.out.println("유저네임 : "+ username);
-		System.out.println("사용자 네임 : " + writer);
-		if(writer != null && !writer.equals(username)) {
-			throw new RuntimeException("요청한 사용자와 게시글 작성자가 일치하지 않습니다.");
-		}
-	}
-		
 	public LoginMemberDTO snsLogin(SnsMemberDTO member) {
 		SnsMemberDTO response = memberMapper.findBySnsId(member.getSnsId());
 		if(response != null && response.getStatus().equals("N")) {

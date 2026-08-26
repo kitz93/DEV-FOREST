@@ -68,14 +68,16 @@
 	 	    B.STATUS = 'Y'
 	   AND
 	   	   BOARD_TYPE = #{boardType}
-	 ORDER 
+	 ORDER
 		BY
 			BOARD_NO DESC
+	OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
 </select>
 
 <select id="findById" parameterType="long" resultType="BoardDTO">
 <include refid="boardColumn"/>
-	  FROM 
+			,B.BOARD_WRITER writerNo
+	  FROM
 	  		TB_BOARD B 
 	  JOIN 
 	  		TB_MEMBER M ON(BOARD_WRITER = USER_NO) 
@@ -156,6 +158,7 @@
 	ORDER
 	   BY
 	   	  BOARD_NO DESC
+	OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
 </select>
 
 </mapper>

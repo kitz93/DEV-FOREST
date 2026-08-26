@@ -22,7 +22,7 @@
 	
 	</insert>
 	
-	<select id="findByRervationNo" parameterType="Long" resultType="StudyingDTO">
+	<select id="findByReservationNo" parameterType="Long" resultType="StudyingDTO">
 		SELECT
 			   STUDYING_NO studyingNo,
 			   REF_RNO refRno,
@@ -42,7 +42,7 @@
 	
 	</select>
 	
-	<update id="cancle" parameterType="map">
+	<update id="cancel" parameterType="map">
 		UPDATE
 			   TB_STUDYING
 		   SET
@@ -65,8 +65,20 @@
 		 	   STATUS = 'Y'
 		   AND
 		   	   REF_RNO = #{refBno}
-		   	    
+
 	</select>
 
+	<select id="existsAttendee" resultType="_int">
+		SELECT
+		       COUNT(*)
+		  FROM
+		  	   TB_STUDYING
+		 WHERE
+		 	   STATUS = 'Y'
+		   AND
+		   	   REF_RNO = #{refRno}
+		   AND
+		   	   STUDYING_USER = #{userNo}
+	</select>
 
 </mapper>

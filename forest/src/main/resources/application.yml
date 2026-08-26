@@ -2,9 +2,9 @@ spring:
   application:
     name: forest
   datasource:
-    url: jdbc:oracle:thin:@192.168.20.203:1521:xe
-    username: FOREST
-    password: FOREST
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: oracle.jdbc.driver.OracleDriver
   mvc:
     static-path-pattern: /uploads/**
@@ -32,11 +32,11 @@ mybatis:
 
 logging:
   level:
-    org.apache.ibatis: DEBUG
-    java.sql: DEBUG
-    jdbc.sqlonly: DEBUG
-    jdbc.resultset: DEBUG
-    jdbc.audit: DEBUG
+    org.apache.ibatis: INFO
+    java.sql: INFO
+    jdbc.sqlonly: INFO
+    jdbc.resultset: INFO
+    jdbc.audit: INFO
 
 jwt:
-  secret: ixT+57RqcN/H4zaeGMfDaiw32qxGOfO3MjY+XITjgNI=
+  secret: ${JWT_SECRET}

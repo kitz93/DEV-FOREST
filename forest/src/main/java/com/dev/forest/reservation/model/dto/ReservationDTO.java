@@ -17,7 +17,11 @@ import lombok.ToString;
 public class ReservationDTO {
 	
 	private Long reservationNo;
+
+	// 화면 표시용 닉네임. 작성자 판별에는 쓰지 않는다(principal 기준 hostNo 사용).
 	private String reservationUser;
+	private Long hostNo;
+
 	@NotBlank(message = "모임명이 비어있으면 안됩니다.")
 	private String reservationName;
 	

@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.session.RowBounds;
 
 import com.dev.forest.board.model.dto.BoardDTO;
 
@@ -21,18 +21,21 @@ public interface BoardMapper {
 	@Select("SELECT COUNT(*) FROM TB_BOARD WHERE STATUS = 'Y' AND BOARD_TYPE = #{boardType}")
 	int selectTotalCount(int boardType);
 
-	List<BoardDTO> findAll(RowBounds rowBounds, int boardType);
+	List<BoardDTO> findAll(@Param("offset") int offset, @Param("limit") int limit, @Param("boardType") int boardType);
 
 	BoardDTO findById(Long boardNo);
-	
+
+	@Select("SELECT COUNT(*) FROM TB_BOARD WHERE STATUS = 'Y' AND BOARD_NO = #{boardNo}")
+	int existsById(Long boardNo);
+
 	int increaseCount(Long boardNo);
 
-	void update(BoardDTO exsitingBoard);
+	void update(BoardDTO existingBoard);
 
-	void delete(BoardDTO exsitingBoard);
+	void delete(BoardDTO existingBoard);
 
 	int searchCount(Map<String, Object> params);
 
-	List<BoardDTO> search(RowBounds rowBounds, Map<String, Object>params);
+	List<BoardDTO> search(Map<String, Object> params);
 
 }

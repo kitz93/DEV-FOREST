@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.annotations.Param;
 
 import com.dev.forest.reservation.model.dto.ReservationDTO;
 
@@ -15,22 +15,24 @@ public interface ReservationMapper {
 
 	int selectTotalCount();
 
-	List<ReservationDTO> findAll(RowBounds rowBounds);
-	
+	List<ReservationDTO> findAll(@Param("offset") int offset, @Param("limit") int limit);
+
 	ReservationDTO findById(Long reservationNo);
 
-	void delete(ReservationDTO exsitingReservation);
+	void delete(ReservationDTO existingReservation);
 
 	int searchCount(Map<String, Object> params);
 
-	List<ReservationDTO> search(RowBounds rowBounds, Map<String, Object> params);
+	List<ReservationDTO> search(Map<String, Object> params);
 
 	int getMaxCount(Long reservationNo);
+
+	Integer getMaxCountForUpdate(Long reservationNo);
 
 	void pullReservationStatus(Long reservationNo);
 
 	void notPullReservationStatus(Long reservationNo);
 
-	void updateToExpired(Long reservationNo);
+	int expireAll();
 
 }
