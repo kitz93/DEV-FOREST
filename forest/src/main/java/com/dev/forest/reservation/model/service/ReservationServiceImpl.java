@@ -106,28 +106,18 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public Map<String, Object> findAll(int page) {
 		int totalCount = getTotalCount();
 		PageInfo pi = getPageInfo(totalCount, page);
 		RowBounds rowBounds = paging(pi);
-		
+
 		List<ReservationDTO> reservationList = reservationMapper.findAll(rowBounds);
-		
-		LocalDateTime now = LocalDateTime.now();
-		
-		for(ReservationDTO reservation : reservationList) {
-			if(reservation.getEndTime() != null && reservation.getEndTime().isBefore(now)) {				
-				reservationMapper.updateToExpired(reservation.getReservationNo());
-			}
-		}
-		
-		List<ReservationDTO> list = reservationMapper.findAll(rowBounds);
-		
+
 		HashMap<String, Object> map = new HashMap<>();
-		map.put("reservationList", list);
+		map.put("reservationList", reservationList);
 		map.put("pi", pi);
-		
+
 		return map;
 	}
 	
