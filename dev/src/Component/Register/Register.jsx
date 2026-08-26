@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-import axios from "axios";
+import http, { getErrorMessage } from "../../api/http";
 import styled, { createGlobalStyle } from "styled-components";
 import KakaoLogin from "react-kakao-login"; // KakaoLogin 컴포넌트 가져오기
 
@@ -107,8 +107,8 @@ const Register = ({ isOpen, onRequestClose }) => {
   const [kakaoId, setKakaoId] = useState("");
 
   const handleRegister = () => {
-    axios
-      .post("http://localhost/members", {
+    http
+      .post("/members", {
         signUp: "사이트",
         userId: email,
         userPwd: password,
@@ -121,26 +121,7 @@ const Register = ({ isOpen, onRequestClose }) => {
         setPassword("");
       })
       .catch((error) => {
-        console.log(error);
-        if (error.response && error.response.data) {
-          const errorMsg = error.response.data;
-          let alertMsg = "";
-          if (errorMsg.nickname) {
-            alertMsg += `${errorMsg.nickname}\n`;
-          }
-          if (errorMsg.userId) {
-            alertMsg += `${errorMsg.userId}\n`;
-          }
-          if (errorMsg.userPwd) {
-            alertMsg += `${errorMsg.userPwd}\n`;
-          }
-          if (errorMsg) {
-            alertMsg += `${errorMsg}\n`;
-          }
-          alert(alertMsg);
-        } else {
-          console.log(error);
-        }
+        alert(getErrorMessage(error, "회원가입에 실패했습니다."));
       });
 
     onRequestClose();
@@ -153,10 +134,8 @@ const Register = ({ isOpen, onRequestClose }) => {
   };
 
   const handleKakaoSubmit = () => {
-    axios
-      .post("http://localhost/members/sns", {
-        // accessToken: kakaoAccessToken, // 저장된 accessToken 사용
-        // provider: "kakao",
+    http
+      .post("/members/sns", {
         signUp: "소셜",
         snsId: kakaoId,
         nickname: nickname, // 닉네임 추가
@@ -168,7 +147,7 @@ const Register = ({ isOpen, onRequestClose }) => {
         setShowKakaoNicknameModal(false); // 카카오 닉네임 입력 모달 숨기기
       })
       .catch((error) => {
-        alert(error.response.data);
+        alert(getErrorMessage(error, "카카오 회원가입에 실패했습니다."));
       });
   };
 
@@ -208,7 +187,7 @@ const Register = ({ isOpen, onRequestClose }) => {
           />
           <RegisterButton onClick={handleRegister}>회원가입</RegisterButton>
           <KakaoLogin
-            token="ef9fef9e05963650c0d63631821cd92c"
+            token={process.env.REACT_APP_KAKAO_LOGIN_KEY}
             onSuccess={handleKakaoSuccess}
             onFailure={handleKakaoFailure}
             render={({ onClick }) => (

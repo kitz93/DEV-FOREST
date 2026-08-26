@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import http from "../api/http";
 import {
   Container,
   MemberBox,
@@ -16,8 +16,8 @@ const StudyingList = ({ reservationNo, refresh }) => {
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost/studyings/${reservationNo}`)
+    http
+      .get(`/studyings/${reservationNo}`)
       .then((response) => {
         //console.log(response.data);
         setStudyings(response.data || []);

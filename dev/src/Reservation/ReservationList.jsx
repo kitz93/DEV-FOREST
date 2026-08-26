@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Component/Context/AuthContext";
-import axios from "axios";
+import http from "../api/http";
 import { useNavigate } from "react-router-dom";
 import {
   Container,
@@ -38,8 +38,8 @@ const ReservationList = () => {
   const navi = useNavigate();
 
   const fetchReservations = () => {
-    axios
-      .get("http://localhost/reservations", {
+    http
+      .get("/reservations", {
         params: {
           page: page,
         },
@@ -58,8 +58,8 @@ const ReservationList = () => {
   };
 
   const searchReservations = () => {
-    axios
-      .get("http://localhost/reservations/search", {
+    http
+      .get("/reservations/search", {
         params: {
           page: page,
           condition: condition,

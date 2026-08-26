@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import "./Quiz.css";
 import QuizResults from "./QuizResults";
-import axios from "axios";
+import http from "../api/http";
 import { AuthContext } from "../Component/Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -25,8 +25,8 @@ const Quiz = () => {
         return;
       }
 
-      axios
-        .get("http://localhost/quizs/random", {
+      http
+        .get("/quizs/random", {
           headers: {
             Authorization: `Bearer ${auth.accessToken}`,
           },

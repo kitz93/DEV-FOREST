@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import axios from "axios";
+import http, { getErrorMessage } from "../../api/http";
 import Modal from "react-modal";
 import styled, { createGlobalStyle } from "styled-components";
 import { AuthContext } from "../Context/AuthContext";
@@ -114,8 +114,8 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
   };
 
   const handleLogin = () => {
-    axios
-      .post("http://localhost/members/login", {
+    http
+      .post("/members/login", {
         userId: userId,
         userPwd: userPwd,
       })
@@ -128,17 +128,16 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
         onRequestClose();
       })
       .catch((error) => {
-        // console.log(error);
-        const msg = error.response.data;
+        const msg = getErrorMessage(error);
         if (msg === "탈퇴한 유저 입니다.") {
-          const res = window.confirm(error.response.data);
+          const res = window.confirm(msg);
           if (res) {
             alert("재가입 성공(구현 안함)");
           } else {
             alert("재가입 취소");
           }
         } else {
-          alert(error.response.data);
+          alert(msg);
         }
       });
   };
@@ -147,8 +146,8 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
     const snsId = response.profile.id;
     const snsAccessToken = response.response.access_token;
     const snsRefreshToken = response.response.refresh_token;
-    axios
-      .post("http://localhost/members/snsLogin", {
+    http
+      .post("/members/snsLogin", {
         snsId: snsId,
       })
       .then((response) => {
@@ -200,7 +199,7 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
           />
           <LoginButton onClick={handleLogin}>로그인</LoginButton>
           <KakaoLogin
-            token="ef9fef9e05963650c0d63631821cd92c"
+            token={process.env.REACT_APP_KAKAO_LOGIN_KEY}
             onSuccess={handleKakaoSuccess}
             onFailure={handleKakaoFailure}
             render={({ onClick }) => (

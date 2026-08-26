@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import axios from "axios";
+import http from "../api/http";
 import styled from "styled-components";
 import {
   Chart as ChartJS,
@@ -35,8 +35,8 @@ const RankingChart = () => {
   });
 
   useEffect(() => {
-    axios
-      .get("http://localhost/rankings")
+    http
+      .get("/rankings")
       .then((data) => {
         // console.log(data.data);
         const names = data.data.map((item) => item.nickName);

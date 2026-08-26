@@ -1,7 +1,7 @@
 import { FormContainer, TextArea, SubmitButton } from "./ReplyForm.styles";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Component/Context/AuthContext";
-import axios from "axios";
+import http, { getErrorMessage } from "../api/http";
 
 const ReplyForm = ({ boardNo, onSuccess }) => {
   const [reply, setReply] = useState("");
@@ -24,8 +24,8 @@ const ReplyForm = ({ boardNo, onSuccess }) => {
       alert("댓글은 로그인을 해야만 작성할 수 있습니다.");
       return;
     } else {
-      axios
-        .post("http://localhost/replys", formData, {
+      http
+        .post("/replys", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${auth.accessToken}`,
@@ -36,13 +36,9 @@ const ReplyForm = ({ boardNo, onSuccess }) => {
             setReply("");
             onSuccess();
           }
-          //console.log(response);
         })
         .catch((error) => {
-          //console.log(boardNo);
-          //console.log(auth.nickname);
-          //console.log(reply);
-          console.log(error);
+          alert(getErrorMessage(error, "댓글 작성에 실패했습니다."));
         });
     }
   };

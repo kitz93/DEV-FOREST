@@ -26,7 +26,7 @@ import {
 } from "./BoardList.styles";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Component/Context/AuthContext";
-import axios from "axios";
+import http from "../api/http";
 import { useNavigate } from "react-router-dom";
 
 const BoardList = () => {
@@ -43,8 +43,8 @@ const BoardList = () => {
   const navi = useNavigate();
 
   const fetchBoards = () => {
-    axios
-      .get("http://localhost/boards", {
+    http
+      .get("/boards", {
         params: {
           page: page,
           boardType: boardType,
@@ -63,8 +63,8 @@ const BoardList = () => {
   };
 
   const searchBoards = () => {
-    axios
-      .get("http://localhost/boards/search", {
+    http
+      .get("/boards/search", {
         params: {
           page: page,
           boardType: boardType,

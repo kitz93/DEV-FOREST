@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Component/Context/AuthContext";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import http, { getErrorMessage } from "../api/http";
 import StudyingList from "../Studying/StudyingList";
 import {
   Container,
@@ -27,8 +27,8 @@ const ReservationDetail = () => {
   const navi = useNavigate();
 
   useEffect(() => {
-    axios
-      .get(`http://localhost/reservations/${reservationNo}`)
+    http
+      .get(`/reservations/${reservationNo}`)
       .then((response) => {
         //console.log(response.data);
         setReservation(response.data);
@@ -47,8 +47,8 @@ const ReservationDetail = () => {
 
   const handleCancle = () => {
     if (window.confirm("정말 삭제할거니?")) {
-      axios
-        .delete(`http://localhost/reservations/${reservationNo}`, {
+      http
+        .delete(`/reservations/${reservationNo}`, {
           headers: {
             Authorization: `Bearer ${auth.accessToken}`,
           },
@@ -62,6 +62,9 @@ const ReservationDetail = () => {
             alert("삭제가 완료되었습니다.");
             navi("/reservations");
           }, 3000);
+        })
+        .catch((error) => {
+          alert(getErrorMessage(error, "모임 삭제에 실패했습니다."));
         });
     }
   };
